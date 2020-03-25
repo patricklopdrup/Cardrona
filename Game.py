@@ -16,5 +16,33 @@ solitaire = np.zeros((7, 13), dtype=object)
 # Data array for other than game info
 data = ['', '', '', '', '', '', '']
 
-deck = card.Card().make_deck()
-print(deck)
+
+#card = card.Card()
+#deck = card.make_deck()
+# print(deck)
+# print(card.shuffle(deck))
+
+card = card.Card()
+
+
+def start_game():
+
+    deck = card.make_deck()
+    deck = card.shuffle(deck)
+    back_counter = 0
+    print(len(deck))
+
+    for row in range(7):
+        for column in range(7):
+            if column == row:
+                solitaire[row, column] = deck.pop(1)
+            elif column < row:
+                solitaire[row, column] = "B"
+                back_counter += 1
+
+    data[CARD_DECK] = (len(deck) - back_counter)
+    print(solitaire)
+    print(data)
+
+
+start_game()
