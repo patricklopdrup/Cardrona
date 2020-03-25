@@ -6,7 +6,8 @@ class Card:
         pass
 
     def make_card(self, number, suit):
-        return str(number) + suit
+        # All numbers will have 2 decimals. Fx 5 -> 05
+        return (str(('%02d') % number) + suit)
 
     def make_deck(self):
         # Hearts, Spades, Diamonds, Clubs

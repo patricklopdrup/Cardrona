@@ -37,7 +37,7 @@ def start_game():
             if column == row:
                 solitaire[row, column] = deck.pop(1)
             elif column < row:
-                solitaire[row, column] = "B"
+                solitaire[row, column] = "BBB"
                 back_counter += 1
 
     data[CARD_DECK] = (len(deck) - back_counter)
@@ -45,4 +45,16 @@ def start_game():
     print(data)
 
 
+def show():
+    for column in range(7):
+        print()
+        for row in range(7):
+            if solitaire[row, column]:
+                print(solitaire[row, column], end=" ")
+            else:
+                print(" "*4, end="")
+
+
+# to run the program
 start_game()
+show()
