@@ -17,11 +17,6 @@ solitaire = np.zeros((7, 13), dtype=object)
 data = ['', '', '', '', '', '', '']
 
 
-#card = card.Card()
-#deck = card.make_deck()
-# print(deck)
-# print(card.shuffle(deck))
-
 card = card.Card()
 
 
@@ -37,7 +32,7 @@ def start_game():
             if column == row:
                 solitaire[row, column] = deck.pop(1)
             elif column < row:
-                solitaire[row, column] = "BBB"
+                solitaire[row, column] = "[ ]"
                 back_counter += 1
 
     data[CARD_DECK] = (len(deck) - back_counter)
@@ -46,6 +41,15 @@ def start_game():
 
 
 def show():
+    data[HEARTS] = 0
+    data[SPADES] = 0
+    data[DIAMONDS] = 0
+    data[CLUBS] = 0
+    print()
+    print(f"Deck: {data[CARD_DECK]}")
+    print(f"Turned card: {data[TURNED]}")
+    print(
+        f"H:{data[HEARTS]} S:{data[SPADES]} D:{data[DIAMONDS]} C:{data[CLUBS]}")
     for column in range(7):
         print()
         for row in range(7):
