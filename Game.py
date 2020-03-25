@@ -1,4 +1,5 @@
 import numpy as np
+import card
 
 # Easy access for the "data" array
 CARD_DECK = 0
@@ -15,10 +16,5 @@ solitaire = np.zeros((7, 13), dtype=object)
 # Data array for other than game info
 data = ['', '', '', '', '', '', '']
 
-
-solitaire[1, 1] = "b"
-
-print(solitaire)
-
-data[1] = "2c"
-print(data)
+deck = card.Card().make_deck()
+print(deck)
