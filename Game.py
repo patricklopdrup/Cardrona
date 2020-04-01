@@ -56,7 +56,7 @@ def show():
         print()
         for row in range(7):
             if solitaire[row, column]:
-                print(solitaire[row, column], end=" ").__str__
+                print(solitaire[row, column], end=" ")
             else:
                 print(" "*4, end="")
 
