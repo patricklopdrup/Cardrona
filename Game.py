@@ -17,30 +17,32 @@ solitaire = np.zeros((7, 13), dtype=object)
 data = ['', '', '', '', '', '', '']
 
 
-card = card.Card()
+deck = card.Deck()
+# card = card.Card()
 
 
 def start_game():
 
-    deck = card.make_deck()
-    deck = card.shuffle(deck)
+    m_deck = deck.make_deck()
+    print(f"længde: {len(m_deck)}")
+    m_deck = deck.shuffle(m_deck)
     back_counter = 0
-    print(len(deck))
 
     for row in range(7):
         for column in range(7):
+
             if column == row:
-                solitaire[row, column] = deck.pop(1)
+                solitaire[row, column] = m_deck.pop(1)
             elif column < row:
                 solitaire[row, column] = "[ ]"
                 back_counter += 1
-
-    data[CARD_DECK] = (len(deck) - back_counter)
+    data[CARD_DECK] = (len(m_deck) - back_counter)
     print(solitaire)
     print(data)
 
 
 def show():
+    print(f"hej med dig: {solitaire[0,0]} er {solitaire[0,0].color}")
     data[HEARTS] = 0
     data[SPADES] = 0
     data[DIAMONDS] = 0
@@ -54,7 +56,7 @@ def show():
         print()
         for row in range(7):
             if solitaire[row, column]:
-                print(solitaire[row, column], end=" ")
+                print(solitaire[row, column], end=" ").__str__
             else:
                 print(" "*4, end="")
 
