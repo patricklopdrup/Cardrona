@@ -28,10 +28,11 @@ class Deck:
 
 
 class Card:
-    def __init__(self, number, suit, color):
+    def __init__(self, number, suit, color, flipped=False):
         self.number = number
         self.suit = suit
         self.color = color
+        self.flipped = flipped
 
     def __str__(self):
         # All numbers will have 2 decimals. Fx 5 -> 05
