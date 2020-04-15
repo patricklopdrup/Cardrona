@@ -48,6 +48,7 @@ def show():
                 print(" "*4, end="")
 
 
+
 def play():
     while 1:
         show()
@@ -60,6 +61,22 @@ def play():
         if card == "d":
             soli.turn_card()
         print(card)
+
+
+
+
+def moverow(currentrow, goalrow):
+    lastcardcolumn =0
+
+    for column in range(12):
+        if soli.solitaire[goalrow, column].flipped == False:
+            lastcardcolumn=column+1
+
+    for column in range(12):
+        if soli.solitaire[currentrow, column].flipped== False:
+            movecard(currentrow,column,goalrow,lastcardcolumn)
+            lastcardcolumn+=1
+
 
 
 # to run the program
