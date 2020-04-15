@@ -85,6 +85,30 @@ def is_move_legal(row: int, col: int) -> bool:
         cur_num = card.number
     return is_legal
 
+def movecard(fromrow, fromcolumn, torow, tocolumn):
+    solitaire[torow,tocolumn] = solitaire[fromrow, fromcolumn]
+    solitaire[fromrow,fromcolumn]=0
+
+    if solitaire[fromrow,fromcolumn-1] != 0:
+        if solitaire[fromrow, fromcolumn - 1].flipped:
+            solitaire[fromrow, fromcolumn - 1].flipped= False
+
+
+
+
+def moverow(goalrow, currentrow):
+    startcolumn=0
+
+    for columnn in range(7):
+        if solitaire[currentrow, columnn] != 0:
+            if not solitaire[goalrow, columnn].flipped == True:
+                startcolumn=columnn+1
+
+    for column in range(12):
+        if solitaire[currentrow, column] != 0:
+            if not solitaire[currentrow, column].flipped == True:
+                movecard(currentrow,column,goalrow,startcolumn)
+                startcolumn+=1
 
 # DEBUG
 def set_own_cards(row):
