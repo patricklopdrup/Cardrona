@@ -35,6 +35,11 @@ def show():
     soli.show_card_deck()
     print(f"Turned card: {soli.data[soli.TURNED]}")
     soli.four_suit_deck()
+
+    ### DEBUG ###
+    # soli.set_own_cards(2)
+    ### DEBUG ###
+
     for column in range(7):
         print()
         for row in range(7):
@@ -59,6 +64,11 @@ def play():
         # draw card
         if card == "d":
             soli.turn_card()
+        if card == "l":
+            if soli.is_move_legal(2, 2):
+                print("legal")
+            else:
+                print("ikke legal")
         print(card)
 
 
