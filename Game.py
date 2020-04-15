@@ -1,95 +1,49 @@
-import numpy as np
 import card
+import solitaire as soli
 
-# Easy access for the "data" array
-CARD_DECK = 0
-TURNED = 1
-TURNED_DECK = 2
-HEARTS = 3
-SPADES = 4
-DIAMONDS = 5
-CLUBS = 6
-
-# 2D array for the game. 7 rows of max 13 cards (ace to king)
-solitaire = np.zeros((7, 13), dtype=object)
-
-# Data array for other than game info
-# data = ['', '', '', '', '', '', '']
-data = np.zeros((7), dtype=object)
-card_deck = np.zeros((24), dtype=object)
 
 deck = card.Deck()
-# card = card.Card()
 
 
 def start_game():
-    data[HEARTS] = 0
-    data[SPADES] = 0
-    data[DIAMONDS] = 0
-    data[CLUBS] = 0
-    data[TURNED_DECK] = 0
+    soli.init_game()
 
     m_deck = deck.make_deck()
     print(f"Antal kort: {len(m_deck)}")
-    print(f"hej: {data[CARD_DECK]}")
+    print(f"hej: {soli.data[soli.CARD_DECK]}")
     m_deck = deck.shuffle(m_deck)
 
     for row in range(7):
         for column in range(7):
 
             if column == row:
-                solitaire[row, column] = m_deck.pop(0)
+                soli.solitaire[row, column] = m_deck.pop(0)
             elif column < row:
                 card = m_deck.pop(0)
                 card.flipped = True
-                solitaire[row, column] = card
+                soli.solitaire[row, column] = card
     # putting the rest of the card in card_deck
     for i in range(len(m_deck)):
-        card_deck[i] = m_deck[i]
+        soli.card_deck[i] = m_deck[i]
     # saving the card_deck in the data array
-    data[CARD_DECK] = card_deck
-
-
-def show_card_deck():
-    for card in data[CARD_DECK]:
-        print(card, end=", ")
-    print()
-
-
-turn_count = 0
-
-
-# changing global count
-def turn_card_counter() -> int:
-    global turn_count
-    turn_count = (turn_count + 1) % len(data[CARD_DECK])
-    print(f"count: {turn_count} og len: {len(data[CARD_DECK])}")
-    return turn_count
-
-
-# turn each card in a loop by accessing the negative turn_card_counter()
-def turn_card():
-    top_card = data[CARD_DECK][-turn_card_counter()]
-    data[CARD_DECK] = data[CARD_DECK]
-    data[TURNED] = top_card
+    soli.data[soli.CARD_DECK] = soli.card_deck
 
 
 def show():
-    print(f"Første kort: {solitaire[0,0]} er {solitaire[0,0].color}")
+    print(f"Første kort: {soli.solitaire[0,0]} er {soli.solitaire[0,0].color}")
     print()
-    show_card_deck()
-    print(f"Turned card: {data[TURNED]}")
-    print(
-        f"H:{data[HEARTS]} S:{data[SPADES]} D:{data[DIAMONDS]} C:{data[CLUBS]}")
+    soli.show_card_deck()
+    print(f"Turned card: {soli.data[soli.TURNED]}")
+    soli.four_suit_deck()
     for column in range(7):
         print()
         for row in range(7):
-            if solitaire[row, column]:
+            if soli.solitaire[row, column]:
                 # print back-side of card if it's flipped - else print the card
-                if solitaire[row, column].flipped == True:
+                if soli.solitaire[row, column].flipped == True:
                     print("[ ]", end=" ")
                 else:
-                    print(solitaire[row, column], end=" ")
+                    print(soli.solitaire[row, column], end=" ")
             else:
                 print(" "*4, end="")
 
@@ -104,7 +58,7 @@ def play():
             break
         # draw card
         if card == "d":
-            turn_card()
+            soli.turn_card()
         print(card)
 
 
