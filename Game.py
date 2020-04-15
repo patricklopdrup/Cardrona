@@ -22,11 +22,6 @@ deck = card.Deck()
 # card = card.Card()
 
 
-def draw_card():
-    print(f"kort: {data[CARD_DECK]}")
-    data[TURNED] = data[CARD_DECK]
-
-
 def start_game():
     data[HEARTS] = 0
     data[SPADES] = 0
@@ -61,8 +56,20 @@ def show_card_deck():
     print()
 
 
+turn_count = 0
+
+
+# changing global count
+def turn_card_counter() -> int:
+    global turn_count
+    turn_count = (turn_count + 1) % len(data[CARD_DECK])
+    print(f"count: {turn_count} og len: {len(data[CARD_DECK])}")
+    return turn_count
+
+
+# turn each card in a loop by accessing the negative turn_card_counter()
 def turn_card():
-    top_card = data[CARD_DECK][-1]
+    top_card = data[CARD_DECK][-turn_card_counter()]
     data[CARD_DECK] = data[CARD_DECK]
     data[TURNED] = top_card
 
@@ -87,6 +94,20 @@ def show():
                 print(" "*4, end="")
 
 
+def play():
+    while 1:
+        show()
+        print("")
+        card = input("Your turn: ")
+        # quit
+        if card == "q":
+            break
+        # draw card
+        if card == "d":
+            turn_card()
+        print(card)
+
+
 # to run the program
 start_game()
-show()
+play()
