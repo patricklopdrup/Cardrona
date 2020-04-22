@@ -111,6 +111,31 @@ def moverow(goalrow, currentrow):
                 movecard(currentrow,column,goalrow,startcolumn)
                 startcolumn+=1
 
+def moveseries(goalrow, currentrow, howmany):
+    startcolumn = 0
+    finished = 0
+
+    # finds goal
+    for columnn in range(7):
+        if solitaire[goalrow, columnn] != 0:
+            if not solitaire[goalrow, columnn].flipped == True:
+                startcolumn = columnn + 1
+
+    # finds last card in current row
+    for columnn in range(7):
+        if solitaire[currentrow, columnn] != 0:
+            if not solitaire[currentrow, columnn].flipped == True:
+                finished = columnn
+
+    staret2=finished - howmany-1
+
+    # finding the last possible card
+    for column in range(staret2, 12):
+        if solitaire[currentrow, column] != 0:
+            if not solitaire[currentrow, column].flipped == True:
+                movecard(currentrow, column, goalrow, startcolumn)
+                startcolumn += 1
+
 # DEBUG
 def set_own_cards(row):
     solitaire[row, 0] = card.Card(10, "H", "red")
