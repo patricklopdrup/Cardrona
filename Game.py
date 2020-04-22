@@ -29,6 +29,7 @@ def start_game():
     soli.data[soli.CARD_DECK] = soli.card_deck
 
 
+
 def show():
     print(f"Første kort: {soli.solitaire[0,0]} er {soli.solitaire[0,0].color}")
     print()
@@ -53,14 +54,37 @@ def show():
                 print(" "*4, end="")
 
 
+def debugshow():
+    for column in range(7):
+        print()
+        for row in range(7):
+            if soli.solitaire[row, column]:
+                # print back-side of card if it's flipped - else print the card
+                if soli.solitaire[row, column].flipped == True:
+                    print("[ ]", end=" ")
+                else:
+                    print(soli.solitaire[row, column], end=" ")
+            else:
+                print(" "*4, end="")
+
 def play():
     while 1:
         show()
+
+
         print("")
         card = input("Your turn: ")
         # quit
         if card == "q":
             break
+
+        if card == "whoops":
+            soli.movecard(0, 0, 1, 2)
+            debugshow()
+            soli.moverow(2, 1)
+            debugshow()
+            soli.moveseries(3, 2, 2)
+            debugshow()
         # draw card
         if card == "d":
             soli.turn_card()
