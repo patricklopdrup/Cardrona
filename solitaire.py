@@ -47,7 +47,7 @@ turn_count = 0
 def turn_card_counter() -> int:
     global turn_count
     turn_count = (turn_count + 1) % len(data[CARD_DECK])
-    print(f"count: {turn_count} og len: {len(data[CARD_DECK])}")
+    #print(f"count: {turn_count} og len: {len(data[CARD_DECK])}")
     return turn_count
 
 
@@ -67,7 +67,6 @@ def is_move_legal(row: int, col: int) -> bool:
     else:
         cur_color = start_card.color
         cur_num = start_card.number
-        print(f"col: {cur_color} num: {cur_num}")
 
     cards = solitaire[row]
     # we already saved current cards value so we start from the next card; col+1
@@ -75,7 +74,6 @@ def is_move_legal(row: int, col: int) -> bool:
         # if no card is represented
         if card == 0:
             break
-        print(f"kort: {card.color} og {card.number} og cur_num: {cur_num}")
         # if colors are the same or
         # the number is not 1 less than the card above we return False
         if (card.color == cur_color) or not (card.number == (cur_num-1)):
@@ -95,20 +93,20 @@ def movecard(fromrow, fromcolumn, torow, tocolumn):
             solitaire[fromrow, fromcolumn - 1].is_flipped = False
 
 
-
 def moverow(goalrow, currentrow):
     startcolumn = 0
 
     for columnn in range(7):
         if solitaire[goalrow, columnn] != 0:
-            if not solitaire[goalrow, columnn].is_flipped == True:
+            if not solitaire[goalrow, columnn].is_flipped:
                 startcolumn = columnn+1
 
     for column in range(12):
         if solitaire[currentrow, column] != 0:
-            if not solitaire[currentrow, column].is_flipped == True:
+            if not solitaire[currentrow, column].is_flipped:
                 movecard(currentrow, column, goalrow, startcolumn)
                 startcolumn += 1
+
 
 def moveseries(goalrow, currentrow, howmany):
     startcolumn = 0
@@ -117,27 +115,26 @@ def moveseries(goalrow, currentrow, howmany):
     # finds goal
     for columnn in range(7):
         if solitaire[goalrow, columnn] != 0:
-            if not solitaire[goalrow, columnn].flipped == True:
+            if not solitaire[goalrow, columnn].is_flipped:
                 startcolumn = columnn + 1
 
     # finds last card in current row
     for columnn in range(7):
         if solitaire[currentrow, columnn] != 0:
-            if not solitaire[currentrow, columnn].flipped == True:
+            if not solitaire[currentrow, columnn].is_flipped:
                 finished = columnn
 
-    staret2=finished - howmany-1
+    staret2 = finished - howmany-1
 
     # finding the last possible card
     for column in range(staret2, 12):
         if solitaire[currentrow, column] != 0:
-            if not solitaire[currentrow, column].flipped == True:
+            if not solitaire[currentrow, column].is_flipped:
                 movecard(currentrow, column, goalrow, startcolumn)
                 startcolumn += 1
 
+
 # DEBUG
-
-
 def set_own_cards(row):
     solitaire[row, 0] = card.Card(10, "H", "red")
     solitaire[row, 1] = card.Card(9, "S", "black")
