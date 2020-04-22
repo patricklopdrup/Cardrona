@@ -20,7 +20,7 @@ def start_game():
                 soli.solitaire[row, column] = m_deck.pop(0)
             elif column < row:
                 card = m_deck.pop(0)
-                card.flipped = True
+                card.is_flipped = True
                 soli.solitaire[row, column] = card
     # putting the rest of the card in card_deck
     for i in range(len(m_deck)):
@@ -45,7 +45,7 @@ def show():
         for row in range(7):
             if soli.solitaire[row, column]:
                 # print back-side of card if it's flipped - else print the card
-                if soli.solitaire[row, column].flipped == True:
+                if soli.solitaire[row, column].is_flipped:
                     print("[ ]", end=" ")
                 else:
                     print(soli.solitaire[row, column], end=" ")
