@@ -14,7 +14,7 @@ CLUBS = 6
 # 2D array for the game. 7 rows of max 13 cards (ace to king)
 solitaire = np.zeros((7, 13), dtype=object)
 
-# Data array for other than game info
+# Data array for other game info
 # data = ['', '', '', '', '', '', '']
 data = np.zeros((7), dtype=object)
 card_deck = np.zeros((24), dtype=object)
@@ -56,6 +56,25 @@ def turn_card():
     top_card = data[CARD_DECK][-turn_card_counter()]
     data[CARD_DECK] = data[CARD_DECK]
     data[TURNED] = top_card
+
+
+def move_from_deck(row: int, col: int):
+    # return if no card is turned yet
+    if data[TURNED] == 0:
+        return
+    # get turned card
+    card = data[TURNED]
+    global turn_count
+    # delete the turned card from the deck
+    data[CARD_DECK] = np.delete(data[CARD_DECK], -turn_count)
+    # set pointer of turned card in the right position
+    turn_count = turn_count - 1
+    print(f"counter: {turn_count}")
+    if turn_count == 0:
+        data[TURNED] = 0
+    else:
+        data[TURNED] = data[CARD_DECK][-turn_count]
+    solitaire[row, col] = card
 
 
 # if card from middle of column is chosen. Checks if that's a legal move

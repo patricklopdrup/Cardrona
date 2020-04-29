@@ -62,6 +62,9 @@ def play():
         if card == "q":
             break
 
+        if card == "deck":
+            soli.move_from_deck(2, 3)
+
         if card == "whoops":
             soli.movecard(0, 0, 1, 2)
             soli.moverow(2, 1)
