@@ -58,7 +58,7 @@ def turn_card():
     data[TURNED] = top_card
 
 
-def move_from_deck(row: int, col: int):
+def move_from_deck(col: int, row: int):
     # return if no card is turned yet
     if data[TURNED] == 0:
         return
@@ -69,27 +69,30 @@ def move_from_deck(row: int, col: int):
     data[CARD_DECK] = np.delete(data[CARD_DECK], -turn_count)
     # set pointer of turned card in the right position
     turn_count = turn_count - 1
-    print(f"counter: {turn_count}")
+
+    # display old card in deck
     if turn_count == 0:
         data[TURNED] = 0
     else:
         data[TURNED] = data[CARD_DECK][-turn_count]
-    solitaire[row, col] = card
+    # putting the card in game array
+    solitaire[col, row] = card
 
 
 # if card from middle of column is chosen. Checks if that's a legal move
-def is_move_legal(row: int, col: int) -> bool:
+def is_col_legal_move(col: int, row: int) -> bool:
+    print(f"card: {solitaire[col,row]}")
     is_legal = True
-    start_card = solitaire[row, col]
+    start_card = solitaire[col, row]
     if start_card == 0 or start_card.is_flipped:
         return False
     else:
         cur_color = start_card.color
         cur_num = start_card.number
 
-    cards = solitaire[row]
+    cards = solitaire[col]
     # we already saved current cards value so we start from the next card; col+1
-    for card in cards[col+1:-1]:
+    for card in cards[row+1:-1]:
         # if no card is represented
         if card == 0:
             break
@@ -103,13 +106,26 @@ def is_move_legal(row: int, col: int) -> bool:
     return is_legal
 
 
-def movecard(fromrow, fromcolumn, torow, tocolumn):
-    solitaire[torow, tocolumn] = solitaire[fromrow, fromcolumn]
-    solitaire[fromrow, fromcolumn] = 0
+def is_move_legal(from_index: list, to_index: list) -> bool:
+    from_card = solitaire[from_index[0], from_index[1]]
+    to_card = solitaire[to_index[0], to_index[1]]
+    # kings can be moved to empty spaces
+    if to_card == 0 and from_card.number == 13:
+        return True
+    # card can be placed on a card with with different color and +1 in number
+    if to_card.color != from_card.color and to_card.number-1 == from_card.number:
+        # check if the whole column is legal
+        if is_col_legal_move(from_index[0], from_index[1]):
+            return True
 
-    if solitaire[fromrow, fromcolumn-1] != 0:
-        if solitaire[fromrow, fromcolumn - 1].is_flipped:
-            solitaire[fromrow, fromcolumn - 1].is_flipped = False
+
+def movecard(fromcolumn, fromrow, tocolumn, torow):
+    solitaire[tocolumn, torow] = solitaire[fromcolumn, fromrow]
+    solitaire[fromcolumn, fromrow] = 0
+
+    if solitaire[fromcolumn, fromrow-1] != 0:
+        if solitaire[fromcolumn, fromrow-1].is_flipped:
+            solitaire[fromcolumn, fromrow-1].is_flipped = False
 
 
 def moverow(goalrow, currentrow):
@@ -154,7 +170,7 @@ def moveseries(goalrow, currentrow, howmany):
 
 
 # DEBUG
-def set_own_cards(row):
-    solitaire[row, 0] = card.Card(10, "H", "red")
-    solitaire[row, 1] = card.Card(9, "S", "black")
-    solitaire[row, 2] = card.Card(8, "D", "red")
+def set_own_cards(col):
+    solitaire[col, 0] = card.Card(10, "D", "red")
+    solitaire[col, 1] = card.Card(9, "S", "black")
+    solitaire[col, 2] = card.Card(8, "D", "red")

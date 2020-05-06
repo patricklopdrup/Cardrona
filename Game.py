@@ -62,21 +62,29 @@ def play():
         if card == "q":
             break
 
-        if card == "deck":
+        elif card == "deck":
             soli.move_from_deck(2, 3)
 
-        if card == "whoops":
+        elif card == "whoops":
             soli.movecard(0, 0, 1, 2)
             soli.moverow(2, 1)
             soli.moveseries(3, 2, 2)
         # draw card
-        if card == "d":
+        elif card == "d":
             soli.turn_card()
-        if card == "l":
-            if soli.is_move_legal(2, 2):
+        elif card == "l":
+            if soli.is_col_legal_move(2, 0):
                 print("legal")
             else:
                 print("ikke legal")
+        else:
+            # move card (does not check for legal moves yet)
+            inputs = card.split(" ")
+            # converting to list of ints
+            inputs = [int(i) for i in inputs]
+
+            print(inputs)
+            soli.movecard(inputs[0], inputs[1], inputs[2], inputs[3])
         print(card)
 
 
