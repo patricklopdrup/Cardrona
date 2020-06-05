@@ -12,6 +12,7 @@ class Deck:
     def __init__(self):
         pass
 
+    # creates 52 card. 4 suits X 13 cards
     def make_deck(self):
         # Hearts, Spades, Diamonds, Clubs
         suits = ["H", "S", "D", "C"]
@@ -28,6 +29,7 @@ class Deck:
 
 
 class Card:
+    # creates a card with number, suit, color and a value for flipped
     def __init__(self, number, suit, color, is_flipped=False):
         self.number = number
         self.suit = suit
