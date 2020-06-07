@@ -7,7 +7,19 @@ import glob
 import cv2
 
 
-def get_rows(img):
+def detect_cards(str):
+    picture = str
+    cfg = 'cfg/yolo_card_detection.cfg'
+    data = 'cfg/card_detection.data'
+    weights = 'cfg/card_detection.weights'
+
+    scan_data = scan(imagePath=picture, thresh=0.25,
+                     configPath=cfg, weightPath=weights,
+                     metaPath=data, showImage=True,
+                     makeImageOnly=False, initOnly=False)
+
+
+def get_rows(img, save=True):
     # Get the grayscale of the image and reduce noise
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     gray = cv2.bilateralFilter(gray, 11, 17, 17)
@@ -60,4 +72,7 @@ if __name__ == '__main__':
             continue
         img = cv2.imread(inp)
         card_rows = get_rows(img)
+
+        detect_cards("extract/row_1.png")
+
         print("We will do some image processing here soon!")
