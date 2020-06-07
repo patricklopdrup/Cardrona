@@ -1,6 +1,9 @@
+from darknet import performDetect as scan
+from pprint import pprint
+import os
 from os import path
 import numpy as np
-from pprint import pprint
+import glob
 import cv2
 
 
@@ -20,9 +23,18 @@ def get_rows(img):
 
     img_cnts = img.copy()
 
-    idx = 0
+    # Define the minimum size of the detected card areas
     h, w, _ = img.shape
     minArea = w / 10 * w / 10
+    idx = 0
+    images = []
+
+    if save:
+        files = glob.glob('extract/*')
+        for f in files:
+            os.remove(f)
+
+    # Loop through all the contours and append the found areas to the images list.
     for contour in sorted_contours:
         area = cv2.contourArea(contour)
         if area > minArea:
@@ -30,12 +42,11 @@ def get_rows(img):
             idx += 1
             x, y, w, h = cv2.boundingRect(contour)
             roi = img_cnts[y:y + h, x:x + w]
-            cv2.imwrite(str(idx) + '.png', roi)
-            cv2.drawContours(img_cnts, [contour], -1, (0, 255, 0), 3)
-            cv2.imshow('Contours', roi)
-            cv2.waitKey()
+            images.append(roi)
+            if save:
+                cv2.imwrite("extract/" + "row_" + str(idx) + ".png", roi)
 
-    cv2.destroyAllWindows()
+    return images
 
 
 if __name__ == '__main__':
@@ -48,5 +59,5 @@ if __name__ == '__main__':
             print("The specified image does not exist!")
             continue
         img = cv2.imread(inp)
-        get_rows(img)
+        card_rows = get_rows(img)
         print("We will do some image processing here soon!")
