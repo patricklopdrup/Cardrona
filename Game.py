@@ -28,6 +28,9 @@ def start_game():
         soli.card_deck[i] = m_deck[i]
     # saving the card_deck in the data array
     soli.data[soli.CARD_DECK] = soli.card_deck
+    ### DEBUG ###
+    soli.set_own_cards(2)
+    ### DEBUG ###
 
 
 def show():
@@ -35,10 +38,6 @@ def show():
     soli.show_card_deck()
     print(f"Turned card: {soli.data[soli.TURNED]}")
     soli.four_suit_deck()
-
-    ### DEBUG ###
-    # soli.set_own_cards(2)
-    ### DEBUG ###
 
     for column in range(7):
         print()
@@ -78,6 +77,12 @@ def play():
                 print("legal")
             else:
                 print("ikke legal")
+        elif card == "pile":
+            soli.move_game_to_suit_pile(0, 0)
+            for i in soli.data[2]:
+                print(i)
+        elif card == "deck to pile":
+            soli.move_deck_to_suit_pile()
         else:
             # move card (does not check for legal moves yet)
             inputs = card.split(" ")

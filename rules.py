@@ -41,3 +41,4 @@ def is_move_legal(from_index: list, to_index: list) -> bool:
         # check if the whole column is legal
         if is_col_legal_move(from_index[0], from_index[1]):
             return True
+

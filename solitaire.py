@@ -5,13 +5,11 @@ import card
 # Easy access for the "data" array
 CARD_DECK = 0   # deck with front facing down
 TURNED = 1      # latest turned card from the deck
-# turned deck. All cards facing up, but you can only interact with the top one
-TURNED_DECK = 2
 # the 4 suits deck
-HEARTS = 3
-SPADES = 4
-DIAMONDS = 5
-CLUBS = 6
+HEARTS = 2
+SPADES = 3
+DIAMONDS = 4
+CLUBS = 5
 
 # 2D array for the game. 7 rows of max 13 cards (ace to king)
 solitaire = np.zeros((7, 13), dtype=object)
@@ -20,14 +18,15 @@ solitaire = np.zeros((7, 13), dtype=object)
 # data = ['', '', '', '', '', '', '']
 data = np.zeros((7), dtype=object)
 card_deck = np.zeros((24), dtype=object)
+# max 13 cards in suit pile: ace, 2, 3, 4...
+data[HEARTS] = np.zeros(13, dtype=object)
+data[SPADES] = np.zeros(13, dtype=object)
+data[DIAMONDS] = np.zeros(13, dtype=object)
+data[CLUBS] = np.zeros(13, dtype=object)
 
 
 def init_game():
-    data[HEARTS] = 0
-    data[SPADES] = 0
-    data[DIAMONDS] = 0
-    data[CLUBS] = 0
-    data[TURNED_DECK] = 0
+    pass
 
 
 # printing the deck of cards that is still in the deck.
@@ -42,6 +41,77 @@ def show_card_deck():
 def four_suit_deck():
     print(
         f"H:{data[HEARTS]} S:{data[SPADES]} D:{data[DIAMONDS]} C:{data[CLUBS]}")
+
+
+# input type: Card class
+def move_game_to_suit_pile(col: int, row: int):
+    # card we want to move
+    card_to_move = solitaire[col, row]
+    # get the suit pile that matches the cards suit
+    suit: int = find_suit_pile(card_to_move.suit)
+    # loop the suit pile
+    for index, card in enumerate(data[suit]):
+        # if suit pile is empty and we move an ace
+        if index == 0 and card == 0 and card_to_move.number == 1:
+            # insert card in suit pile and remove from game
+            data[suit][index] = card_to_move
+            solitaire[col, row] = 0
+            break
+
+        # place card in chronological order in the pile
+        elif card != 0 and data[suit][index+1] == 0:
+            if card.number == card_to_move.number - 1:
+                data[suit][index+1] = card_to_move
+                solitaire[col, row] = 0
+                break
+
+
+def move_deck_to_suit_pile():
+    card_to_move = data[TURNED]
+    print(f"fra deck: {data[TURNED]}")
+    suit: int = find_suit_pile(card_to_move.suit)
+    global turn_count
+
+    for index, card in enumerate(data[suit]):
+        # if suit pile is empty and we move an ace
+        if index == 0 and card == 0 and card_to_move.number == 1:
+            # insert card in pile
+            data[suit][index] = card_to_move
+            # delete the turned card from the deck
+            data[CARD_DECK] = np.delete(data[CARD_DECK], -turn_count)
+            # set pointer of turned card in the right position
+            turn_count = turn_count - 1
+            # display old card in deck
+            if turn_count == 0:
+                data[TURNED] = 0
+            else:
+                data[TURNED] = data[CARD_DECK][-turn_count]
+            break
+
+        # place card in chronological order in the pile
+        elif card != 0 and data[suit][index+1] == 0:
+            if card.number == card_to_move.number - 1:
+                # insert card in pile
+                data[suit][index+1] = card_to_move
+                # delete the turned card from the deck
+                data[CARD_DECK] = np.delete(data[CARD_DECK], -turn_count)
+                # set pointer of turned card in the right position
+                turn_count = turn_count - 1
+                # display old card in deck
+                if turn_count == 0:
+                    data[TURNED] = 0
+                else:
+                    data[TURNED] = data[CARD_DECK][-turn_count]
+                break
+
+
+def find_suit_pile(suit: str):
+    return {
+        'H': HEARTS,
+        'S': SPADES,
+        'D': DIAMONDS,
+        'C': CLUBS
+    }[suit]
 
 
 # global counter for the turned cards
@@ -138,6 +208,8 @@ def moveseries(goalrow, currentrow, howmany):
 
 # DEBUG
 def set_own_cards(col):
-    solitaire[col, 0] = card.Card(10, "D", "red")
-    solitaire[col, 1] = card.Card(9, "S", "black")
-    solitaire[col, 2] = card.Card(8, "D", "red")
+    #solitaire[col, 0] = card.Card(10, "D", "red")
+    #solitaire[col, 1] = card.Card(9, "S", "black")
+    #solitaire[col, 2] = card.Card(8, "D", "red")
+    data[HEARTS][0] = card.Card(1, "H", "red")
+    solitaire[0, 0] = card.Card(2, "H", "red")
