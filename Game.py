@@ -73,7 +73,7 @@ def play():
         elif card == "d":
             soli.turn_card()
         elif card == "l":
-            if soli.is_col_legal_move(2, 0):
+            if soli.is_col_legal_move(5, 0):
                 print("legal")
             else:
                 print("ikke legal")

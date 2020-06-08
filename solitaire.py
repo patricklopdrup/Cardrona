@@ -3,9 +3,11 @@ import card
 
 
 # Easy access for the "data" array
-CARD_DECK = 0
-TURNED = 1
+CARD_DECK = 0   # deck with front facing down
+TURNED = 1      # latest turned card from the deck
+# turned deck. All cards facing up, but you can only interact with the top one
 TURNED_DECK = 2
+# the 4 suits deck
 HEARTS = 3
 SPADES = 4
 DIAMONDS = 5
@@ -30,12 +32,15 @@ def init_game():
     data[TURNED_DECK] = 0
 
 
+# printing the deck of cards that is still in the deck.
+# cards that is not in play yet
 def show_card_deck():
     for card in data[CARD_DECK]:
         print(card, end=", ")
     print()
 
 
+# printing the value of each suit deck
 def four_suit_deck():
     print(
         f"H:{data[HEARTS]} S:{data[SPADES]} D:{data[DIAMONDS]} C:{data[CLUBS]}")
@@ -53,6 +58,7 @@ def turn_card_counter() -> int:
     return turn_count
 
 
+# takes the top card from the deck and turns it - the turned card is now in play
 # turn each card in a loop by accessing the negative turn_card_counter()
 def turn_card():
     top_card = data[CARD_DECK][-turn_card_counter()]
@@ -60,6 +66,7 @@ def turn_card():
     data[TURNED] = top_card
 
 
+# play the turned card into the solitaire. TODO check for legal moves!
 def move_from_deck(col: int, row: int):
     # return if no card is turned yet
     if data[TURNED] == 0:
@@ -85,6 +92,7 @@ def move_from_deck(col: int, row: int):
 def is_col_legal_move(col: int, row: int) -> bool:
     print(f"card: {solitaire[col,row]}")
     is_legal = True
+    # card we try to move (potentially from the middle of a column)
     start_card = solitaire[col, row]
     if start_card == 0 or start_card.is_flipped:
         return False
@@ -92,6 +100,7 @@ def is_col_legal_move(col: int, row: int) -> bool:
         cur_color = start_card.color
         cur_num = start_card.number
 
+    # all cards in the column (beginning from "start_card")
     cards = solitaire[col]
     # we already saved current cards value so we start from the next card; col+1
     for card in cards[row+1:-1]:
