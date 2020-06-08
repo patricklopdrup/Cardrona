@@ -1,6 +1,6 @@
 import numpy as np
 import card
-
+import itertools
 
 # Easy access for the "data" array
 CARD_DECK = 0   # deck with front facing down
@@ -204,6 +204,20 @@ def moveseries(goalrow, currentrow, howmany):
             if not solitaire[currentrow, column].is_flipped:
                 movecard(currentrow, column, goalrow, startcolumn)
                 startcolumn += 1
+
+
+def all_posible_moves(list1, list2):
+    c = list(itertools.product(list2, list1))
+
+    length = len(c)
+
+    # når vi har lavet en ismovelegal metode.
+    #for i in range(length):
+       # if ismovelegal(c[i][0], c[i][1]) == 1:
+        #   listofmoves.append(c[i])
+
+    
+
 
 
 # DEBUG
