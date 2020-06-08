@@ -1,5 +1,6 @@
 import card
 import solitaire as soli
+import rules
 
 
 deck = card.Deck()
@@ -73,7 +74,7 @@ def play():
         elif card == "d":
             soli.turn_card()
         elif card == "l":
-            if soli.is_col_legal_move(5, 0):
+            if rules.is_col_legal_move(2, 0):
                 print("legal")
             else:
                 print("ikke legal")
