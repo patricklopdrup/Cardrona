@@ -1,5 +1,6 @@
 import solitaire as soli
 import card
+import rules
 
 
 col_facedown: list = [0, 1, 2, 3, 4, 5, 6]
@@ -7,25 +8,25 @@ col_facedown: list = [0, 1, 2, 3, 4, 5, 6]
 
 test_list = [
     [
-        ['AH']
+        ('AH'), ('KH')
     ],
     [
-        ['2H']
+        ('2H')
     ],
     [
-        ['3H']
+        ('3H')
     ],
     [
-        ['4H']
+        ('4H')
     ],
     [
-        ['5H']
+        ('5H')
     ],
     [
-        ['6H']
+        ('6H')
     ],
     [
-        ['7H']
+        ('7H')
     ]
 ]
 
@@ -62,6 +63,9 @@ def make_game_first_time(input_list: list):
                 soli.solitaire[row_index, col_index] = my_card
             else:
                 soli.solitaire[row_index, col_index] = default_card
+
+            # setting amount of cards = cards in deck (24 default)
+            soli.data[soli.CARD_DECK] = rules.cards_in_deck
 
 
 def make_game_from_input(input_list: list):

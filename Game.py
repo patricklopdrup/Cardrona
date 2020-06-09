@@ -95,6 +95,6 @@ def play():
 
 
 # to run the program
-# start_game()
-from_img.make_game_first_time(from_img.test_list)
+start_game()
+# from_img.make_game_first_time(from_img.test_list)
 play()

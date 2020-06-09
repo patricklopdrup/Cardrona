@@ -99,8 +99,10 @@ def find_suit_pile(suit: str) -> int:
     }[suit]
 
 
-# deletes the turned card and moves the pointer to the right position
 def delete_card_from_deck():
+    """
+    deletes the turned card and moves the pointer to the right position
+    """
     global turn_count
     # delete the turned card from the deck
     data[CARD_DECK] = np.delete(data[CARD_DECK], -turn_count)

@@ -36,6 +36,18 @@ class Card:
         self.color = color[suit]
         self.is_facedown = is_facedown
 
+    def is_below(self, card) -> bool:
+        return self.number == (card.number - 1)
+
+    def is_opposite_suit(self, card) -> bool:
+        if self.suit == 'S' or self.suit == 'C':
+            return card.suit == 'H' or card.suit == 'D'
+        else:
+            return card.suit == 'S' or card.suit == 'C'
+
+    def can_be_moved(self, card) -> bool:
+        return card.is_below(self) and card.is_opposite_suit(self)
+
     def __str__(self):
         # All numbers will have 2 decimals. Fx 5 -> 05
         return (str(('%02d') % self.number) + self.suit)
