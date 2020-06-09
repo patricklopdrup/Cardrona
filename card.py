@@ -20,7 +20,7 @@ class Deck:
         for suit in suits:
             # 13 cards for each suit
             for num in range(1, 14):
-                deck.append(Card(num, suit, color[suit]))
+                deck.append(Card(num, suit))
         return deck
 
     def shuffle(self, deck):
@@ -30,11 +30,11 @@ class Deck:
 
 class Card:
     # creates a card with number, suit, color and a value for flipped
-    def __init__(self, number, suit, color, is_flipped=False):
+    def __init__(self, number, suit, is_facedown=False):
         self.number = number
         self.suit = suit
-        self.color = color
-        self.is_flipped = is_flipped
+        self.color = color[suit]
+        self.is_facedown = is_facedown
 
     def __str__(self):
         # All numbers will have 2 decimals. Fx 5 -> 05

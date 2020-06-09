@@ -1,6 +1,7 @@
 import card
 import solitaire as soli
 import rules
+import from_img
 
 
 deck = card.Deck()
@@ -16,12 +17,11 @@ def start_game():
 
     for row in range(7):
         for column in range(7):
-
             if column == row:
                 soli.solitaire[row, column] = m_deck.pop(0)
             elif column < row:
                 card = m_deck.pop(0)
-                card.is_flipped = True
+                card.is_facedown = True
                 soli.solitaire[row, column] = card
     # putting the rest of the card in card_deck
     for i in range(len(m_deck)):
@@ -44,7 +44,7 @@ def show():
         for row in range(7):
             if soli.solitaire[row, column]:
                 # print back-side of card if it's flipped - else print the card
-                if soli.solitaire[row, column].is_flipped:
+                if soli.solitaire[row, column].is_facedown:
                     print("[ ]", end=" ")
                 else:
                     print(soli.solitaire[row, column], end=" ")
@@ -95,5 +95,6 @@ def play():
 
 
 # to run the program
-start_game()
+# start_game()
+from_img.make_game_first_time(from_img.test_list)
 play()
