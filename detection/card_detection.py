@@ -15,8 +15,36 @@ def detect_cards(str):
 
     scan_data = scan(imagePath=picture, thresh=0.25,
                      configPath=cfg, weightPath=weights,
-                     metaPath=data, showImage=True,
+                     metaPath=data, showImage=False,
                      makeImageOnly=False, initOnly=False)
+
+    if len(scan_data) < 1:
+        return False
+
+    print(len(scan_data))
+
+    image_data = []
+    for corner in scan_data:
+        card_name, confidence, corner_data = corner
+        x, y, w, h = corner_data
+
+        x_start = round(x - (w / 2))
+        y_start = round(y - (h / 2))
+        x_end = round(x_start + w)
+        y_end = round(y_start + h)
+
+        formatted_data = {'name': card_name,
+                          'start': (x_start, y_start),
+                          'end': (x_end, y_end),
+                          'width': w,
+                          'height': h}
+        print(formatted_data['name'])
+        if confidence > 0.5:
+            image_data.append(formatted_data)
+        else:
+            print(f"Card name: {card_name}, confidence: {confidence}")
+
+    return image_data
 
 
 def get_rows(img, save=True):
@@ -63,16 +91,34 @@ def get_rows(img, save=True):
 
 if __name__ == '__main__':
     while True:
-        inp = input("Enter image name or exit : ")
+        inp = input("Enter command : ")
         if inp == "exit":
             print("Bye!")
             break
-        if not path.exists(inp):
-            print("The specified image does not exist!")
-            continue
-        img = cv2.imread(inp)
-        card_rows = get_rows(img)
+        elif inp == "extract":
+            inp = input("Enter image path : ")
+            if not path.exists(inp):
+                print("The specified image does not exist!")
+                continue
 
-        detect_cards("extract/row_1.png")
+            img = cv2.imread(inp)
+            card_rows = get_rows(img)
+        elif inp == "detect":
+            inp = input("Enter row number : ")
+            img = f"extract/row_{inp}.png"
+            if not path.exists(img):
+                print("The specified row does not exist!")
+                continue
+
+            image_data = detect_cards(img)
+            image = cv2.imread(img)
+            for rect in image_data:
+                cv2.rectangle(image, rect['start'], rect['end'], (255, 0, 0), 2)
+            cv2.imshow("Hello", image)
+            cv2.waitKey()
+            cv2.destroyAllWindows()
+            pprint(image_data)
+
+        # sharpen_image(img)
 
         print("We will do some image processing here soon!")
