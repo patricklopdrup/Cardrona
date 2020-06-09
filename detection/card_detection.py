@@ -1,8 +1,12 @@
 from darknet import performDetect as scan
 from pprint import pprint
 import image_processing as imgp
+import numpy as np
 from os import path
+import os
 import cv2
+
+DEBUG = False
 
 
 def detect_cards(str):
@@ -19,7 +23,7 @@ def detect_cards(str):
     if len(scan_data) < 1:
         return False
 
-    print(len(scan_data))
+    # print(len(scan_data))
 
     image_data = []
     for corner in scan_data:
@@ -35,12 +39,14 @@ def detect_cards(str):
                           'start': (x_start, y_start),
                           'end': (x_end, y_end),
                           'width': w,
-                          'height': h}
+                          'height': h,
+                          'middle': tuple(np.add((x_start, y_start), (w / 2, h / 2)))}
 
         if confidence > 0.5:
             image_data.append(formatted_data)
 
-        print(f"Card name: {card_name}, confidence: {confidence}")
+        if DEBUG:
+            print(f"Card name: {card_name}, confidence: {confidence}")
 
     return image_data
 
