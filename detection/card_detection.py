@@ -45,12 +45,23 @@ def detect_cards(str):
     return image_data
 
 
-def get_column_numbers(data):
+def get_column_numbers(data, showRows=False):
     avg_width = 0
+    avg_space = 0
+    avg_space_count = 0
+    cur_col = 0
     for c in data:
         avg_width += c['size'][0]
+        if cur_col != 0:
+            space = card_rows[cur_col]['start'][0] - card_rows[cur_col - 1]['end'][0]
+            if space < avg_width / (cur_col + 1):
+                avg_space += space
+                avg_space_count += 1
+        cur_col += 1
 
     avg_width /= len(data)
+    avg_space /= avg_space_count
+    print(avg_space)
     prev_col = 0
     cur_col = 0
     for i in range(0, len(card_rows)):
