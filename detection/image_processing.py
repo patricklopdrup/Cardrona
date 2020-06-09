@@ -77,12 +77,13 @@ def get_rows(img, save=True):
     for contour in sorted_contours:
         area = cv2.contourArea(contour)
         if area > minArea:
-            print(area)
+            # print(area)
             idx += 1
             x, y, w, h = cv2.boundingRect(contour)
             roi = img_cnts[y:y + h, x:x + w]
             square_img = resize_image(roi)
-            images.append((square_img, (x, y)))
+            images.append({'img': square_img, 'start': (x, y),
+                           'end': (x + w, y + h), 'size': (w, h)})
             if save:
                 cv2.imwrite("extract/" + "row_" + str(idx) + ".png", square_img)
 
