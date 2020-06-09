@@ -1,10 +1,11 @@
 import numpy as np
 import card
 import itertools
+import rules
 
 # Easy access for the "data" array
-CARD_DECK = 0   # deck with front facing down
-TURNED = 1      # latest turned card from the deck
+CARD_DECK = 0  # deck with front facing down
+TURNED = 1  # latest turned card from the deck
 # the 4 suits deck
 HEARTS = 2
 SPADES = 3
@@ -59,9 +60,9 @@ def move_game_to_suit_pile(col: int, row: int):
             break
 
         # place card in chronological order in the pile
-        elif card != 0 and data[suit][index+1] == 0:
+        elif card != 0 and data[suit][index + 1] == 0:
             if card.number == card_to_move.number - 1:
-                data[suit][index+1] = card_to_move
+                data[suit][index + 1] = card_to_move
                 solitaire[col, row] = 0
                 break
 
@@ -89,10 +90,10 @@ def move_deck_to_suit_pile():
             break
 
         # place card in chronological order in the pile
-        elif card != 0 and data[suit][index+1] == 0:
+        elif card != 0 and data[suit][index + 1] == 0:
             if card.number == card_to_move.number - 1:
                 # insert card in pile
-                data[suit][index+1] = card_to_move
+                data[suit][index + 1] = card_to_move
                 # delete the turned card from the deck
                 data[CARD_DECK] = np.delete(data[CARD_DECK], -turn_count)
                 # set pointer of turned card in the right position
@@ -122,7 +123,7 @@ turn_count = 0
 def turn_card_counter() -> int:
     global turn_count
     turn_count = (turn_count + 1) % len(data[CARD_DECK])
-    #print(f"count: {turn_count} og len: {len(data[CARD_DECK])}")
+    # print(f"count: {turn_count} og len: {len(data[CARD_DECK])}")
     return turn_count
 
 
@@ -160,9 +161,9 @@ def movecard(fromcolumn, fromrow, tocolumn, torow):
     solitaire[tocolumn, torow] = solitaire[fromcolumn, fromrow]
     solitaire[fromcolumn, fromrow] = 0
 
-    if solitaire[fromcolumn, fromrow-1] != 0:
-        if solitaire[fromcolumn, fromrow-1].is_flipped:
-            solitaire[fromcolumn, fromrow-1].is_flipped = False
+    if solitaire[fromcolumn, fromrow - 1] != 0:
+        if solitaire[fromcolumn, fromrow - 1].is_flipped:
+            solitaire[fromcolumn, fromrow - 1].is_flipped = False
 
 
 def moverow(goalrow, currentrow):
@@ -171,7 +172,7 @@ def moverow(goalrow, currentrow):
     for columnn in range(7):
         if solitaire[goalrow, columnn] != 0:
             if not solitaire[goalrow, columnn].is_flipped:
-                startcolumn = columnn+1
+                startcolumn = columnn + 1
 
     for column in range(12):
         if solitaire[currentrow, column] != 0:
@@ -196,7 +197,7 @@ def moveseries(goalrow, currentrow, howmany):
             if not solitaire[currentrow, columnn].is_flipped:
                 finished = columnn
 
-    staret2 = finished - howmany-1
+    staret2 = finished - howmany - 1
 
     # finding the last possible card
     for column in range(staret2, 12):
@@ -205,25 +206,52 @@ def moveseries(goalrow, currentrow, howmany):
                 movecard(currentrow, column, goalrow, startcolumn)
                 startcolumn += 1
 
+#singlecard
+def all_posible_moves(fromrows, torows):
+    listofmoves = []
 
-def all_posible_moves(list1, list2):
-    c = list(itertools.product(list2, list1))
+    c = list(itertools.product(fromrows, torows))
 
     length = len(c)
 
-    # når vi har lavet en ismovelegal metode.
-    #for i in range(length):
-       # if ismovelegal(c[i][0], c[i][1]) == 1:
-        #   listofmoves.append(c[i])
+    # når vi har lavet en ismovelegal metode for 1 kort
+    for i in range(length):
+     if ismovelegal(c[i][0], c[i][1]) == 1:
+       listofmoves.append(c[i])
 
-    
 
+#list of columns to move
+
+
+
+# checks if one card can be moved based on two input rows
+def ismovelegal(fromwhere, towhere):
+    isittrue = False
+    startcolumn = 0
+    endcolum = 0
+
+    # finds goalcolum
+    for columnn in range(7):
+        if solitaire[towhere, columnn] != 0:
+            if not solitaire[towhere, columnn].is_flipped:
+                startcolumn = columnn + 1
+
+    # finds startcolumn
+    for columnn in range(7):
+        if solitaire[fromwhere, columnn] != 0:
+            if not solitaire[fromwhere, columnn].is_flipped:
+                endcolum = columnn + 1
+
+    if rules.is_move_legal([fromwhere, endcolum], [towhere, startcolumn]):
+        isittrue = True
+
+    return isittrue
 
 
 # DEBUG
 def set_own_cards(col):
-    #solitaire[col, 0] = card.Card(10, "D", "red")
-    #solitaire[col, 1] = card.Card(9, "S", "black")
-    #solitaire[col, 2] = card.Card(8, "D", "red")
+    # solitaire[col, 0] = card.Card(10, "D", "red")
+    # solitaire[col, 1] = card.Card(9, "S", "black")
+    # solitaire[col, 2] = card.Card(8, "D", "red")
     data[HEARTS][0] = card.Card(1, "H", "red")
     solitaire[0, 0] = card.Card(2, "H", "red")
