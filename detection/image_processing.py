@@ -6,6 +6,8 @@ import cv2
 import os
 
 config = yaml.safe_load(open("cfg/cfg.yml"))
+DEBUG = config["Debug"]
+DEBUG_IMG = config["Debug_Images"]
 
 
 def resize_image(img):
@@ -77,6 +79,11 @@ def get_rows(img, save=True):
         for f in files:
             os.remove(f)
 
+    if DEBUG_IMG:
+        cv2.imshow("Debug", gray)
+        cv2.waitKey()
+        cv2.imshow("Debug", edge)
+        cv2.waitKey()
     # Loop through all the contours and append the found areas to the images list.
     for contour in sorted_contours:
         area = cv2.contourArea(contour)
@@ -90,5 +97,12 @@ def get_rows(img, save=True):
                            'end': (x + w, y + h), 'size': (w, h)})
             if save:
                 cv2.imwrite("extract/" + "row_" + str(idx) + ".png", square_img)
+
+            if DEBUG_IMG:
+                cv2.drawContours(img_cnts, [contour], 0, (0, 255, 0), 3)
+                cv2.imshow("Debug", img_cnts)
+                cv2.waitKey()
+    if DEBUG_IMG:
+        cv2.destroyAllWindows()
 
     return images

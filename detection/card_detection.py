@@ -25,8 +25,6 @@ def detect_cards(str):
     if len(scan_data) < 1:
         return False
 
-    # print(len(scan_data))
-
     image_data = []
 
     for corner in scan_data:
@@ -116,7 +114,7 @@ if __name__ == '__main__':
 
             img = cv2.imread(inp)
             card_rows = imgp.get_rows(img, save=True)
-            # print(f"Column position {row['start']}, Column size: {row['size']}")
+
             get_column_cards()
 
         elif inp == "detect":
@@ -133,4 +131,3 @@ if __name__ == '__main__':
             cv2.imshow("Detected cards", image)
             cv2.waitKey()
             cv2.destroyAllWindows()
-            # pprint(image_data)

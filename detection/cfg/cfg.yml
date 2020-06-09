@@ -1,4 +1,5 @@
 Debug: True
+Debug_Images: True
 
 ML_Data:
   cfg: "cfg/yolo_card_detection.cfg"
