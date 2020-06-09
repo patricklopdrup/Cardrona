@@ -51,29 +51,6 @@ def detect_cards(str):
     return image_data
 
 
-def get_column_numbers(data, showRows=False):
-    avg_width = 0
-    cur_col = 0
-    for c in data:
-        avg_width += c['size'][0]
-        cur_col += 1
-
-    avg_width /= len(data)
-    prev_col = 0
-    cur_col = 0
-    for i in range(0, len(card_rows)):
-        cur_col += 1
-        space = card_rows[i]['start'][0] if i == 0 else card_rows[i]['start'][0] - \
-            card_rows[i - 1]['end'][0]
-        if space > avg_width:
-            print(f"Coloumn {cur_col} not found!")
-            cur_col += 1
-
-        if cur_col != 1:
-            print(f"Space between column {prev_col} and {cur_col} is {space}")
-        prev_col = cur_col
-
-
 def get_column_cards(show=False):
     game_data = []
     for filename in os.listdir('extract'):
