@@ -6,7 +6,7 @@ from os import path
 import os
 import cv2
 
-DEBUG = False
+DEBUG = True
 
 
 def detect_cards(str):
@@ -26,6 +26,7 @@ def detect_cards(str):
     # print(len(scan_data))
 
     image_data = []
+
     for corner in scan_data:
         card_name, confidence, corner_data = corner
         x, y, w, h = corner_data
@@ -38,6 +39,7 @@ def detect_cards(str):
         formatted_data = {'name': card_name,
                           'start': (x_start, y_start),
                           'end': (x_end, y_end),
+                          'confidence': confidence,
                           'width': w,
                           'height': h,
                           'middle': tuple(np.add((x_start, y_start), (w / 2, h / 2)))}
@@ -45,8 +47,10 @@ def detect_cards(str):
         if confidence > 0.5:
             image_data.append(formatted_data)
 
-        if DEBUG:
-            print(f"Card name: {card_name}, confidence: {confidence}")
+    if DEBUG:
+        print("\n\ndetect_cards - Confidence levels")
+        for card in image_data:
+            print(f"Card name: {card['name']}, confidence: {card['confidence']}")
 
     return image_data
 
@@ -85,9 +89,15 @@ def get_column_cards(show=False):
 
         middles = sorted(middles, key=lambda t: t[1][1], reverse=True)
 
-        for m in middles:
-            print(f"Card: {m[0]}, middle: {m[1]}")
-    pprint(game_data)
+        if DEBUG:
+            print("\n\nget_column_cards - Card middles")
+            for m in middles:
+                print(f"Card: {m[0]}, middle: {m[1]}")
+
+    if DEBUG:
+        print("\nget_column_cards - Return value")
+        pprint(game_data)
+    return game_data
 
 
 if __name__ == '__main__':
