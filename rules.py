@@ -1,13 +1,16 @@
 import solitaire as soli
 
 
+cards_in_deck = 24
+
+
 # if card from middle of column is chosen. Checks if that's a legal move
 def is_col_legal_move(col: int, row: int) -> bool:
     print(f"card: {soli.solitaire[col,row]}")
     is_legal = True
     # card we try to move (potentially from the middle of a column)
     start_card = soli.solitaire[col, row]
-    if start_card == 0 or start_card.is_flipped:
+    if start_card == 0 or start_card.is_facedown:
         return False
     else:
         cur_color = start_card.color
@@ -41,4 +44,3 @@ def is_move_legal(from_index: list, to_index: list) -> bool:
         # check if the whole column is legal
         if is_col_legal_move(from_index[0], from_index[1]):
             return True
-
