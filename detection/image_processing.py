@@ -1,8 +1,11 @@
 import numpy as np
 import glob
+import yaml
 import math
 import cv2
 import os
+
+config = yaml.safe_load(open("cfg/cfg.yml"))
 
 
 def resize_image(img):
@@ -15,11 +18,12 @@ def resize_image(img):
     compatible with our Darknet model.
     The image will be returned as a cv2 image
     """
+    max_size = config["ML_Data"]["max_size"]
     h, w = img.shape[:2]
     size = max(h, w)
-    size = int(math.ceil(size / 32) * 32) if size <= 800 else 800
+    size = int(math.ceil(size / 32) * 32) if size <= max_size else max_size
 
-    aspect = w/h
+    aspect = w / h
 
     pad_left, pad_right, pad_top, pad_bot = 0, 0, 0, 0
     new_h, new_w = size, size
@@ -34,7 +38,7 @@ def resize_image(img):
         pad_left = np.floor(pad_horz).astype(int)
         pad_right = np.ceil(pad_horz).astype(int)
 
-    bg_color = [255] * 3
+    bg_color = config["ML_Data"]["bgcolor"]
 
     # scale and pad
     scaled_img = cv2.resize(img, (new_w, new_h), interpolation=cv2.INTER_CUBIC)
