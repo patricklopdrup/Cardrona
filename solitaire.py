@@ -207,7 +207,7 @@ def moveseries(goalrow, currentrow, howmany):
                 startcolumn += 1
 
 #singlecard
-def all_posible_moves(fromrows, torows):
+def all_posible_moves(fromrows: list, torows: list):
     listofmoves = []
 
     c = list(itertools.product(fromrows, torows))
@@ -219,8 +219,23 @@ def all_posible_moves(fromrows, torows):
      if ismovelegal(c[i][0], c[i][1]) == 1:
        listofmoves.append(c[i])
 
+    return listofmoves
 
 #list of columns to move
+def all_posiblecoloum(fromrows: list, torows: list):
+    listofpossiblemoves = []
+
+    c = list(itertools.product(fromrows, torows))
+
+    length = len(c)
+
+    # når vi har lavet en ismovelegal metode for 1 kort
+    for i in range(length):
+        if rules.is_col_legal_move(c[i][0], c[i][1]):
+            listofpossiblemoves.append(c[i])
+    return listofpossiblemoves
+
+
 
 
 
