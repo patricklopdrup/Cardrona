@@ -38,11 +38,11 @@ def detect_cards(str):
                           'end': (x_end, y_end),
                           'width': w,
                           'height': h}
-        print(formatted_data['name'])
+
         if confidence > 0.5:
             image_data.append(formatted_data)
-        else:
-            print(f"Card name: {card_name}, confidence: {confidence}")
+
+        print(f"Card name: {card_name}, confidence: {confidence}")
 
     return image_data
 
