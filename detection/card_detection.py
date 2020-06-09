@@ -3,17 +3,19 @@ from pprint import pprint
 import image_processing as imgp
 import numpy as np
 from os import path
+import yaml
 import os
 import cv2
 
-DEBUG = True
+config = yaml.safe_load(open("cfg/cfg.yml"))
+DEBUG = config["Debug"]
 
 
 def detect_cards(str):
     picture = str
-    cfg = 'cfg/yolo_card_detection.cfg'
-    data = 'cfg/card_detection.data'
-    weights = 'cfg/card_detection.weights'
+    cfg = config["ML_Data"]["cfg"]
+    data = config["ML_Data"]["data"]
+    weights = config["ML_Data"]["weights"]
 
     scan_data = scan(imagePath=picture, thresh=0.25,
                      configPath=cfg, weightPath=weights,
@@ -44,7 +46,7 @@ def detect_cards(str):
                           'height': h,
                           'middle': tuple(np.add((x_start, y_start), (w / 2, h / 2)))}
 
-        if confidence > 0.5:
+        if confidence > config["ML_Data"]["min_confidence"]:
             image_data.append(formatted_data)
 
     if DEBUG:
@@ -132,5 +134,3 @@ if __name__ == '__main__':
             cv2.waitKey()
             cv2.destroyAllWindows()
             # pprint(image_data)
-
-        print("We will do some image processing here soon!")
