@@ -5,6 +5,48 @@ from os import path
 import numpy as np
 import glob
 import cv2
+import math
+
+
+def resize_image(img):
+    """
+    Inspired by alkasm on stackoverflow: https://stackoverflow.com/a/44724368
+
+    A method to resize an image to a square where x and y must be
+    divisble by 32.
+    If the image extends over 800x800 it will be resized down to be
+    compatible with our Darknet model.
+    The image will be returned as a cv2 image
+    """
+    h, w = img.shape[:2]
+    size = max(h, w)
+    size = int(math.ceil(size / 32) * 32) if size <= 800 else 800
+
+    aspect = w/h
+
+    pad_left, pad_right, pad_top, pad_bot = 0, 0, 0, 0
+    new_h, new_w = size, size
+    if aspect > 1:
+        new_h = np.round(size / aspect).astype(int)
+        pad_vert = (size - new_h) / 2
+        pad_top = np.floor(pad_vert).astype(int)
+        pad_bot = np.ceil(pad_vert).astype(int)
+    elif aspect < 1:
+        new_w = np.round(size * aspect).astype(int)
+        pad_horz = (size - new_w) / 2
+        pad_left = np.floor(pad_horz).astype(int)
+        pad_right = np.ceil(pad_horz).astype(int)
+
+    bg_color = [255] * 3
+
+    # scale and pad
+    scaled_img = cv2.resize(img, (new_w, new_h), interpolation=cv2.INTER_CUBIC)
+    scaled_img = cv2.copyMakeBorder(scaled_img,
+                                    pad_top, pad_bot, pad_left, pad_right,
+                                    borderType=cv2.BORDER_CONSTANT,
+                                    value=bg_color)
+
+    return scaled_img
 
 
 def detect_cards(str):
@@ -82,9 +124,10 @@ def get_rows(img, save=True):
             idx += 1
             x, y, w, h = cv2.boundingRect(contour)
             roi = img_cnts[y:y + h, x:x + w]
-            images.append(roi)
+            square_img = resize_image(roi)
+            images.append(square_img)
             if save:
-                cv2.imwrite("extract/" + "row_" + str(idx) + ".png", roi)
+                cv2.imwrite("extract/" + "row_" + str(idx) + ".png", square_img)
 
     return images
 
@@ -114,11 +157,9 @@ if __name__ == '__main__':
             image = cv2.imread(img)
             for rect in image_data:
                 cv2.rectangle(image, rect['start'], rect['end'], (255, 0, 0), 2)
-            cv2.imshow("Hello", image)
+            cv2.imshow("Detected cards", image)
             cv2.waitKey()
             cv2.destroyAllWindows()
-            pprint(image_data)
-
-        # sharpen_image(img)
+            # pprint(image_data)
 
         print("We will do some image processing here soon!")
