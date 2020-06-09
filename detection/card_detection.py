@@ -53,33 +53,64 @@ def detect_cards(str):
 
 def get_column_numbers(data, showRows=False):
     avg_width = 0
-    avg_space = 0
-    avg_space_count = 0
     cur_col = 0
     for c in data:
         avg_width += c['size'][0]
-        if cur_col != 0:
-            space = card_rows[cur_col]['start'][0] - card_rows[cur_col - 1]['end'][0]
-            if space < avg_width / (cur_col + 1):
-                avg_space += space
-                avg_space_count += 1
         cur_col += 1
 
     avg_width /= len(data)
-    avg_space /= avg_space_count
-    print(avg_space)
     prev_col = 0
     cur_col = 0
     for i in range(0, len(card_rows)):
         cur_col += 1
-        space = card_rows[i]['start'][0] if i == 0 \
-            else card_rows[i]['start'][0] - card_rows[i - 1]['end'][0]
+        space = card_rows[i]['start'][0] if i == 0 else card_rows[i]['start'][0] - \
+            card_rows[i - 1]['end'][0]
         if space > avg_width:
             print(f"Coloumn {cur_col} not found!")
             cur_col += 1
 
-        print(f"Space between column {prev_col} and {cur_col} is {space}")
+        if cur_col != 1:
+            print(f"Space between column {prev_col} and {cur_col} is {space}")
         prev_col = cur_col
+
+
+def get_column_cards(show=False):
+    game_data = []
+    for filename in os.listdir('extract'):
+        file = 'extract/' + filename
+        col_data = detect_cards(file)
+        if not col_data:
+            game_data.append([])
+            continue
+
+        col_data = sorted(col_data, key=lambda i: i['name'])
+        cur_card = ""
+        card_corners = []
+        middles = []
+        for c in col_data:
+            if not cur_card:
+                cur_card = c['name']
+                card_corners = [c['middle']]
+                continue
+            elif cur_card == c['name']:
+                card_corners.append(c['middle'])
+                continue
+            else:
+                middle = tuple(np.average(card_corners, axis=0))
+                middles.append((cur_card, middle))
+                cur_card = c['name']
+                card_corners = [c['middle']]
+
+        middle = tuple(np.average(card_corners, axis=0))
+        middles.append((cur_card, middle))
+
+        game_data.append(middles)
+
+        middles = sorted(middles, key=lambda t: t[1][1], reverse=True)
+
+        for m in middles:
+            print(f"Card: {m[0]}, middle: {m[1]}")
+    pprint(game_data)
 
 
 if __name__ == '__main__':
@@ -95,9 +126,9 @@ if __name__ == '__main__':
                 continue
 
             img = cv2.imread(inp)
-            card_rows = imgp.get_rows(img, save=False)
-            get_column_numbers(card_rows)
+            card_rows = imgp.get_rows(img, save=True)
             # print(f"Column position {row['start']}, Column size: {row['size']}")
+            get_column_cards()
 
         elif inp == "detect":
             inp = input("Enter row number : ")
