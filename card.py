@@ -33,7 +33,7 @@ class Deck:
 class Card:
     def __init__(self, number, suit, is_facedown=False):
         """
-        Creates a card with number, suit, color and a value for flipped
+        Creates a card with number, suit, color and a value for facedown
         """
         self.number = number
         self.suit = suit
@@ -51,9 +51,9 @@ class Card:
 
     def can_be_moved_to(self, card) -> bool:
         """
-        Checks if the card you call from can be moved to get card you give as input
+        Checks if the card you call from can be moved to the card you give as input
         """
-        return card.is_below(self) and card.is_opposite_suit(self)
+        return self.is_below(card) and card.is_opposite_suit(self)
 
     def __str__(self):
         """
