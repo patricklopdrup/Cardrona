@@ -18,6 +18,8 @@ solitaire = np.zeros((7, 13), dtype=object)
 # Data array for other game info
 # data = ['', '', '', '', '', '', '']
 data = np.zeros((7), dtype=object)
+
+# 24 cards are left in the deck after the 7 columns have been put down
 card_deck = np.zeros((24), dtype=object)
 # max 13 cards in suit pile: ace, 2, 3, 4...
 data[HEARTS] = np.zeros(13, dtype=object)
