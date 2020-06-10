@@ -194,7 +194,9 @@ def moveseries(goalrow, currentrow, howmany):
                 movecard(currentrow, column, goalrow, startcolumn)
                 startcolumn += 1
 
-#singlecard
+# singlecard
+
+
 def all_posible_moves(fromrows: list, torows: list):
     listofmoves = []
 
@@ -204,12 +206,14 @@ def all_posible_moves(fromrows: list, torows: list):
 
     # når vi har lavet en ismovelegal metode for 1 kort
     for i in range(length):
-     if ismovelegal(c[i][0], c[i][1]) == 1:
-       listofmoves.append(c[i])
+        if ismovelegal(c[i][0], c[i][1]) == 1:
+            listofmoves.append(c[i])
 
     return listofmoves
 
-#list of columns to move
+# list of columns to move
+
+
 def all_posiblecoloum(fromrows: list, torows: list):
     listofpossiblemoves = []
 
@@ -225,8 +229,6 @@ def all_posiblecoloum(fromrows: list, torows: list):
 
 
 
-
-
 # checks if one card can be moved based on two input rows
 def ismovelegal(fromwhere, towhere):
     isittrue = False
@@ -236,13 +238,13 @@ def ismovelegal(fromwhere, towhere):
     # finds goalcolum
     for columnn in range(7):
         if solitaire[towhere, columnn] != 0:
-            if not solitaire[towhere, columnn].is_flipped:
+            if not solitaire[towhere, columnn].is_facedown:
                 startcolumn = columnn + 1
 
     # finds startcolumn
     for columnn in range(7):
         if solitaire[fromwhere, columnn] != 0:
-            if not solitaire[fromwhere, columnn].is_flipped:
+            if not solitaire[fromwhere, columnn].is_facedown:
                 endcolum = columnn + 1
 
     if rules.is_move_legal([fromwhere, endcolum], [towhere, startcolumn]):

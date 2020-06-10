@@ -1,21 +1,17 @@
-
 import card
 import numpy as np
-
-
-HEARTS = 0
-SPADES = 1
-DIAMONDS = 2
-CLUBS = 3
 
 
 class Suit_pile:
 
     def __init__(self):
+        # dict with lists for each suit
         self.suit_piles = {'H': [], 'S': [], 'D': [], 'C': []}
 
     def add_card(self, card) -> None:
+        # gets the correct pile for the card
         pile = self.suit_piles[card.suit]
+        # add card to pile if possible
         if (card.number == 1 and len(pile) == 0) or pile[-1].is_below(card):
             pile.append(card)
 

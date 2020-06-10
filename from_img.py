@@ -83,5 +83,3 @@ def test():
     #         print(i[0])
     make_game_first_time(test_list)
 
-
-test()
