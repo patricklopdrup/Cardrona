@@ -23,10 +23,10 @@ def start_game():
                 card = m_deck.pop(0)
                 card.is_facedown = True
                 soli.solitaire[row, column] = card
-    # putting the rest of the card in card_deck
+    # Putting the rest of the card in card_deck
     for i in range(len(m_deck)):
         soli.card_deck[i] = m_deck[i]
-    # saving the card_deck in the data array
+    # Saving the card_deck in the data array
     soli.data[soli.CARD_DECK] = soli.card_deck
     ### DEBUG ###
     soli.set_own_cards(2)
@@ -43,7 +43,7 @@ def show():
         print()
         for row in range(7):
             if soli.solitaire[row, column]:
-                # print back-side of card if it's flipped - else print the card
+                # Print back-side of card if it's flipped - else print the card
                 if soli.solitaire[row, column].is_facedown:
                     print("[ ]", end=" ")
                 else:
@@ -58,7 +58,7 @@ def play():
 
         print("")
         card = input("Your turn: ")
-        # quit
+        # Quit
         if card == "q":
             break
 
@@ -66,10 +66,10 @@ def play():
             soli.move_from_deck(2, 3)
 
         elif card == "whoops":
-            soli.movecard(0, 0, 1, 2)
-            soli.moverow(2, 1)
-            soli.moveseries(3, 2, 2)
-        # draw card
+            soli.move_card(0, 0, 1, 2)
+            soli.move_row(2, 1)
+            soli.move_series(3, 2, 2)
+        # Draw card
         elif card == "d":
             soli.turn_card()
         elif card == "l":
@@ -84,17 +84,17 @@ def play():
         elif card == "deck to pile":
             soli.move_deck_to_suit_pile()
         else:
-            # move card (does not check for legal moves yet)
+            # Move card (does not check for legal moves yet)
             inputs = card.split(" ")
-            # converting to list of ints
+            # Converting to list of ints
             inputs = [int(i) for i in inputs]
 
             print(inputs)
-            soli.movecard(inputs[0], inputs[1], inputs[2], inputs[3])
+            soli.move_card(inputs[0], inputs[1], inputs[2], inputs[3])
         print(card)
 
 
-# to run the program
+# To run the program
 start_game()
-# from_img.make_game_first_time(from_img.test_list)
+#from_img.make_game_first_time(from_img.test_list)
 play()

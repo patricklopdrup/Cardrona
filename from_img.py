@@ -32,6 +32,9 @@ test_list = [
 
 
 def parse_value(input: str) -> int:
+    """
+    Takes the input from the ML and parses the corresponding card number.
+    """
     if len(input) > 2:
         return int(input[:2])
     name = input[0]
@@ -69,6 +72,9 @@ def make_game_first_time(input_list: list):
 
 
 def make_game_from_input(input_list: list):
+    """
+    Creates the game board by parsing values from machine learning input to cards.
+    """
     for row in input_list:
         for col in row:
             card = card.Card(parse_value(col[0]), parse_suit(col[0]))

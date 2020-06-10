@@ -36,7 +36,7 @@ class GameColumns:
 
     def pile_size_in_col(self, col, only_faceup=False) -> int:
         """ 
-        returns the amount of cards in a column.
+        Returns the amount of cards in a column.
         By default it counts all the cards in the column,
         but only_faceup can be set so it only returns playable cards
         """
@@ -52,8 +52,8 @@ class GameColumns:
             return cards
         else:
             for card in self.solitaire[col]:
-            if card != 0:
-                cards += 1
+                if card != 0:
+                    cards += 1
             return cards
 
 
