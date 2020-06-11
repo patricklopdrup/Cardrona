@@ -85,9 +85,9 @@ def get_column_cards(show=False):
         middle = tuple(np.average(card_corners, axis=0))
         middles.append((cur_card, middle))
 
-        game_data.append(middles)
-
         middles = sorted(middles, key=lambda t: t[1][1], reverse=True)
+
+        game_data.append(middles)
 
         if DEBUG:
             print("\n\nget_column_cards - Card middles")
