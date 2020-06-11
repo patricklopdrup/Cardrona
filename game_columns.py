@@ -4,6 +4,9 @@ import card
 
 
 class GameColumns:
+    """
+    This class contains functions for checking and manipulating the seven columns on the game board (some of the functions were moved from solitaire.py to this file).
+    """
 
     deck = card.Deck()
 

@@ -81,8 +81,6 @@ def play():
             soli.move_game_to_suit_pile(0, 0)
             for i in soli.data[2]:
                 print(i)
-        elif card == "deck to pile":
-            soli.move_deck_to_suit_pile()
         else:
             # Move card (does not check for legal moves yet)
             inputs = card.split(" ")
