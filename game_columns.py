@@ -1,5 +1,4 @@
 import numpy as np
-import from_img as ML
 import card
 import suit_pile
 
@@ -22,8 +21,8 @@ class GameColumns:
         6: 6
     }
 
-    def __init__(self, card_list):
-        # ML.make_game_first_time(card_list)
+    def __init__(self):
+        """ Initialize array for the 7 columns """
         self.solitaire = np.zeros((7, 13), dtype=object)
         self.leaf_cards = []
 
@@ -54,6 +53,7 @@ class GameColumns:
             return False
 
     def __remove_card(self, from_col, from_row) -> None:
+        """ Adds a 0 (zero) where the card was """
         self.solitaire[from_col, from_row] = 0
 
     def __move_cards(self, from_col, from_row, to_col):
@@ -147,7 +147,7 @@ class GameColumns:
 
     def get_pile_size_in_col(self, col, only_faceup=False) -> int:
         """ 
-        returns the amount of cards in a column.
+        Returns the amount of cards in a column.
         By default it counts all the cards in the column,
         but only_faceup can be set so it only returns playable cards
         """
@@ -173,7 +173,6 @@ class GameColumns:
 ##############################
 #          TESTING           #
 ##############################
-
 
     def test(self):
         """ Making a deck of cards """
@@ -217,15 +216,15 @@ class GameColumns:
         self.solitaire[1, 1] = card.Card(6, 'H')
 
 
-gc = GameColumns(2)
-gc.test()
-gc.hack_solitaire()
-print(gc.get_pile_size_in_col(4))
-print(f"kan rykkes? {gc.move_in_game(1, 0, 0)}")
-gc.show_test()
-leaf_cards = gc.get_all_leaf_cards()
-faceup_cards = gc.get_all_faceup_cards()
+# gc = GameColumns(2)
+# gc.test()
+# gc.hack_solitaire()
+# print(gc.get_pile_size_in_col(4))
+# print(f"kan rykkes? {gc.move_in_game(1, 0, 0)}")
+# gc.show_test()
+# leaf_cards = gc.get_all_leaf_cards()
+# faceup_cards = gc.get_all_faceup_cards()
 
-# Print leaf cards
-print("leaf card:", *leaf_cards)
-print("faceup:", *faceup_cards)
+# # Print leaf cards
+# print("leaf card:", *leaf_cards)
+# print("faceup:", *faceup_cards)

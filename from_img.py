@@ -1,14 +1,14 @@
-import solitaire as soli
 import card
 import rules
+import game_columns as game
 
-
+game = game.GameColumns()
 col_facedown: list = [0, 1, 2, 3, 4, 5, 6]
 
 
 test_list = [
     [
-        ('AH'), ('KH')
+        ('6D')
     ],
     [
         ('2H')
@@ -17,10 +17,10 @@ test_list = [
         ('3H')
     ],
     [
-        ('4H')
+        ('8H')
     ],
     [
-        ('5H')
+        ('4H')
     ],
     [
         ('6H')
@@ -28,6 +28,16 @@ test_list = [
     [
         ('7H')
     ]
+]
+
+test_list2 = [
+    [('8C')],
+    [('6D')],
+    [],
+    [('9D')],
+    [('10H')],
+    [('AS')],
+    []
 ]
 
 
@@ -54,30 +64,32 @@ def parse_suit(input: str) -> str:
     return input[-1]
 
 
-def make_game_first_time(input_list: list):
-    for row_index, row in enumerate(input_list):
-        for col_index, col in enumerate(row):
-            default_card = card.Card(2, 'H', True)
-            # print(f"default kort num: {default_card.number}")
-            # print(f"col: {col} og 0'te: {col[0]}")
-            # print(f"val: {parse_value(col[0])} og suit: {parse_suit(col[0])}")
-            my_card = card.Card(parse_value(col[0]), parse_suit(col[0]))
-            if row_index == col_index:
-                soli.solitaire[row_index, col_index] = my_card
-            else:
-                soli.solitaire[row_index, col_index] = default_card
-
-            # setting amount of cards = cards in deck (24 default)
-            soli.data[soli.CARD_DECK] = rules.cards_in_deck
-
-
 def make_game_from_input(input_list: list):
     """
+    Input_list is a list of lists (from the NN).
+    Outer-list = columns in game.
+    Inner-list = rows of cards in game.
     Creates the game board by parsing values from machine learning input to cards.
     """
-    for row in input_list:
-        for col in row:
-            card = card.Card(parse_value(col[0]), parse_suit(col[0]))
+    # Loops the outer-list (columns)
+    for index_col, col in enumerate(input_list):
+        # If column in inner-list is NOT empty
+        if col:
+            # Loops the col_facedown aka. the amount of cards facing down in each column
+            for facedown in range(col_facedown[index_col]):
+                # Creates a default card facing down (value and suit does NOT matter)
+                default_card = card.Card(2, 'H', True)
+                # Adding card facingdown to game array
+                game.solitaire[index_col, facedown] = default_card
+            # Loops inner-list (rows) of playable cards
+            # card_index is the index of the card in the inner-list
+            for card_index, input_card in enumerate(col):
+                # Creates the card from inner-list
+                m_card = card.Card(parse_value(input_card),
+                                   parse_suit(input_card))
+                # Adds to game array after the facing down cards
+                game.solitaire[index_col, card_index +
+                               col_facedown[index_col]] = m_card
 
 
 def test():
@@ -87,5 +99,8 @@ def test():
     # for i in test_list:
     #     for j in i:
     #         print(i[0])
-    make_game_first_time(test_list)
+    make_game_from_input(test_list)
+    game.show_test()
 
+
+test()

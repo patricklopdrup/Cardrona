@@ -41,9 +41,14 @@ class Card:
         self.is_facedown = is_facedown
 
     def is_below(self, card) -> bool:
+        """
+        Returns True if the cards number is 1 less than the card in parameter.
+        False otherwise
+        """
         return self.number == (card.number - 1)
 
-    def is_opposite_suit(self, card) -> bool:
+    def is_opposite_color(self, card) -> bool:
+        """ Returns True if cards are opposite color """
         if self.suit == 'S' or self.suit == 'C':
             return card.suit == 'H' or card.suit == 'D'
         else:
@@ -53,7 +58,7 @@ class Card:
         """
         Checks if the card you call from can be moved to the card you give as input
         """
-        return self.is_below(card) and card.is_opposite_suit(self)
+        return self.is_below(card) and card.is_opposite_color(self)
 
     def __str__(self):
         """
