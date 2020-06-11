@@ -8,12 +8,16 @@ class Suit_pile:
         # Dict with lists for each suit
         self.suit_piles = {'H': [], 'S': [], 'D': [], 'C': []}
 
-    def add_card(self, card) -> None:
+    def add_card(self, card) -> bool:
+        """ Add cards to the corresponding pile """
         # Gets the correct pile for the card
         pile = self.suit_piles[card.suit]
         # Add card to pile if possible
         if (card.number == 1 and len(pile) == 0) or pile[-1].is_below(card):
             pile.append(card)
+            return True
+        else:
+            return False
 
     def is_game_won(self) -> bool:
         # For key, value in piles
