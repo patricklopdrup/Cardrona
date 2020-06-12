@@ -4,7 +4,6 @@ import game_columns as game
 
 game = game.GameColumns()
 
-
 test_list = [
     [
         ('6D')
@@ -16,7 +15,7 @@ test_list = [
         ('3H')
     ],
     [
-        ('8H')
+
     ],
     [
         ('4H')
@@ -29,14 +28,24 @@ test_list = [
     ]
 ]
 
-test_list2 = [
+init_list = [
     [('8C')],
-    [('6D')],
-    [],
+    [('7D')],
+    [('7S')],
     [('9D')],
     [('10H')],
     [('AS')],
-    []
+    [('AD')]
+]
+
+after_move_list = [
+    [('8C'), ('7D')],
+    [('AS')],
+    [('7S')],
+    [('9D')],
+    [('10H')],
+    [('AS')],
+    [('AD')]
 ]
 
 
@@ -60,6 +69,7 @@ def parse_value(input: str) -> int:
 
 
 def parse_suit(input: str) -> str:
+    """ Returns the last letter in the input; the suit for the card """
     return input[-1]
 
 
@@ -72,8 +82,8 @@ def make_game_from_input(input_list: list):
     """
     # Loops the outer-list (columns)
     for index_col, col in enumerate(input_list):
-        # If column in inner-list is NOT empty
-        if col:
+        # If column in inner-list is NOT empty or there exist facedown cards in the column
+        if col or game.col_facedown[index_col] > 0:
             # Loops the col_facedown aka. the amount of cards facing down in each column
             for facedown in range(game.col_facedown[index_col]):
                 # Creates a default card facing down (value and suit does NOT matter)
@@ -92,14 +102,15 @@ def make_game_from_input(input_list: list):
 
 
 def test():
-    # hej = 'KH'
-    # hej2 = "9S"
-    # print(parse_value(hej2))
-    # for i in test_list:
-    #     for j in i:
-    #         print(i[0])
-    make_game_from_input(test_list)
+    # Test a move from a initial state.
+    # Updating col_facedown for the column we move from
+    # New input from ML with a new flipped card
+    make_game_from_input(init_list)
+    game.show_test()
+    game.move_in_game(1, 1, 0)
+    game.show_test()
+    make_game_from_input(after_move_list)
     game.show_test()
 
 
-test()
+# test()
