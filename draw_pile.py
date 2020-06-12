@@ -7,6 +7,7 @@ import from_img  # til test lige nu
 
 
 game = game_columns.GameColumns()
+suit_pile = suit_pile.Suit_pile()
 
 
 class Stock_pile:
@@ -71,12 +72,30 @@ class Stock_pile:
                 return True
             return False
 
+    def move_to_suit_pile(self) -> bool:
+        """ 
+        Move card from waste pile to suit pile.
+        Return True if the move is completed. False otherwise.
+        """
+        if self.is_empty():
+            return False
+        else:
+            # Get the top card in the waste pile
+            waste_card = self.get_top_waste()
+            if suit_pile.add_card(waste_card):
+                # Remove from the waste pile
+                self.remove_from_waste()
+                return True
+            return False
+
 
 stock = Stock_pile()
-stock.waste.append(card.Card(13, 'S'))
+stock.waste.append(card.Card(1, 'S'))
+stock.waste.append(card.Card(1, 'D'))
 from_img.make_game_from_input(from_img.init_list)
 
 game.show_test()
-stock.move_to_column(3)
+stock.move_to_suit_pile()
+stock.move_to_suit_pile()
 game.show_test()
-print(*stock.waste)
+suit_pile.print_suit_piles()
