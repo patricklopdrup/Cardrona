@@ -11,20 +11,12 @@ class GameColumns:
     deck = card.Deck()
     m_suit_pile = suit_pile.Suit_pile()
 
-    facedown_cards_in_col = {
-        0: 0,
-        1: 1,
-        2: 2,
-        3: 3,
-        4: 4,
-        5: 5,
-        6: 6
-    }
-
     def __init__(self):
         """ Initialize array for the 7 columns """
         self.solitaire = np.zeros((7, 13), dtype=object)
         self.leaf_cards = []
+        # Keep track of the facedown cards in each of the 7 piles
+        self.col_facedown: list = [0, 1, 2, 3, 4, 5, 6]
 
     def move_in_game(self, from_col, from_row, to_col) -> bool:
         """
@@ -74,6 +66,29 @@ class GameColumns:
         for i, card in enumerate(cards_to_move):
             print(f"hej: {i}")
             self.solitaire[to_col, end_row + i] = card
+        # After card(s) is moved we update the column where we moved from (if necessary)
+        self.__update_col_facedown(from_col)
+
+    def __update_col_facedown(self, col):
+        """ 
+        Checks if a column consist only of facedown cards,
+        this means that we must update col_facedown array to keep track of facedown cards in a column
+        """
+        all_is_facedown = True
+        # Loop all card in column
+        for card in self.solitaire[col]:
+            # If no card is represented
+            if card == 0:
+                break
+            # If at least 1 card is faceup we return from method
+            if not card.is_facedown:
+                all_is_facedown = False
+                return
+        # If all card is facedown, we can flip and reviel a new card
+        # so we have one less card facing down in that column
+        if all_is_facedown:
+            if self.col_facedown[col] > 0:
+                self.col_facedown[col] -= 1
 
     def is_col_legal(self, from_col, from_row) -> bool:
         """
@@ -173,6 +188,7 @@ class GameColumns:
 ##############################
 #          TESTING           #
 ##############################
+
 
     def test(self):
         """ Making a deck of cards """

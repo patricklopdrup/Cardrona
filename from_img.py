@@ -3,7 +3,6 @@ import rules
 import game_columns as game
 
 game = game.GameColumns()
-col_facedown: list = [0, 1, 2, 3, 4, 5, 6]
 
 
 test_list = [
@@ -76,7 +75,7 @@ def make_game_from_input(input_list: list):
         # If column in inner-list is NOT empty
         if col:
             # Loops the col_facedown aka. the amount of cards facing down in each column
-            for facedown in range(col_facedown[index_col]):
+            for facedown in range(game.col_facedown[index_col]):
                 # Creates a default card facing down (value and suit does NOT matter)
                 default_card = card.Card(2, 'H', True)
                 # Adding card facingdown to game array
@@ -89,7 +88,7 @@ def make_game_from_input(input_list: list):
                                    parse_suit(input_card))
                 # Adds to game array after the facing down cards
                 game.solitaire[index_col, card_index +
-                               col_facedown[index_col]] = m_card
+                               game.col_facedown[index_col]] = m_card
 
 
 def test():
