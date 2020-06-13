@@ -2,6 +2,7 @@ import card
 import solitaire as soli
 import rules
 import from_img
+import game_columns as game
 
 
 deck = card.Deck()
@@ -66,9 +67,12 @@ def play():
             soli.move_from_deck(2, 3)
 
         elif card == "whoops":
-            soli.move_card(0, 0, 1, 2)
-            soli.move_row(2, 1)
-            soli.move_series(3, 2, 2)
+            g = game.GameColumns()
+            g.test()
+            g.show_test()
+
+            soli.all_possible(g)
+
         # Draw card
         elif card == "d":
             soli.turn_card()

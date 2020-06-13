@@ -2,11 +2,12 @@ import numpy as np
 import card
 import itertools
 import rules
+import game_columns
 
 # Easy access for the "data" array
-CARD_DECK = 0  # Deck with front facing down
-TURNED = 1  # Latest turned card from the deck
-# The 4 suits deck
+CARD_DECK = 0  # deck with front facing down
+TURNED = 1  # latest turned card from the deck
+# the 4 suits deck
 HEARTS = 2
 SPADES = 3
 DIAMONDS = 4
@@ -16,56 +17,53 @@ CLUBS = 5
 solitaire = np.zeros((7, 13), dtype=object)
 
 # Data array for other game info
-# Data = ['', '', '', '', '', '', '']
+# data = ['', '', '', '', '', '', '']
 data = np.zeros((7), dtype=object)
-
-# 24 cards are left in the deck after the 7 columns have been put down
 card_deck = np.zeros((24), dtype=object)
-# Max 13 cards in suit pile: ace, 2, 3, 4...
+# max 13 cards in suit pile: ace, 2, 3, 4...
 data[HEARTS] = np.zeros(13, dtype=object)
 data[SPADES] = np.zeros(13, dtype=object)
 data[DIAMONDS] = np.zeros(13, dtype=object)
 data[CLUBS] = np.zeros(13, dtype=object)
 
-# Global counter for the turned cards
-turn_count = 0
 
 def init_game():
     pass
 
 
+# printing the deck of cards that is still in the deck.
+# cards that is not in play yet
 def show_card_deck():
-    """
-    Printing the deck of cards that is still in the deck.
-    Cards that is not in play yet
-    """
     for card in data[CARD_DECK]:
         print(card, end=", ")
     print()
 
 
+# printing the value of each suit deck
 def four_suit_deck():
-    """
-    Printing the value of each suit deck
-    """
     print(
         f"H:{data[HEARTS]} S:{data[SPADES]} D:{data[DIAMONDS]} C:{data[CLUBS]}")
 
 
+# global counter for the turned cards
+turn_count = 0
+
+
+# input type: Card class
 def move_game_to_suit_pile(col: int, row: int):
-    # Card we want to move
+    # card we want to move
     card_to_move = solitaire[col, row]
-    # Get the suit pile that matches the cards suit
+    # get the suit pile that matches the cards suit
     suit: int = find_suit_pile(card_to_move.suit)
-    # Loop the suit pile
+    # loop the suit pile
     for index, card in enumerate(data[suit]):
-        # If suit pile is empty and we move an ace
+        # if suit pile is empty and we move an ace
         if index == 0 and card == 0 and card_to_move.number == 1:
-            # Insert card in suit pile and remove from game
+            # insert card in suit pile and remove from game
             data[suit][index] = card_to_move
             solitaire[col, row] = 0
             break
-        # Place card in chronological order in the pile
+        # place card in chronological order in the pile
         elif card != 0 and data[suit][index + 1] == 0:
             if card.number == card_to_move.number - 1:
                 data[suit][index + 1] = card_to_move
@@ -73,31 +71,28 @@ def move_game_to_suit_pile(col: int, row: int):
                 break
 
 
-def move_from_stock_to_suit_pile():
+def move_deck_to_suit_pile():
     card_to_move = data[TURNED]
     print(f"fra deck: {data[TURNED]}")
     suit: int = find_suit_pile(card_to_move.suit)
     for index, card in enumerate(data[suit]):
-        # If suit pile is empty and we move an ace
+        # if suit pile is empty and we move an ace
         if index == 0 and card == 0 and card_to_move.number == 1:
-            # Insert card in pile
+            # insert card in pile
             data[suit][index] = card_to_move
             delete_card_from_deck()
             break
-        # Place card in chronological order in the pile
+        # place card in chronological order in the pile
         elif card != 0 and data[suit][index + 1] == 0:
             if card.number == card_to_move.number - 1:
-                # Insert card in pile
+                # insert card in pile
                 data[suit][index+1] = card_to_move
                 delete_card_from_deck()
                 break
 
 
+# returns the correct pile for the suit. The correct index in the data-array
 def find_suit_pile(suit: str) -> int:
-    """
-    Returns the correct pile for the suit. The correct index in the data-array
-
-    """
     return {
         'H': HEARTS,
         'S': SPADES,
@@ -108,85 +103,73 @@ def find_suit_pile(suit: str) -> int:
 
 def delete_card_from_deck():
     """
-    Deletes the turned card and moves the pointer to the right position
+    deletes the turned card and moves the pointer to the right position
     """
     global turn_count
-    # Delete the turned card from the deck
+    # delete the turned card from the deck
     data[CARD_DECK] = np.delete(data[CARD_DECK], -turn_count)
-    # Set pointer of turned card in the right position
+    # set pointer of turned card in the right position
     turn_count = turn_count - 1
-    # Display old card in deck
+    # display old card in deck
     if turn_count == 0:
         data[TURNED] = 0
     else:
         data[TURNED] = data[CARD_DECK][-turn_count]
 
 
+# changing global count
 def turn_card_counter() -> int:
-    """
-    Function for changing the global counter
-    """
     global turn_count
     turn_count = (turn_count + 1) % len(data[CARD_DECK])
     # print(f"count: {turn_count} og len: {len(data[CARD_DECK])}")
     return turn_count
 
 
-
+# takes the top card from the deck and turns it - the turned card is now in play
+# turn each card in a loop by accessing the negative turn_card_counter()
 def turn_card():
-    """
-    Takes the top card from the stock and turns it - the turned card is now in play.
-    Turn each card in a loop by accessing the negative turn_card_counter()
-    """
     top_card = data[CARD_DECK][-turn_card_counter()]
     data[CARD_DECK] = data[CARD_DECK]
     data[TURNED] = top_card
 
 
+# play the turned card into the solitaire. TODO check for legal moves!
 def move_from_deck(col: int, row: int):
-    """
-    Play the turned card into the solitaire. TODO check for legal moves!
-    """
-    # Return if no card is turned yet
+    # return if no card is turned yet
     if data[TURNED] == 0:
         return
-    # Get turned card
+    # get turned card
     card = data[TURNED]
-    # Remove the card you just moved from the deck
+    # remove the card you just moved from the deck
     delete_card_from_deck()
-    # Putting the card in game array
+    # putting the card in game array
     solitaire[col, row] = card
 
 
-def move_card(from_column, from_row, to_column, to_row):
-    """
-    Moves exactly one card
-    """
-    solitaire[to_column, to_row] = solitaire[from_column, from_row]
-    solitaire[from_column, from_row] = 0
+def move_card(fromcolumn, fromrow, tocolumn, torow):
+    solitaire[tocolumn, torow] = solitaire[fromcolumn, fromrow]
+    solitaire[fromcolumn, fromrow] = 0
 
-    if solitaire[from_column, from_row-1] != 0:
-        if solitaire[from_column, from_row-1].is_facedown:
-            solitaire[from_column, from_row-1].is_facedown = False
+    if solitaire[fromcolumn, fromrow-1] != 0:
+        if solitaire[fromcolumn, fromrow-1].is_facedown:
+            solitaire[fromcolumn, fromrow-1].is_facedown = False
 
 
-def move_row(goal_row, current_row):
-    """
-    Moves an entire column
-    """
-    start_column = 0
+def move_row(goalrow, currentrow):
+    startcolumn = 0
 
-    for column in range(7):
-        if solitaire[goal_row, column] != 0:
-            if not solitaire[goal_row, column].is_facedown:
-                start_column = column+1
+    for columnn in range(7):
+        if solitaire[goalrow, columnn] != 0:
+            if not solitaire[goalrow, columnn].is_facedown:
+                startcolumn = columnn+1
 
     for column in range(12):
-        if solitaire[current_row, column] != 0:
-            if not solitaire[current_row, column].is_facedown:
-                move_card(current_row, column, goal_row, start_column)
-                start_column += 1
+        if solitaire[currentrow, column] != 0:
+            if not solitaire[currentrow, column].is_facedown:
+                move_card(currentrow, column, goalrow, startcolumn)
+                startcolumn += 1
 
+#der er muligvis nogle bugs
 
 def move_series(goal_row, current_row, how_many):
     """
@@ -217,7 +200,7 @@ def move_series(goal_row, current_row, how_many):
                 start_column += 1
 
 
-def all_possible_moves(from_rows: list, to_rows: list):
+def all_possible_moves(from_rows, to_rows):
     list_of_moves = []
 
     c = list(itertools.product(from_rows, to_rows))
@@ -226,52 +209,69 @@ def all_possible_moves(from_rows: list, to_rows: list):
 
     # Når vi har lavet en is_move_legal metode for 1 kort
     for i in range(length):
-        if is_move_legal(c[i][0], c[i][1]) == 1:
+        print(c[i][0])
+
+        if is_move_legal(c[i][0], c[i][1]):
             list_of_moves.append(c[i])
+    print(list_of_moves)
 
     return list_of_moves
 
 # list of columns to move
 
 
-def all_possible_column(from_rows: list, to_rows: list):
-    listofpossiblemoves = []
+def all_possible(game_columns1: game_columns.GameColumns):
+    listofsuitmoves =[]
+    listofallmoves=[]
+    card_location = []
+    card_location_leafcards = []
+    combinations = []
 
-    c = list(itertools.product(from_rows, to_rows))
+    listof_unseen= game_columns1.col_facedown
 
-    length = len(c)
+    listofleafcards = game_columns1.get_all_leaf_cards()
+    listoffaceupcards = game_columns1.get_all_faceup_cards()
 
-    # når vi har lavet en is_move_legal metode for 1 kort
-    for i in range(length):
-        if rules.is_col_legal_move(c[i][0], c[i][1]):
-            listofpossiblemoves.append(c[i])
-    return listofpossiblemoves
+    #locate the faceupcards
+    column = 0
+    for i in range(7):
+        while game_columns1.solitaire[column,i] != listoffaceupcards[column]:
+            print(listoffaceupcards[column])
+            column+=1
+        card_location.append([listoffaceupcards[column],i,column])
+
+    #locate the leaf cards
+    column1 = 0
+    for i2 in range(7):
+        while game_columns1.solitaire[column1,i2] != listofleafcards[column1]:
+            print(listofleafcards[column1])
+            column1+=1
+        card_location_leafcards.append([listofleafcards[column1],i2,column1])
+
+    #we will now add all combinations of leafcards
+    lenght1 = len(listofleafcards)
+    for thiscard in range(lenght1):
+        for othercards in range(lenght1):
+            if card_location_leafcards[thiscard][0].can_be_moved_to(card_location_leafcards[othercards][0]):
+                combinations.append([card_location_leafcards[thiscard],card_location_leafcards[othercards]])
+    print(combinations)
+
+    #in the card class we will now create some methods
+
+    #make sure that a card that isnt a leaf card has
 
 
-def is_move_legal(from_where, to_where):
-    """
-    Checks if one card can be moved based on two input rows
-    """
-    is_it_true = False
-    start_column = 0
-    end_column = 0
+    print(card_location)
+    print(card_location_leafcards)
+    print(*listofleafcards)
+    print(*listoffaceupcards)
 
-    # Finds goal_column
-    for column in range(7):
-        if solitaire[to_where, column] != 0:
-            if not solitaire[to_where, column].is_facedown:
-                start_column = column + 1
 
-    # Finds start_column
-    for column in range(7):
-        if solitaire[from_where, column] != 0:
-            if not solitaire[from_where, column].is_facedown:
-                end_column = column + 1
 
-    if rules.is_move_legal([from_where, end_column], [to_where, start_column]):
-        is_it_true = True
 
-    return is_it_true
+
+
+
 
 
 # DEBUG
