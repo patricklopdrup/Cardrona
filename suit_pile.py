@@ -24,6 +24,21 @@ class Suit_pile:
             return False
         return False
 
+    def is_pile_empty(self, suit):
+        return len(self.suit_piles[suit]) == 0
+
+    def get_card(self, suit):
+        """ Gets the top card of a suit pile without removing it """
+        return self.suit_piles[suit][-1]
+
+    def remove_card(self, suit) -> bool:
+        """ Removes the top card of the pile. Returns True if it succeeded """
+        if not self.is_pile_empty(suit):
+            self.suit_piles[suit].pop()
+            return True
+        else:
+            return False
+
     def is_game_won(self) -> bool:
         # For key, value in piles
         for suit, pile in self.suit_piles.items():

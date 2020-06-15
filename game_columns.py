@@ -50,6 +50,26 @@ class GameColumns:
         else:
             return False
 
+    def move_from_suit_pile(self, suit, to_col) -> bool:
+        """ Move a card from a suit pile back into the game """
+        # If the suit pile if empty we return False
+        if self.m_suit_pile.is_pile_empty(suit):
+            return False
+        
+        # Get card from the suit pile and the card we want to move to
+        card_from_suit_pile = self.m_suit_pile.get_card(suit)
+        card_in_game = self.solitaire[to_col, self.get_pile_size_in_col(to_col)-1]
+        
+        # If we can make the move
+        if card_from_suit_pile.can_be_moved_to(card_in_game):
+            # Remove top card from suit pile
+            self.m_suit_pile.remove_card(suit)
+            # Place the card on the column in the game
+            self.solitaire[to_col, self.get_pile_size_in_col(to_col)] = card_from_suit_pile
+            return True
+        else:
+            return False
+
     def __remove_card(self, from_col, from_row) -> None:
         """ Adds a 0 (zero) where the card was """
         self.solitaire[from_col, from_row] = 0
@@ -203,7 +223,7 @@ class GameColumns:
 #          TESTING           #
 ##############################
 
-    def test(self):
+    def make_game(self):
         """ Making a deck of cards """
         m_deck = self.deck.make_deck()
         m_deck = self.deck.shuffle(m_deck)
@@ -240,10 +260,25 @@ class GameColumns:
 
     def hack_solitaire(self):
         """ Set solitaire as you wish """
-        self.solitaire[0, 0] = card.Card(8, 'D')
+        self.solitaire[0, 0] = card.Card(3, 'S')
         self.solitaire[1, 0] = card.Card(7, 'C')
         self.solitaire[1, 1] = card.Card(6, 'H')
 
+        # Set cards into suit piles
+        card1 = card.Card(1, 'H')
+        card2 = card.Card(2, 'H')
+        self.m_suit_pile.add_card(card1)
+        self.m_suit_pile.add_card(card2)
 
-# gc = GameColumns()
-# gc.play_ting()
+    def test_play(self):
+        self.move_from_suit_pile('H', 0)
+
+
+#gc = GameColumns()
+#gc.make_game()
+#gc.hack_solitaire()
+#gc.show_test()
+#gc.m_suit_pile.print_suit_piles()
+#gc.test_play()
+#gc.m_suit_pile.print_suit_piles()
+#gc.show_test()
