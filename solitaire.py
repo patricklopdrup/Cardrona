@@ -221,8 +221,6 @@ def all_possible_moves(from_rows, to_rows):
 
 
 def all_possible(game_columns1: game_columns.GameColumns):
-    listofsuitmoves =[]
-    listofallmoves=[]
     card_location = []
     card_location_leafcards = []
     combinations = []
@@ -256,11 +254,29 @@ def all_possible(game_columns1: game_columns.GameColumns):
                 combinations.append([card_location_leafcards[thiscard],card_location_leafcards[othercards]])
     print(combinations)
 
-    #in the card class we will now create some methods
+    #in the card class we will now create some methods'
+
+    #check sequences
+     # 1. check nuværende med ovenstående kort
+        #1.1 - Hvis det er en sekvens, så check med næste
+    # 2. Check fra øverste del af sekvens med om man kan flytte til et leaf card
+    sequences = []
+    lenght3 = len(listoffaceupcards)
+
+    for currentcard in range(lenght3):
+        if game_columns1.is_col_legal(card_location[currentcard][2],card_location[currentcard][1]):
+            print(card_location[currentcard][2])
+            print(card_location[currentcard][1])
+            for othercards1 in range(lenght1):
+                if card_location[currentcard][0].can_be_moved_to(card_location_leafcards[othercards1][0]):
+                    sequences.append([card_location_leafcards[currentcard], card_location_leafcards[othercards1]])
 
     #make sure that a card that isnt a leaf card has
 
 
+
+
+    print(sequences)
     print(card_location)
     print(card_location_leafcards)
     print(*listofleafcards)

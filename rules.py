@@ -1,5 +1,5 @@
 import solitaire as soli
-
+import game_columns as game
 
 cards_in_deck = 24
 
@@ -34,9 +34,13 @@ def is_col_legal_move(col: int, row: int) -> bool:
 
 
 def is_move_legal(from_index: list, to_index: list) -> bool:
-    from_card = soli.solitaire[from_index[0], from_index[1]]
-    to_card = soli.solitaire[to_index[0], to_index[1]]
+
+    from_card = g.solitaire[from_index[0], from_index[1]]
+    to_card = g.solitaire[to_index[0], to_index[1]]
     # Kings can be moved to empty spaces
+    print(to_card)
+    print(from_card)
+
     if to_card == 0 and from_card.number == 13:
         return True
     # Card can be placed on a card with with different color and +1 in number
