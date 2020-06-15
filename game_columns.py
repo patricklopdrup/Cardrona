@@ -18,10 +18,10 @@ class GameColumns:
 
     def __init__(self):
         """ Initialize array for the 7 columns """
-        # self.solitaire = np.zeros((7, 13), dtype=object)
-        # self.leaf_cards = np.zeros(7, dtype=object)
+        #self.solitaire = np.zeros((7, 13), dtype=object)
+        #self.leaf_cards = np.zeros(7, dtype=object)
         # # Keep track of the facedown cards in each of the 7 piles
-        # self.col_facedown: list = [0, 1, 2, 3, 4, 5, 6]
+        #self.col_facedown: list = [0, 1, 2, 3, 4, 5, 6]
         pass
 
     def move_in_game(self, from_col, from_row, to_col) -> bool:
