@@ -57,6 +57,8 @@ def detect_cards(str):
 
 def get_cards_from_image(img_path):
     col_data = detect_cards(img_path)
+    if not col_data:
+        return
     col_data = sorted(col_data, key=lambda i: i['name'])
 
     cur_card = ""
