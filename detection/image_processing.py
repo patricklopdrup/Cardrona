@@ -113,7 +113,8 @@ def get_rows(img, save=True):
     return images
 
 
-def get_game_state(img, save=True):
+def get_game_state(img):
+    img = cv2.imread(img)
     # Get the grayscale of the image and reduce noise
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     gray = cv2.bilateralFilter(gray, 11, 17, 17)
@@ -137,10 +138,9 @@ def get_game_state(img, save=True):
     top = []
     tableaus = []
 
-    if save:
-        files = glob.glob('extract/*')
-        for f in files:
-            os.remove(f)
+    files = glob.glob('extract/*')
+    for f in files:
+        os.remove(f)
 
     if DEBUG_IMG:
         img_cnts_dbg = img.copy()
@@ -174,28 +174,41 @@ def get_game_state(img, save=True):
     sorted_top = sorted(top, key=lambda img: img['start'][0])
     sorted_tableaus = sorted(tableaus, key=lambda img: img['start'][0])
 
-    if DEBUG_IMG or save:
-        idx = 0
-        for c in sorted_top:
-            idx += 1
-            if idx == 2 and save:
-                cv2.imwrite("extract/" + "stock.png", c['img'])
-            elif idx > 2 and save:
-                cv2.imwrite("extract/" + "foundation_" + str(idx-2) + ".png", c['img'])
+    idx = 0
+    stock = []
+    foundations = []
+    tableaus = []
 
-            if DEBUG_IMG:
-                cv2.drawContours(img_cnts, [c['contour']], 0, (0, 255, 0), 3)
-                cv2.imshow("Debug", img_cnts)
-                cv2.waitKey()
+    for c in sorted_top:
+        idx += 1
+        if idx == 2:
+            image_path = "extract/" + "stock.png"
+            cv2.imwrite(image_path, c['img'])
+            c.update(path=image_path)
+            stock.append(c)
+        elif idx > 2:
+            image_path = "extract/" + "foundation_" + str(idx-2) + ".png"
+            c.update(path=image_path)
+            cv2.imwrite(image_path, c['img'])
+            foundations.append(c)
 
-        idx = 0
-        for c in sorted_tableaus:
-            idx += 1
-            if save:
-                cv2.imwrite("extract/" + "tableau_" + str(idx) + ".png", c['img'])
+        if DEBUG_IMG:
+            cv2.drawContours(img_cnts, [c['contour']], 0, (0, 255, 0), 3)
+            cv2.imshow("Debug", img_cnts)
+            cv2.waitKey()
 
-            if DEBUG_IMG:
-                cv2.drawContours(img_cnts, [c['contour']], 0, (0, 255, 0), 3)
-                cv2.imshow("Debug", img_cnts)
-                cv2.waitKey()
-        cv2.destroyAllWindows()
+    idx = 0
+    for c in sorted_tableaus:
+        idx += 1
+        image_path = "extract/" + "tableau_" + str(idx) + ".png"
+        c.update(path=image_path)
+        cv2.imwrite(image_path, c['img'])
+        tableaus.append(c)
+
+        if DEBUG_IMG:
+            cv2.drawContours(img_cnts, [c['contour']], 0, (0, 255, 0), 3)
+            cv2.imshow("Debug", img_cnts)
+            cv2.waitKey()
+    cv2.destroyAllWindows()
+
+    return {'stock': stock, 'foundations': foundations, 'tableaus': tableaus}
