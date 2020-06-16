@@ -15,7 +15,7 @@ class detect:
         self.game_data = imgp.get_game_state(img)
 
     def get_tableaus(self):
-        tableaus = {}
+        tableaus = []
         for tableau in self.game_data['tableaus']:
             cards = detector.get_cards_from_image(tableau['path'])
             tableaus.append(cards)
@@ -28,7 +28,7 @@ class detect:
         return cards
 
     def get_foundations(self):
-        foundations = {}
+        foundations = []
         for foundation in self.game_data['foundations']:
             cards = detector.get_cards_from_image(foundation['path'])
             foundations.append(cards)
