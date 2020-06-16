@@ -28,7 +28,17 @@ class detect:
         return cards
 
     def get_foundations(self):
-        print("Get foundations")
+        foundations = {}
+        for foundation in self.game_data['foundations']:
+            cards = detector.get_cards_from_image(foundation['path'])
+            foundations.append(cards)
+
+        return foundations
+
+    def get_foundation(self, foundation_num):
+        foundation = self.game_data['foundations'][foundation_num-1]
+        cards = detector.get_cards_from_image(foundation['path'])
+        return cards
 
     def get_talon(self):
         print("Get talon")
