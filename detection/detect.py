@@ -41,10 +41,12 @@ class detect:
         return cards
 
     def get_talon(self):
-        print("Get talon")
+        talon = self.game_data['talon'][0]
+        cards = detector.get_cards_from_image(talon['path'])
+        return cards
 
 
 if __name__ == '__main__':
     detection = detect()
     detection.load_state("img/test3.jpg")
-    print(detection.get_tableau(2))
+    pprint(detection.get_tableaus())
