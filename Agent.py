@@ -51,11 +51,7 @@ def all_possible(game_columns1: game_columns.GameColumns):
                 if card_location[currentcard][0].can_be_moved_to(card_location_leafcards[othercards1][0]):
                     sequences.append([card_location_leafcards[currentcard], card_location_leafcards[othercards1]])
 
-    #make sure that a card that isnt a leaf card has
-    print(combinations)
-    print(sequences)
-    print(card_location)
-    print(card_location_leafcards)
-    print(*listofleafcards)
-    print(*listoffaceupcards)
+    return sequences
+
+
 

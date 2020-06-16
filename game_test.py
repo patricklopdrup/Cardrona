@@ -4,13 +4,10 @@ import rules
 import from_img
 import game_columns as game
 
-
 deck = card.Deck()
-
 
 def start_game():
     soli.init_game()
-
     m_deck = deck.make_deck()
     print(f"Antal kort: {len(m_deck)}")
     print(f"hej: {soli.data[soli.CARD_DECK]}")
@@ -51,7 +48,6 @@ def show():
                     print(soli.solitaire[row, column], end=" ")
             else:
                 print(" "*4, end="")
-
 
 def play():
     while 1:
