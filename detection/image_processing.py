@@ -135,7 +135,7 @@ def get_game_state(img, save=True):
     minArea = w / 10 * w / 10
     idx = 0
     top = []
-    foundations = []
+    tableaus = []
 
     if save:
         files = glob.glob('extract/*')
@@ -167,22 +167,21 @@ def get_game_state(img, save=True):
                             'end': (x + w, y + h), 'size': (w, h),
                             'contour': contour})
             else:
-                foundations.append({'img': square_img, 'start': (x, y),
-                                    'end': (x + w, y + h), 'size': (w, h),
-                                    'contour': contour})
+                tableaus.append({'img': square_img, 'start': (x, y),
+                                 'end': (x + w, y + h), 'size': (w, h),
+                                 'contour': contour})
 
     sorted_top = sorted(top, key=lambda img: img['start'][0])
-    sorted_foundations = sorted(foundations, key=lambda img: img['start'][0])
+    sorted_tableaus = sorted(tableaus, key=lambda img: img['start'][0])
 
     if DEBUG_IMG or save:
         idx = 0
         for c in sorted_top:
             idx += 1
-            # TODO : Make the correct image get extracted
             if idx == 2 and save:
-                cv2.imwrite("extract/" + "stock.png", square_img)
+                cv2.imwrite("extract/" + "stock.png", c['img'])
             elif idx > 2 and save:
-                cv2.imwrite("extract/" + "foundation_" + str(idx) + ".png", square_img)
+                cv2.imwrite("extract/" + "foundation_" + str(idx-2) + ".png", c['img'])
 
             if DEBUG_IMG:
                 cv2.drawContours(img_cnts, [c['contour']], 0, (0, 255, 0), 3)
@@ -190,11 +189,10 @@ def get_game_state(img, save=True):
                 cv2.waitKey()
 
         idx = 0
-        for c in sorted_foundations:
+        for c in sorted_tableaus:
             idx += 1
-            # TODO : Make the correct image get extracted
             if save:
-                cv2.imwrite("extract/" + "row_" + str(idx) + ".png", square_img)
+                cv2.imwrite("extract/" + "tableau_" + str(idx) + ".png", c['img'])
 
             if DEBUG_IMG:
                 cv2.drawContours(img_cnts, [c['contour']], 0, (0, 255, 0), 3)
