@@ -175,17 +175,17 @@ def get_game_state(img):
     sorted_tableaus = sorted(tableaus, key=lambda img: img['start'][0])
 
     idx = 0
-    stock = []
+    talon = []
     foundations = []
     tableaus = []
 
     for c in sorted_top:
         idx += 1
         if idx == 2:
-            image_path = "extract/" + "stock.png"
+            image_path = "extract/" + "talon.png"
             cv2.imwrite(image_path, c['img'])
             c.update(path=image_path)
-            stock.append(c)
+            talon.append(c)
         elif idx > 2:
             image_path = "extract/" + "foundation_" + str(idx-2) + ".png"
             c.update(path=image_path)
@@ -211,4 +211,4 @@ def get_game_state(img):
             cv2.waitKey()
     cv2.destroyAllWindows()
 
-    return {'stock': stock, 'foundations': foundations, 'tableaus': tableaus}
+    return {'talon': talon, 'foundations': foundations, 'tableaus': tableaus}
