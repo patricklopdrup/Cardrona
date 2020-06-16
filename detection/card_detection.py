@@ -55,6 +55,35 @@ def detect_cards(str):
     return image_data
 
 
+def get_cards_from_image(img_path):
+    col_data = detect_cards(img_path)
+    col_data = sorted(col_data, key=lambda i: i['name'])
+
+    cur_card = ""
+    card_corners = []
+    card_middles = []
+    for c in col_data:
+        if not cur_card:
+            cur_card = c['name']
+            card_corners = [c['middle']]
+            continue
+        elif cur_card == c['name']:
+            card_corners.append(c['middle'])
+            continue
+        else:
+            card_middle = tuple(np.average(card_corners, axis=0))
+            card_middles.append((cur_card, card_middle))
+            cur_card = c['name']
+            card_corners = [c['middle']]
+
+    card_middle = tuple(np.average(card_corners, axis=0))
+    card_middles.append((cur_card, card_middle))
+
+    card_middles = sorted(card_middles, key=lambda t: t[1][1], reverse=True)
+
+    return card_middles
+
+
 def get_column_cards(show=False):
     game_data = []
     for filename in os.listdir('extract'):
