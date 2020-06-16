@@ -14,19 +14,27 @@ class detect:
 
         self.game_data = imgp.get_game_state(img)
 
-    def get_tableaus():
-        print("All tableaus")
+    def get_tableaus(self):
+        tableaus = {}
+        for tableau in self.game_data['tableaus']:
+            cards = detector.get_cards_from_image(tableau['path'])
+            tableaus.append(cards)
 
-    def get_tableau():
-        print("Single tableau")
+        return tableaus
 
-    def get_foundations():
+    def get_tableau(self, tableau_num):
+        tableau = self.game_data['tableaus'][tableau_num-1]
+        cards = detector.get_cards_from_image(tableau['path'])
+        return cards
+
+    def get_foundations(self):
         print("Get foundations")
 
-    def get_talon():
+    def get_talon(self):
         print("Get talon")
 
 
 if __name__ == '__main__':
     detection = detect()
     detection.load_state("img/test3.jpg")
+    print(detection.get_tableau(2))
