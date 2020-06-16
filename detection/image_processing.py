@@ -80,13 +80,18 @@ def get_rows(img, save=True):
             os.remove(f)
 
     if DEBUG_IMG:
+        img_cnts_dbg = img.copy()
+        cv2.drawContours(img_cnts_dbg, contours, -1, (0, 255, 0), 3)
         cv2.imshow("Debug", gray)
         cv2.waitKey()
         cv2.imshow("Debug", edge)
         cv2.waitKey()
+        cv2.imshow("Debug", img_cnts_dbg)
+        cv2.waitKey()
     # Loop through all the contours and append the found areas to the images list.
     for contour in sorted_contours:
         area = cv2.contourArea(contour)
+        print(area)
         if area > minArea:
             # print(area)
             idx += 1
