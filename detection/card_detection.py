@@ -113,7 +113,7 @@ if __name__ == '__main__':
                 continue
 
             img = cv2.imread(inp)
-            card_rows = imgp.get_rows(img, save=True)
+            card_rows = imgp.get_game_state(img, save=True)
 
             get_column_cards()
 

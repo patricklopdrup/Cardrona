@@ -106,3 +106,92 @@ def get_rows(img, save=True):
         cv2.destroyAllWindows()
 
     return images
+
+
+def get_game_state(img, save=True):
+    # Get the grayscale of the image and reduce noise
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    gray = cv2.bilateralFilter(gray, 11, 17, 17)
+
+    # Extract the edges
+    edge = cv2.Canny(gray, 100, 200)
+
+    # Find the contours from the edged image
+    contours, _ = cv2.findContours(edge.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    # Sort the found contours by their x position
+    sorted_contours = sorted(contours, key=lambda ctr: cv2.boundingRect(ctr)[1])
+    sorted_contours_copy = sorted_contours.copy()
+
+    img_cnts = img.copy()
+
+    # Define the minimum size of the detected card areas
+    h, w, _ = img.shape
+    minArea = w / 10 * w / 10
+    idx = 0
+    images = []
+
+    if save:
+        files = glob.glob('extract/*')
+        for f in files:
+            os.remove(f)
+
+    if DEBUG_IMG:
+        img_cnts_dbg = img.copy()
+        cv2.drawContours(img_cnts_dbg, contours, -1, (0, 255, 0), 3)
+        cv2.imshow("Debug", gray)
+        cv2.waitKey()
+        cv2.imshow("Debug", edge)
+        cv2.waitKey()
+        cv2.imshow("Debug", img_cnts_dbg)
+        cv2.waitKey()
+    # Loop through all the contours and append the found areas to the images list.
+    for contour in sorted_contours_copy:
+        sorted_contours.pop(0)
+        if idx >= 6:
+            break
+        area = cv2.contourArea(contour)
+        print(area)
+        if area > minArea:
+            # print(area)
+            idx += 1
+            x, y, w, h = cv2.boundingRect(contour)
+            roi = img_cnts[y:y + h, x:x + w]
+            square_img = resize_image(roi)
+            images.append({'img': square_img, 'start': (x, y),
+                           'end': (x + w, y + h), 'size': (w, h)})
+            if save:
+                cv2.imwrite("extract/" + "row_" + str(idx) + ".png", square_img)
+
+            if DEBUG_IMG:
+                cv2.drawContours(img_cnts, [contour], 0, (0, 255, 0), 3)
+                cv2.imshow("Debug", img_cnts)
+                cv2.waitKey()
+    if DEBUG_IMG:
+        cv2.destroyAllWindows()
+
+    sorted_contours = sorted(sorted_contours, key=lambda ctr: cv2.boundingRect(ctr)[0])
+    sorted_contours_copy = sorted_contours.copy()
+
+    # Loop through all the contours and append the found areas to the images list.
+    for contour in sorted_contours_copy:
+        sorted_contours.pop(0)
+        area = cv2.contourArea(contour)
+        print(area)
+        if area > minArea:
+            # print(area)
+            idx += 1
+            x, y, w, h = cv2.boundingRect(contour)
+            roi = img_cnts[y:y + h, x:x + w]
+            square_img = resize_image(roi)
+            images.append({'img': square_img, 'start': (x, y),
+                           'end': (x + w, y + h), 'size': (w, h)})
+            if save:
+                cv2.imwrite("extract/" + "row_" + str(idx) + ".png", square_img)
+
+            if DEBUG_IMG:
+                cv2.drawContours(img_cnts, [contour], 0, (0, 255, 0), 3)
+                cv2.imshow("Debug", img_cnts)
+                cv2.waitKey()
+    if DEBUG_IMG:
+        cv2.destroyAllWindows()
