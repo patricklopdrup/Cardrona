@@ -173,13 +173,31 @@ def get_game_state(img, save=True):
 
     sorted_top = sorted(top, key=lambda img: img['start'][0])
     sorted_foundations = sorted(foundations, key=lambda img: img['start'][0])
-    if DEBUG_IMG:
+
+    if DEBUG_IMG or save:
+        idx = 0
         for c in sorted_top:
-            cv2.drawContours(img_cnts, [c['contour']], 0, (0, 255, 0), 3)
-            cv2.imshow("Debug", img_cnts)
-            cv2.waitKey()
+            idx += 1
+            # TODO : Make the correct image get extracted
+            if idx == 2 and save:
+                cv2.imwrite("extract/" + "stock.png", square_img)
+            elif idx > 2 and save:
+                cv2.imwrite("extract/" + "foundation_" + str(idx) + ".png", square_img)
+
+            if DEBUG_IMG:
+                cv2.drawContours(img_cnts, [c['contour']], 0, (0, 255, 0), 3)
+                cv2.imshow("Debug", img_cnts)
+                cv2.waitKey()
+
+        idx = 0
         for c in sorted_foundations:
-            cv2.drawContours(img_cnts, [c['contour']], 0, (0, 255, 0), 3)
-            cv2.imshow("Debug", img_cnts)
-            cv2.waitKey()
+            idx += 1
+            # TODO : Make the correct image get extracted
+            if save:
+                cv2.imwrite("extract/" + "row_" + str(idx) + ".png", square_img)
+
+            if DEBUG_IMG:
+                cv2.drawContours(img_cnts, [c['contour']], 0, (0, 255, 0), 3)
+                cv2.imshow("Debug", img_cnts)
+                cv2.waitKey()
         cv2.destroyAllWindows()
