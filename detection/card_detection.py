@@ -1,4 +1,4 @@
-from darknet import performDetect as scan
+from Darknet.darknet import performDetect as scan
 from pprint import pprint
 import image_processing as imgp
 import numpy as np
