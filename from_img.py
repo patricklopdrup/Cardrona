@@ -1,8 +1,9 @@
 import card
-import rules
 import game_columns as game
+import draw_pile
 
 game = game.GameColumns()
+m_draw_pile = draw_pile.Stock_pile()
 
 test_list = [
     [
@@ -48,16 +49,6 @@ after_move_list = [
     [('AD')]
 ]
 
-list_turned_card = [
-    [('13S'), ('12H'), ('11S'), ('9H'), ('8C'), ('7D')],
-    [('5S'), ('12H')],
-    [('8S'), ('5D')],
-    [('5S'), ('12H')],
-    [],
-    [('7S'), ('6S')],
-    [('1S'), ('12D')]
-]
-
 
 def parse_value(input: str) -> int:
     """
@@ -83,7 +74,24 @@ def parse_suit(input: str) -> str:
     return input[-1]
 
 
-def make_game_from_input(input_list: list):
+def make_stock_pile(input_list: list):
+    """  """
+    top_card = input_list[0]
+    if top_card is not None:
+        m_card = card.Card(parse_value(top_card),
+                           parse_suit(top_card), None, -1, -1)
+        m_draw_pile.draw_from_stock(m_card)
+
+
+def make_suit_pile(input_list: list):
+    for card_i in input_list:
+        if card_i is not None:
+            m_card = card.Card(parse_value(
+                card_i), parse_suit(card_i), None, -1, -1)
+            game.m_suit_pile.add_card(m_card)
+
+
+def make_seven_column(input_list: list):
     """
     Input_list is a list of lists (from the NN).
     Outer-list = columns in game.
@@ -95,7 +103,7 @@ def make_game_from_input(input_list: list):
         # Default above_card as None
         above_card = None
         # If column in inner-list is NOT empty or there exist facedown cards in the column
-        if col or game.col_facedown[index_col] > 0:
+        if col is not None or game.col_facedown[index_col] > 0:
             # Loops the col_facedown aka. the amount of cards facing down in each column
             for facedown in range(game.col_facedown[index_col]):
                 # Creates a default card facing down (value and suit does NOT matter)
@@ -122,12 +130,17 @@ def make_game_from_input(input_list: list):
 def test():
     # Test a move from a initial state.
     # Updating col_facedown for the column we move from
-    # New input from ML with a new flipped card
-    make_game_from_input(init_list)
+    # def make_stock_pile(input_list: list):
+    # New input from    """  """
+
+    # ML with a new flipped card
+    make_seven_column(init_list)
     game.show_test()
     game.move_in_game(1, 1, 0)
+
     game.show_test()
-    make_game_from_input(after_move_list)
+
+    make_seven_column(after_move_list)
 
     sejt_kort = game.solitaire[0, 0]
     print(
@@ -135,13 +148,4 @@ def test():
     game.show_test()
 
 
-def test_x_y():
-    # Test for x and y pos
-    make_game_from_input(list_turned_card)
-    game.show_test()
-    sejt_kort = game.solitaire[0, 5]
-    print(
-        f"x: {sejt_kort.x_pos} og y: {sejt_kort.y_pos} og above: {sejt_kort.above}")
-
-
-test_x_y()
+# test_x_y()
