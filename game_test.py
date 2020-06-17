@@ -1,57 +1,50 @@
 import card
-import solitaire as soli
 import rules
 import from_img
 import game_columns as game
+import Agent
 
 deck = card.Deck()
+game = game.GameColumns()
 
-def start_game():
-    soli.init_game()
-    m_deck = deck.make_deck()
-    print(f"Antal kort: {len(m_deck)}")
-    print(f"hej: {soli.data[soli.CARD_DECK]}")
-    m_deck = deck.shuffle(m_deck)
+def make_game():
+    """ Making a deck of cards """
+    m_deck = game.deck.make_deck()
+    m_deck = game.deck.shuffle(m_deck)
 
-    for row in range(7):
-        for column in range(7):
-            if column == row:
-                soli.solitaire[row, column] = m_deck.pop(0)
-            elif column < row:
+    for card in m_deck:
+        print(card, end=", ")
+    print()
+
+    # Creating the game in the 2D array
+    for col in range(7):
+        for row in range(7):
+            if row == col:
+                game.solitaire[col, row] = m_deck.pop(0)
+            elif row < col:
                 card = m_deck.pop(0)
                 card.is_facedown = True
-                soli.solitaire[row, column] = card
-    # Putting the rest of the card in card_deck
-    for i in range(len(m_deck)):
-        soli.card_deck[i] = m_deck[i]
-    # Saving the card_deck in the data array
-    soli.data[soli.CARD_DECK] = soli.card_deck
-    ### DEBUG ###
-    soli.set_own_cards(2)
-    ### DEBUG ###
+                game.solitaire[col, row] = card
 
-
-def show():
+def show_test():
+    """ Print the game """
     print()
-    soli.show_card_deck()
-    print(f"Turned card: {soli.data[soli.TURNED]}")
-    soli.four_suit_deck()
-
-    for column in range(7):
+    for col in range(7):
         print()
         for row in range(7):
-            if soli.solitaire[row, column]:
+            if game.solitaire[row, col]:
                 # Print back-side of card if it's flipped - else print the card
-                if soli.solitaire[row, column].is_facedown:
+                if game.solitaire[row, col].is_facedown:
                     print("[ ]", end=" ")
                 else:
-                    print(soli.solitaire[row, column], end=" ")
+                    print(game.solitaire[row, col], end=" ")
             else:
                 print(" "*4, end="")
+    print()
 
 def play():
     while 1:
-        show()
+        show_test()
 
         print("")
         card = input("Your turn: ")
@@ -59,40 +52,30 @@ def play():
         if card == "q":
             break
 
-        elif card == "deck":
-            soli.move_from_deck(2, 3)
-
         elif card == "whoops":
-            g = game.GameColumns()
-            g.test()
-            g.show_test()
+            game.make_game()
+            game.show_test()
 
-            soli.all_possible(g)
+            Agent.all_possible(g)
 
         # Draw card
-        elif card == "d":
-            soli.turn_card()
+
         elif card == "l":
             if rules.is_col_legal_move(2, 0):
                 print("legal")
             else:
                 print("ikke legal")
-        elif card == "pile":
-            soli.move_game_to_suit_pile(0, 0)
-            for i in soli.data[2]:
-                print(i)
         else:
             # Move card (does not check for legal moves yet)
             inputs = card.split(" ")
             # Converting to list of ints
             inputs = [int(i) for i in inputs]
 
-            print(inputs)
-            soli.move_card(inputs[0], inputs[1], inputs[2], inputs[3])
+
         print(card)
 
 
 # To run the program
-start_game()
+make_game()
 #from_img.make_game_first_time(from_img.test_list)
 play()

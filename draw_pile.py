@@ -90,7 +90,7 @@ class Stock_pile:
 
 
 stock = Stock_pile()
-stock.waste.append(card.Card(1, 'S'))
+stock.waste.append(card.Card(1, 'S', None, 0, 0))
 stock.waste.append(card.Card(1, 'D'))
 from_img.make_game_from_input(from_img.init_list)
 
