@@ -1,4 +1,3 @@
-import solitaire as soli
 import game_columns as game
 
 cards_in_deck = 24
