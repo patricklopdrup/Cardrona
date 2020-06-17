@@ -81,7 +81,7 @@ def get_cards_from_image(img_path):
     card_middle = tuple(np.average(card_corners, axis=0))
     card_middles.append((cur_card, card_middle))
 
-    card_middles = sorted(card_middles, key=lambda t: t[1][1], reverse=True)
+    card_middles = sorted(card_middles, key=lambda t: t[1][1], reverse=False)
 
     return card_middles
 
