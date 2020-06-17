@@ -63,7 +63,6 @@ class GameColumns:
         number = self.m_suit_pile.pile_length(suit)
         return number
 
-
     def move_from_suit_pile(self, suit, to_col) -> bool:
         """ Move a card from a suit pile back into the game """
         # If the suit pile if empty we return False
@@ -106,7 +105,6 @@ class GameColumns:
         end_row = self.get_pile_size_in_col(to_col)
         # Loops through all the cards we want to move and insert them at the distination
         for i, card in enumerate(cards_to_move):
-            print(f"hej: {i}")
             self.solitaire[to_col, end_row + i] = card
         # After card(s) is moved we update the column where we moved from (if necessary)
         self.__update_col_facedown(from_col)
@@ -239,40 +237,6 @@ class GameColumns:
 #          TESTING           #
 ##############################
 
-    def make_game(self):
-        """ Making a deck of cards """
-        m_deck = self.deck.make_deck()
-        m_deck = self.deck.shuffle(m_deck)
-
-        for card in m_deck:
-            print(card, end=", ")
-        print()
-
-        # Creating the game in the 2D array
-        for col in range(7):
-            for row in range(7):
-                if row == col:
-                    self.solitaire[col, row] = m_deck.pop(0)
-                elif row < col:
-                    card = m_deck.pop(0)
-                    card.is_facedown = True
-                    self.solitaire[col, row] = card
-
-    def show_test(self):
-        """ Print the game """
-        print()
-        for col in range(7):
-            print()
-            for row in range(7):
-                if self.solitaire[row, col]:
-                    # Print back-side of card if it's flipped - else print the card
-                    if self.solitaire[row, col].is_facedown:
-                        print("[ ]", end=" ")
-                    else:
-                        print(self.solitaire[row, col], end=" ")
-                else:
-                    print(" "*4, end="")
-        print()
 
     def hack_solitaire(self):
         """ Set solitaire as you wish """
