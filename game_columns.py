@@ -50,6 +50,20 @@ class GameColumns:
         else:
             return False
 
+    def checkif_suitpile(self, from_col, from_row) -> bool:
+        """ Returns whether or not the card can be moved to its pile """
+        card_to_move = self.solitaire[from_col, from_row]
+        # Adds the card to the suit pile and removes from the game if possible
+        if self.m_suit_pile.add_card(card_to_move):
+            return True
+        else:
+            return False
+
+    def pilelength(self, suit):
+        number = self.m_suit_pile.pile_length(suit)
+        return number
+
+
     def move_from_suit_pile(self, suit, to_col) -> bool:
         """ Move a card from a suit pile back into the game """
         # If the suit pile if empty we return False
