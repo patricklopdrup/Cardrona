@@ -31,7 +31,7 @@ class Deck:
 
 
 class Card:
-    def __init__(self, number, suit, above, x, y, is_facedown=False):
+    def __init__(self, number, suit, above=None, x=-1, y=-1, is_facedown=False):
         """
         Creates a card with number, suit, color and a value for facedown
         """

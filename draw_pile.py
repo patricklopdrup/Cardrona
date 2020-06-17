@@ -3,18 +3,14 @@ import card
 import game_columns
 import suit_pile
 
-import from_img  # til test lige nu
-
 
 game = game_columns.GameColumns()
 suit_pile = suit_pile.Suit_pile()
 
 
 class Stock_pile:
-
-    def __init__(self):
-        self.stock = 24
-        self.waste = []
+    stock = 24
+    waste = []
 
     def draw_from_stock(self, card: card.Card) -> bool:
         if self.stock == 0 and len(self.waste) == 0:
@@ -89,13 +85,12 @@ class Stock_pile:
             return False
 
 
-stock = Stock_pile()
-stock.waste.append(card.Card(1, 'S', None, 0, 0))
-stock.waste.append(card.Card(1, 'D'))
-from_img.make_game_from_input(from_img.init_list)
+# stock = Stock_pile()
+# stock.waste.append(card.Card(1, 'S', None, 0, 0))
+# stock.waste.append(card.Card(1, 'D'))
 
-game.show_test()
-stock.move_to_suit_pile()
-stock.move_to_suit_pile()
-game.show_test()
-suit_pile.print_suit_piles()
+# game.show_test()
+# stock.move_to_suit_pile()
+# stock.move_to_suit_pile()
+# game.show_test()
+# suit_pile.print_suit_piles()

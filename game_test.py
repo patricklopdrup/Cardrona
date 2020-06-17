@@ -7,6 +7,7 @@ import Agent
 deck = card.Deck()
 game = game.GameColumns()
 
+
 def make_game():
     """ Making a deck of cards """
     m_deck = game.deck.make_deck()
@@ -18,13 +19,25 @@ def make_game():
 
     # Creating the game in the 2D array
     for col in range(7):
+        above_card = None
         for row in range(7):
             if row == col:
-                game.solitaire[col, row] = m_deck.pop(0)
+                card = m_deck.pop(0)
+                card.above = above_card
+                card.x_pos = col
+                card.y_pos = row
+                game.solitaire[col, row] = card
+                above_card = card
+
             elif row < col:
                 card = m_deck.pop(0)
                 card.is_facedown = True
+                card.above = above_card
+                card.x_pos = col
+                card.y_pos = row
                 game.solitaire[col, row] = card
+                above_card = card
+
 
 def show_test():
     """ Print the game """
@@ -42,6 +55,7 @@ def show_test():
                 print(" "*4, end="")
     print()
 
+
 def play():
     while 1:
         show_test()
@@ -53,10 +67,12 @@ def play():
             break
 
         elif card == "whoops":
-            game.make_game()
-            game.show_test()
+            make_game()
+            show_test()
 
-            Agent.all_possible(g)
+            hej = Agent.all_possible(game)
+            print(hej)
+            print(f" x: {hej[0][0][1]}")
 
         # Draw card
 
@@ -71,11 +87,10 @@ def play():
             # Converting to list of ints
             inputs = [int(i) for i in inputs]
 
-
         print(card)
 
 
 # To run the program
 make_game()
-#from_img.make_game_first_time(from_img.test_list)
+# from_img.make_game_first_time(from_img.test_list)
 play()
