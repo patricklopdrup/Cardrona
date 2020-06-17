@@ -50,22 +50,38 @@ class GameColumns:
         else:
             return False
 
+    def checkif_suitpile(self, from_col, from_row) -> bool:
+        """ Returns whether or not the card can be moved to its pile """
+        card_to_move = self.solitaire[from_col, from_row]
+        # Adds the card to the suit pile and removes from the game if possible
+        if self.m_suit_pile.add_card(card_to_move):
+            return True
+        else:
+            return False
+
+    def pilelength(self, suit):
+        number = self.m_suit_pile.pile_length(suit)
+        return number
+
+
     def move_from_suit_pile(self, suit, to_col) -> bool:
         """ Move a card from a suit pile back into the game """
         # If the suit pile if empty we return False
         if self.m_suit_pile.is_pile_empty(suit):
             return False
-        
+
         # Get card from the suit pile and the card we want to move to
         card_from_suit_pile = self.m_suit_pile.get_card(suit)
-        card_in_game = self.solitaire[to_col, self.get_pile_size_in_col(to_col)-1]
-        
+        card_in_game = self.solitaire[to_col,
+                                      self.get_pile_size_in_col(to_col)-1]
+
         # If we can make the move
         if card_from_suit_pile.can_be_moved_to(card_in_game):
             # Remove top card from suit pile
             self.m_suit_pile.remove_card(suit)
             # Place the card on the column in the game
-            self.solitaire[to_col, self.get_pile_size_in_col(to_col)] = card_from_suit_pile
+            self.solitaire[to_col, self.get_pile_size_in_col(
+                to_col)] = card_from_suit_pile
             return True
         else:
             return False
@@ -274,11 +290,11 @@ class GameColumns:
         self.move_from_suit_pile('H', 0)
 
 
-#gc = GameColumns()
-#gc.make_game()
-#gc.hack_solitaire()
-#gc.show_test()
-#gc.m_suit_pile.print_suit_piles()
-#gc.test_play()
-#gc.m_suit_pile.print_suit_piles()
-#gc.show_test()
+# gc = GameColumns()
+# gc.make_game()
+# gc.hack_solitaire()
+# gc.show_test()
+# gc.m_suit_pile.print_suit_piles()
+# gc.test_play()
+# gc.m_suit_pile.print_suit_piles()
+# gc.show_test()

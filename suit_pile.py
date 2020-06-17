@@ -1,7 +1,6 @@
 import card
 import numpy as np
 
-
 class Suit_pile:
 
     # Dict with lists for each suit
@@ -26,6 +25,9 @@ class Suit_pile:
 
     def is_pile_empty(self, suit):
         return len(self.suit_piles[suit]) == 0
+
+    def pile_length(self, suit):
+        return len(self.suit_piles[suit])
 
     def get_card(self, suit):
         """ Gets the top card of a suit pile without removing it """
