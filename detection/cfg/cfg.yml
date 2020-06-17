@@ -1,6 +1,8 @@
 Debug: True
 Debug_Images: True
 
+camera_url: 'http://192.168.1.151:8080/photo.jpg'
+
 ML_Data:
   cfg: "cfg/yolo_card_detection.cfg"
   data: "cfg/card_detection.data"
