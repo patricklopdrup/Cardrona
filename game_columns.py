@@ -55,17 +55,19 @@ class GameColumns:
         # If the suit pile if empty we return False
         if self.m_suit_pile.is_pile_empty(suit):
             return False
-        
+
         # Get card from the suit pile and the card we want to move to
         card_from_suit_pile = self.m_suit_pile.get_card(suit)
-        card_in_game = self.solitaire[to_col, self.get_pile_size_in_col(to_col)-1]
-        
+        card_in_game = self.solitaire[to_col,
+                                      self.get_pile_size_in_col(to_col)-1]
+
         # If we can make the move
         if card_from_suit_pile.can_be_moved_to(card_in_game):
             # Remove top card from suit pile
             self.m_suit_pile.remove_card(suit)
             # Place the card on the column in the game
-            self.solitaire[to_col, self.get_pile_size_in_col(to_col)] = card_from_suit_pile
+            self.solitaire[to_col, self.get_pile_size_in_col(
+                to_col)] = card_from_suit_pile
             return True
         else:
             return False
@@ -274,11 +276,11 @@ class GameColumns:
         self.move_from_suit_pile('H', 0)
 
 
-#gc = GameColumns()
-#gc.make_game()
-#gc.hack_solitaire()
-#gc.show_test()
-#gc.m_suit_pile.print_suit_piles()
-#gc.test_play()
-#gc.m_suit_pile.print_suit_piles()
-#gc.show_test()
+# gc = GameColumns()
+# gc.make_game()
+# gc.hack_solitaire()
+# gc.show_test()
+# gc.m_suit_pile.print_suit_piles()
+# gc.test_play()
+# gc.m_suit_pile.print_suit_piles()
+# gc.show_test()
