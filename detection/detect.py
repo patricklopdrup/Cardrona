@@ -2,10 +2,17 @@ import card_detection as detector
 import image_processing as imgp
 from pprint import pprint
 from os import path
+import camera
 
 
 class detect:
     game_data = {}
+    cur_image_num = 0
+
+    def take_picture(self):
+        self.cur_image_num += 1
+        camera.take_picture(self.cur_image_num)
+        self.load_state(f'captures/picture_{self.cur_image_num}.jpg')
 
     def load_state(self, img):
         if not path.exists(img):
@@ -46,7 +53,32 @@ class detect:
         return cards
 
 
+def print_stuff(detection):
+    print("Talon")
+    pprint(detection.get_talon())
+    print("\nFoundations")
+    pprint(detection.get_foundations())
+    print("\nTableaus")
+    pprint(detection.get_tableaus())
+
+
 if __name__ == '__main__':
     detection = detect()
-    detection.load_state("img/test3.jpg")
-    pprint(detection.get_tableaus())
+    detection.take_picture()
+    print_stuff(detection)
+    # detection.load_state(f'captures/picture_1.jpg')
+    # for n in range(0, 100):
+    #    detection.take_picture()
+
+    # for n in range(1, 15):
+    #    file = f"img/{n}.jpg"
+    #    print(f"\n\nData from {file}")
+    #    detection.load_state(file)
+    #    if not detection.game_data:
+    #        continue
+    #    print("Talon")
+    #    pprint(detection.get_talon())
+    #    print("\nFoundations")
+    #    pprint(detection.get_foundations())
+    #    print("\nTableaus")
+    #    pprint(detection.get_tableaus())
