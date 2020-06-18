@@ -3,6 +3,7 @@ import rules
 import from_img
 import game_columns as game
 import Agent
+import Algorithm
 
 deck = card.Deck()
 game = game.GameColumns()
@@ -72,6 +73,7 @@ def play():
 
             hej = Agent.all_possible(game)
             print(hej)
+            print(Algorithm.decision(hej))
             print(f" x: {hej[0][0][1]}")
         else:
             # Move card (does not check for legal moves yet)
