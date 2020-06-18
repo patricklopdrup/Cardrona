@@ -83,14 +83,3 @@ class Stock_pile:
                 self.remove_from_waste()
                 return True
             return False
-
-
-# stock = Stock_pile()
-# stock.waste.append(card.Card(1, 'S', None, 0, 0))
-# stock.waste.append(card.Card(1, 'D'))
-
-# game.show_test()
-# stock.move_to_suit_pile()
-# stock.move_to_suit_pile()
-# game.show_test()
-# suit_pile.print_suit_piles()

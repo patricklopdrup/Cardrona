@@ -73,14 +73,6 @@ def play():
             hej = Agent.all_possible(game)
             print(hej)
             print(f" x: {hej[0][0][1]}")
-
-        # Draw card
-
-        elif card == "l":
-            if rules.is_col_legal_move(2, 0):
-                print("legal")
-            else:
-                print("ikke legal")
         else:
             # Move card (does not check for legal moves yet)
             inputs = card.split(" ")

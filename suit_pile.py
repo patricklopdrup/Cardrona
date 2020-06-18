@@ -1,6 +1,7 @@
 import card
 import numpy as np
 
+
 class Suit_pile:
 
     # Dict with lists for each suit

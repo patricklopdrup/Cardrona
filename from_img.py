@@ -5,50 +5,6 @@ import draw_pile
 game = game.GameColumns()
 m_draw_pile = draw_pile.Stock_pile()
 
-test_list = [
-    [
-        ('6D')
-    ],
-    [
-        ('2H')
-    ],
-    [
-        ('3H')
-    ],
-    [
-
-    ],
-    [
-        ('4H')
-    ],
-    [
-        ('6H')
-    ],
-    [
-        ('7H')
-    ]
-]
-
-init_list = [
-    [('8C')],
-    [('7D')],
-    [('7S')],
-    [('9D')],
-    [('10H')],
-    [('AS')],
-    [('AD')]
-]
-
-after_move_list = [
-    [('8C'), ('7D')],
-    [('AS')],
-    [('7S')],
-    [('9D')],
-    [('10H')],
-    [('AS')],
-    [('AD')]
-]
-
 
 def parse_value(input: str) -> int:
     """
@@ -75,19 +31,24 @@ def parse_suit(input: str) -> str:
 
 
 def make_stock_pile(input_list: list):
-    """  """
+    """ Parse the card that is turned from the stock pile and call draw_from_stock() """
     top_card = input_list[0]
+    # Blank paper is seen as None
     if top_card is not None:
         m_card = card.Card(parse_value(top_card),
                            parse_suit(top_card), None, -1, -1)
+        # Update the number of cards left in the stock pile
         m_draw_pile.draw_from_stock(m_card)
 
 
 def make_suit_pile(input_list: list):
+    """ Parse the four suit piles from input_list """
     for card_i in input_list:
+        # Blank paper is seen as None
         if card_i is not None:
             m_card = card.Card(parse_value(
                 card_i), parse_suit(card_i), None, -1, -1)
+            # Add the card to the suit pile in-game
             game.m_suit_pile.add_card(m_card)
 
 
@@ -102,7 +63,7 @@ def make_seven_column(input_list: list):
     for index_col, col in enumerate(input_list):
         # Default above_card as None
         above_card = None
-        # If column in inner-list is NOT empty or there exist facedown cards in the column
+        # If column in inner-list is not None or there exist facedown cards in the column
         if col is not None or game.col_facedown[index_col] > 0:
             # Loops the col_facedown aka. the amount of cards facing down in each column
             for facedown in range(game.col_facedown[index_col]):
@@ -125,27 +86,3 @@ def make_seven_column(input_list: list):
                 # Adds to game array after the facing down cards
                 game.solitaire[index_col, card_index +
                                game.col_facedown[index_col]] = m_card
-
-
-def test():
-    # Test a move from a initial state.
-    # Updating col_facedown for the column we move from
-    # def make_stock_pile(input_list: list):
-    # New input from    """  """
-
-    # ML with a new flipped card
-    make_seven_column(init_list)
-    game.show_test()
-    game.move_in_game(1, 1, 0)
-
-    game.show_test()
-
-    make_seven_column(after_move_list)
-
-    sejt_kort = game.solitaire[0, 0]
-    print(
-        f"x: {sejt_kort.x_pos} og y: {sejt_kort.y_pos} og above: {sejt_kort.above}")
-    game.show_test()
-
-
-# test_x_y()

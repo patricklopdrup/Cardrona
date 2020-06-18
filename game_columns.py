@@ -231,34 +231,3 @@ class GameColumns:
                 else:
                     break
             return cards
-
-
-##############################
-#          TESTING           #
-##############################
-
-
-    def hack_solitaire(self):
-        """ Set solitaire as you wish """
-        self.solitaire[0, 0] = card.Card(3, 'S')
-        self.solitaire[1, 0] = card.Card(7, 'C')
-        self.solitaire[1, 1] = card.Card(6, 'H')
-
-        # Set cards into suit piles
-        card1 = card.Card(1, 'H')
-        card2 = card.Card(2, 'H')
-        self.m_suit_pile.add_card(card1)
-        self.m_suit_pile.add_card(card2)
-
-    def test_play(self):
-        self.move_from_suit_pile('H', 0)
-
-
-# gc = GameColumns()
-# gc.make_game()
-# gc.hack_solitaire()
-# gc.show_test()
-# gc.m_suit_pile.print_suit_piles()
-# gc.test_play()
-# gc.m_suit_pile.print_suit_piles()
-# gc.show_test()
