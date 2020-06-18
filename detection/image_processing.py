@@ -5,7 +5,10 @@ import math
 import cv2
 import os
 
-config = yaml.safe_load(open("cfg/cfg.yml"))
+
+cur_path = os.path.dirname(os.path.abspath(__file__))
+cfg_path = cur_path + "/cfg/cfg.yml"
+config = yaml.safe_load(open(cfg_path))
 DEBUG = config["Debug"]
 DEBUG_IMG = config["Debug_Images"]
 
@@ -75,7 +78,7 @@ def get_rows(img, save=True):
     images = []
 
     if save:
-        files = glob.glob('extract/*')
+        files = glob.glob(cur_path + '/extract/*')
         for f in files:
             os.remove(f)
 
@@ -101,7 +104,7 @@ def get_rows(img, save=True):
             images.append({'img': square_img, 'start': (x, y),
                            'end': (x + w, y + h), 'size': (w, h)})
             if save:
-                cv2.imwrite("extract/" + "row_" + str(idx) + ".png", square_img)
+                cv2.imwrite(cur_path + "/extract/" + "row_" + str(idx) + ".png", square_img)
 
             if DEBUG_IMG:
                 cv2.drawContours(img_cnts, [contour], 0, (0, 255, 0), 3)
@@ -138,7 +141,7 @@ def get_game_state(img):
     top = []
     tableaus = []
 
-    files = glob.glob('extract/*')
+    files = glob.glob(cur_path + '/extract/*')
     for f in files:
         os.remove(f)
 
@@ -181,12 +184,12 @@ def get_game_state(img):
     for c in sorted_top:
         idx += 1
         if idx == 2:
-            image_path = "extract/" + "talon.png"
+            image_path = cur_path + "/extract/" + "talon.png"
             cv2.imwrite(image_path, c['img'])
             c.update(path=image_path)
             talon.append(c)
         elif idx > 2:
-            image_path = "extract/" + "foundation_" + str(idx-2) + ".png"
+            image_path = cur_path + "/extract/" + "foundation_" + str(idx-2) + ".png"
             c.update(path=image_path)
             cv2.imwrite(image_path, c['img'])
             foundations.append(c)
@@ -199,7 +202,7 @@ def get_game_state(img):
     idx = 0
     for c in sorted_tableaus:
         idx += 1
-        image_path = "extract/" + "tableau_" + str(idx) + ".png"
+        image_path = cur_path + "/extract/" + "tableau_" + str(idx) + ".png"
         c.update(path=image_path)
         cv2.imwrite(image_path, c['img'])
         tableaus.append(c)

@@ -2,6 +2,7 @@ import card
 import game_columns as game
 import from_img
 import draw_pile
+import detection.detect as detect
 
 game = game.GameColumns()
 stock = draw_pile.Stock_pile()
@@ -50,7 +51,7 @@ def show_test():
     print("S:", *suit_piles['S'])
     print("D:", *suit_piles['D'])
     print("C:", *suit_piles['C'])
-    #print("H:", *cards[suit])
+    # print("H:", *cards[suit])
 
     print()
     for col in range(7):
@@ -68,10 +69,14 @@ def show_test():
 
 
 def test():
-    from_img.make_stock_pile(stock_pile_list)
-    from_img.make_suit_pile(suit_pile_list)
-    from_img.make_seven_column(turned_card_list)
-    show_test()
+    m_detect = detect.detect()
+    if m_detect.load_state("detection/img/test3.jpg"):
+        from_img.make_stock_pile(m_detect.get_talon())
+        from_img.make_suit_pile(m_detect.get_foundations())
+        from_img.make_seven_column(m_detect.get_tableaus())
+        show_test()
+    else:
+        print("hej med dig")
 
 
 test()

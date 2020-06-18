@@ -1,8 +1,8 @@
-import card_detection as detector
-import image_processing as imgp
+from . import card_detection as detector
+from . import image_processing as imgp
 from pprint import pprint
 from os import path
-import camera
+from . import camera
 
 
 class detect:
@@ -12,7 +12,9 @@ class detect:
     def take_picture(self):
         self.cur_image_num += 1
         camera.take_picture(self.cur_image_num)
-        self.load_state(f'captures/picture_{self.cur_image_num}.jpg')
+        img_path = path.dirname(path.abspath(__file__)) + \
+            f'/captures/picture_{self.cur_image_num}.jpg'
+        self.load_state(img_path)
 
     def load_state(self, img):
         if not path.exists(img):
@@ -20,6 +22,7 @@ class detect:
             return
 
         self.game_data = imgp.get_game_state(img)
+        return True
 
     def get_tableaus(self):
         tableaus = []
@@ -64,6 +67,7 @@ def print_stuff(detection):
 
 if __name__ == '__main__':
     detection = detect()
+    # detection.load_state('img/test3.jpg')
     detection.take_picture()
     print_stuff(detection)
     # detection.load_state(f'captures/picture_1.jpg')

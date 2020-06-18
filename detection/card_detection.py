@@ -1,21 +1,23 @@
-from Darknet.darknet import performDetect as scan
+from .Darknet.darknet import performDetect as scan
 from pprint import pprint
-import image_processing as imgp
+from . import image_processing as imgp
 import numpy as np
 from os import path
 import yaml
 import os
 import cv2
 
-config = yaml.safe_load(open("cfg/cfg.yml"))
+cur_path = path.dirname(path.abspath(__file__))
+cfg_path = cur_path + "/cfg/cfg.yml"
+config = yaml.safe_load(open(cfg_path))
 DEBUG = config["Debug"]
 
 
 def detect_cards(str):
     picture = str
-    cfg = config["ML_Data"]["cfg"]
-    data = config["ML_Data"]["data"]
-    weights = config["ML_Data"]["weights"]
+    cfg = cur_path + config["ML_Data"]["cfg"]
+    data = cur_path + config["ML_Data"]["data"]
+    weights = cur_path + config["ML_Data"]["weights"]
 
     scan_data = scan(imagePath=picture, thresh=0.25,
                      configPath=cfg, weightPath=weights,
@@ -89,7 +91,7 @@ def get_cards_from_image(img_path):
 def get_column_cards(show=False):
     game_data = []
     for filename in os.listdir('extract'):
-        file = 'extract/' + filename
+        file = cur_path + '/extract/' + filename
         col_data = detect_cards(file)
         if not col_data:
             game_data.append([])
@@ -144,7 +146,7 @@ if __name__ == '__main__':
                 continue
 
             img = cv2.imread(inp)
-            card_rows = imgp.get_game_state(img, save=True)
+            card_rows = imgp.get_game_state(inp)
 
             get_column_cards()
 
