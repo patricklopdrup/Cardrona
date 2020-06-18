@@ -3,6 +3,8 @@ import game_columns as game
 import from_img
 import draw_pile
 import detection.detect as detect
+import Agent
+import Algorithm
 
 game = game.GameColumns()
 stock = draw_pile.Stock_pile()
@@ -70,13 +72,18 @@ def show_test():
 
 def test():
     m_detect = detect.detect()
-    if m_detect.load_state("detection/img/test3.jpg"):
+    if m_detect.load_state("detection/img/hej.jpg"):
         from_img.make_stock_pile(m_detect.get_talon())
         from_img.make_suit_pile(m_detect.get_foundations())
         from_img.make_seven_column(m_detect.get_tableaus())
         show_test()
+
+        # Get all the possible moves
+        moves = Agent.all_possible(game)
+        # Print the answer from the AI
+        print(Algorithm.decision(moves))
     else:
-        print("hej med dig")
+        print("Something went wrong")
 
 
 test()

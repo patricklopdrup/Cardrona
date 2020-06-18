@@ -1,7 +1,6 @@
 import numpy as np
 import card
 import itertools
-import rules
 import game_columns
 
 # list of cards to move from where
@@ -19,7 +18,7 @@ def all_possible(game_columns1: game_columns.GameColumns):
     column = 0
     for i in range(7):
         while game_columns1.solitaire[column, i] != listoffaceupcards[column]:
-            print(listoffaceupcards[column])
+            # print(listoffaceupcards[column])
             column += 1
         card_location.append([listoffaceupcards[column], i, column])
 
@@ -27,7 +26,7 @@ def all_possible(game_columns1: game_columns.GameColumns):
     column1 = 0
     for i2 in range(7):
         while game_columns1.solitaire[column1, i2] != listofleafcards[column1]:
-            print(listofleafcards[column1])
+            # print(listofleafcards[column1])
             column1 += 1
         card_location_leafcards.append([listofleafcards[column1], i2, column1])
 
@@ -79,7 +78,7 @@ def where_canthis_be_moved(game_columns1: game_columns.GameColumns, card1: card)
     column1 = 0
     for i2 in range(7):
         while game_columns1.solitaire[column1, i2] != listofleafcards[column1]:
-            print(listofleafcards[column1])
+            # print(listofleafcards[column1])
             column1 += 1
         card_location_leafcards.append([listofleafcards[column1], i2, column1])
 
