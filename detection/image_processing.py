@@ -120,7 +120,7 @@ def get_game_state(img):
     gray = cv2.bilateralFilter(gray, 11, 17, 17)
 
     # Extract the edges
-    edge = cv2.Canny(gray, 100, 200)
+    edge = cv2.Canny(gray, 30, 200)
 
     # Find the contours from the edged image
     contours, _ = cv2.findContours(edge.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -155,7 +155,6 @@ def get_game_state(img):
     for contour in sorted_contours_copy:
         sorted_contours.pop(0)
         area = cv2.contourArea(contour)
-        print(area)
         if area > minArea:
             # print(area)
             idx += 1
@@ -210,5 +209,17 @@ def get_game_state(img):
             cv2.imshow("Debug", img_cnts)
             cv2.waitKey()
     cv2.destroyAllWindows()
+
+    if len(talon) != 1:
+        print("Talon error in image")
+        return False
+
+    if len(foundations) != 4:
+        print(f"Found {len(foundations)} foundations but expected 4")
+        return False
+
+    if len(tableaus) != 7:
+        print(f"Found {len(tableaus)} foundations but expected 7")
+        return False
 
     return {'talon': talon, 'foundations': foundations, 'tableaus': tableaus}
