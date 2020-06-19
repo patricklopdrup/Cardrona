@@ -60,6 +60,7 @@ def all_possible(game_columns1: game_columns.GameColumns):
     if cardfrompile is not None:
         listofwastecards = where_canthis_be_moved(game_columns1, cardfrompile)
 
+        #this card part of a  suit move
         if cardfrompile.suit == "H":
             listofwastecards.append([[cardfrompile, lenthy, 12], [
                 "H", 7, game_columns1.pilelength(cardfrompile.suit)]])
@@ -76,14 +77,6 @@ def all_possible(game_columns1: game_columns.GameColumns):
             listofwastecards.append([[cardfrompile, lenthy, 12], [
                 "C", 7, game_columns1.pilelength(cardfrompile.suit)]])
 
-
-
-
-    # ist this card part of a  suit move
-    length23 = len(listofwastecards)
-
-
-
     # check sequences
      # 1. check nuværende med ovenstående kort
         # 1.1 - Hvis det er en sekvens, så check med næste
@@ -97,8 +90,7 @@ def all_possible(game_columns1: game_columns.GameColumns):
                     sequences.append(
                         [card_location_leafcards[currentcard], card_location_leafcards[othercards1]])
 
-
-    allmoves = sequences+combinations+list
+    allmoves = sequences+combinations+listofwastecards
     return allmoves
 
 
