@@ -1,21 +1,50 @@
 import Agent
 import game_columns
 
+
+class algorithm_action:
+    def __init__(self, user_text: str, pc_action: str, from_card=None, to_card=None):
+        self.user_text = user_text
+        self.pc_action = pc_action
+        self.from_card = from_card
+        self.to_card = to_card
+
+
 def decision(moves, current_card=None, card_destination=None):
     # Draw card if no moves available.
     if not moves:
-        return "Træk et kort"
+        user_text = "Træk et kort"
+        action = None
+        return algorithm_action(user_text, action)
 
     # Check suit moves.
     for i in range(len(moves)):
+        action = "to_suit"
+        m_card = moves[i][0][0]
+
         if moves[i][1][1] == 7:
-            return "Ryk " + str(moves[i][0][0].number) + str(moves[i][0][0].suit) + " til første suit"
+            user_text = "Ryk " + \
+                str(moves[i][0][0].number) + \
+                str(moves[i][0][0].suit) + " til første suit"
+            break
         elif moves[i][1][1] == 8:
-            return "Ryk " + str(moves[i][0][0].number) + str(moves[i][0][0].suit) + " til andet suit"
+            user_text = "Ryk " + \
+                str(moves[i][0][0].number) + \
+                str(moves[i][0][0].suit) + " til andet suit"
+            break
         elif moves[i][1][1] == 9:
-            return "Ryk " + str(moves[i][0][0].number) + str(moves[i][0][0].suit) + " til tredje suit"
+            user_text = "Ryk " + \
+                str(moves[i][0][0].number) + \
+                str(moves[i][0][0].suit) + " til tredje suit"
+            break
         elif moves[i][1][1] == 10:
-            return "Ryk " + str(moves[i][0][0].number) + str(moves[i][0][0].suit) + " til fjerde suit"
+            user_text = "Ryk " + \
+                str(moves[i][0][0].number) + \
+                str(moves[i][0][0].suit) + " til fjerde suit"
+            break
+    # Return new object of algorithm_action
+    return algorithm_action(user_text, action, from_card=m_card)
+
     """
     Prioriteter:
     1. Bunker med flest kort med forsiden nedad.
@@ -31,4 +60,7 @@ def decision(moves, current_card=None, card_destination=None):
             current_card = moves[i][0][0]
             card_destination = moves[i][1][0]
 
-    return "Ryk " + str(current_card.number) + str(current_card.suit) + " til " + str(card_destination.number) + str(card_destination.suit)
+    user_text = "Ryk " + str(current_card) + " til " + str(card_destination)
+    action = "to_col"
+    # Return new object of algorithm_action
+    return algorithm_action(user_text, action, current_card, card_destination)

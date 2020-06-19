@@ -47,6 +47,7 @@ class GameColumns:
         # Adds the card to the suit pile and removes from the game if possible
         if self.m_suit_pile.add_card(card_to_move):
             self.__remove_card(from_col, from_row)
+            self.__update_col_facedown(from_col)
         else:
             return False
 

@@ -32,13 +32,16 @@ def parse_suit(input: str) -> str:
 
 def make_stock_pile(input_list: list):
     """ Parse the card that is turned from the stock pile and call draw_from_stock() """
-    top_card = input_list[0][0]
+    print(f"list her: {input_list}")
     # Blank paper is seen as None
-    if top_card is not None:
+    if input_list is not None:
+        top_card = input_list[0][0]
         m_card = card.Card(parse_value(top_card),
                            parse_suit(top_card), None, -1, -1)
         # Update the number of cards left in the stock pile
         m_draw_pile.draw_from_stock(m_card)
+    else:
+        print("hej med dig")
 
 
 def make_suit_pile(input_list: list):
@@ -61,6 +64,7 @@ def make_seven_column(input_list: list):
     """
     # Loops the outer-list (columns)
     for index_col, col in enumerate(input_list):
+        print(f"list: {input_list}")
         # Default above_card as None
         above_card = None
         # If column in inner-list is not None or there exist facedown cards in the column
