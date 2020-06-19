@@ -134,7 +134,8 @@ def test_take_img():
         from_card = ai_answer.from_card
         to_card = ai_answer.to_card
         game.move_in_game(from_card.x_pos, from_card.y_pos, to_card.x_pos)
-
+    elif action == "from_waste_to_suit":
+        stock.move_to_suit_pile()
     input("Next move")
     m_detect.take_picture()
     show_game(m_detect)

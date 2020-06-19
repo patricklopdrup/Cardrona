@@ -31,8 +31,7 @@ def all_possible(game_columns1: game_columns.GameColumns):
             column1 += 1
         card_location_leafcards.append([listofleafcards[column1], i2, column1])
 
-
-    #checking suitpile
+    # checking suitpile
     lenght1 = len(listofleafcards)
     for thiscard3 in range(lenght1):
         if game_columns1.checkif_suitpile(card_location_leafcards[thiscard3][1], card_location_leafcards[thiscard3][2]):
@@ -55,27 +54,28 @@ def all_possible(game_columns1: game_columns.GameColumns):
     # checking in that wastepile
     primedrawpile = draw_pile.Stock_pile()
     cardfrompile = primedrawpile.get_top_waste()
-    lenthy = primedrawpile.waste()
 
     if cardfrompile is not None:
-        listofwastecards = where_canthis_be_moved(game_columns1, cardfrompile)
+        waste_to_leaf = where_canthis_be_moved(game_columns1, cardfrompile)
 
-        #this card part of a  suit move
-        if cardfrompile.suit == "H":
-            listofwastecards.append([[cardfrompile, lenthy, 12], [
-                "H", 7, game_columns1.pilelength(cardfrompile.suit)]])
+        # this card part of a  suit move
+        if game_columns1.m_suit_pile.can_move_to_pile(cardfrompile):
 
-        if cardfrompile.suit == "S":
-            listofwastecards.append([[cardfrompile, lenthy, 12], [
-                "S", 7, game_columns1.pilelength(cardfrompile.suit)]])
+            if cardfrompile.suit == "H":
+                waste_to_leaf.append([[cardfrompile, 11, 0], [
+                    "H", 7, game_columns1.pilelength(cardfrompile.suit)]])
 
-        if cardfrompile.suit == "D":
-            listofwastecards.append([[cardfrompile, lenthy, 12], [
-                "D", 7, game_columns1.pilelength(cardfrompile.suit)]])
+            if cardfrompile.suit == "S":
+                waste_to_leaf.append([[cardfrompile, 11, 0], [
+                    "S", 8, game_columns1.pilelength(cardfrompile.suit)]])
 
-        if cardfrompile.suit == "C":
-            listofwastecards.append([[cardfrompile, lenthy, 12], [
-                "C", 7, game_columns1.pilelength(cardfrompile.suit)]])
+            if cardfrompile.suit == "D":
+                waste_to_leaf.append([[cardfrompile, 11, 0], [
+                    "D", 9, game_columns1.pilelength(cardfrompile.suit)]])
+
+            if cardfrompile.suit == "C":
+                waste_to_leaf.append([[cardfrompile, 11, 0], [
+                    "C", 10, game_columns1.pilelength(cardfrompile.suit)]])
 
     # check sequences
      # 1. check nuværende med ovenstående kort
@@ -90,27 +90,25 @@ def all_possible(game_columns1: game_columns.GameColumns):
                     sequences.append(
                         [card_location_leafcards[currentcard], card_location_leafcards[othercards1]])
 
-    allmoves = sequences+combinations+listofwastecards
+    allmoves = sequences+combinations+waste_to_leaf
     return allmoves
 
 
 def where_canthis_be_moved(game_columns1: game_columns.GameColumns, card1: card):
-    listofleafcards = []
+    listofleafcards = game_columns1.get_all_leaf_cards()
     card_location_leafcards = []
     wheretomove = []
 
     # locate the leaf cards
-    column1 = 0
-    for i2 in range(7):
-        while game_columns1.solitaire[column1, i2] != listofleafcards[column1]:
-            # print(listofleafcards[column1])
-            column1 += 1
-        card_location_leafcards.append([listofleafcards[column1], i2, column1])
+    for leaf_card in listofleafcards:
+        card_location_leafcards.append(
+            [leaf_card, leaf_card.x_pos, leaf_card.y_pos])
 
-    lenght1 = len(listofleafcards)
-    for othercards1 in range(lenght1):
-        if card1.can_be_moved_to(card_location_leafcards[othercards1][0]):
-            wheretomove.append([[card1, lenght1, 12],card_location_leafcards[othercards1]])
+    for to_card in listofleafcards:
+        if card1.can_be_moved_to(to_card):
+            wheretomove.append(
+                [[card1, 11, card1.x_pos], [to_card, to_card.y_pos, to_card.x_pos]])
 
     return wheretomove
 
+#  [ [card, x, y] , [] ]
