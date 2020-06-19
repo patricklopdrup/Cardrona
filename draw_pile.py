@@ -32,7 +32,7 @@ class Stock_pile:
         Returns the top card of the waste pile
         """
         if len(self.waste) <= 0:
-            return "Der er ingen kort"
+            return None
         else:
             return self.waste[-1]
 
