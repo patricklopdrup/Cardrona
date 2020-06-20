@@ -41,7 +41,7 @@ def make_stock_pile(input_list: list):
         # Update the number of cards left in the stock pile
         m_draw_pile.draw_from_stock(m_card)
     else:
-        print("hej med dig")
+        print("Ingen kort i waste")
 
 
 def make_suit_pile(input_list: list):

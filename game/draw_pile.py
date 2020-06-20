@@ -3,7 +3,6 @@ import game.card as card
 import game.game_columns as game_columns
 import game.suit_pile as suit_pile
 
-
 game = game_columns.GameColumns()
 suit_pile = suit_pile.Suit_pile()
 
