@@ -1,8 +1,8 @@
 import numpy as np
-import card
+import game.card as card
 import itertools
-import game_columns
-import draw_pile
+import game.game_columns as game_columns
+import game.draw_pile as draw_pile
 
 # list of cards to move from where
 

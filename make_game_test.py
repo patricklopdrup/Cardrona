@@ -1,10 +1,10 @@
-import card
-import game_columns as game
+import game.card as card
+import game.game_columns as game
 import from_img
-import draw_pile
+import game.draw_pile as draw_pile
 import detection.detect as detect
-import Agent
-import Algorithm
+import agent.Agent as Agent
+import agent.Algorithm as Algorithm
 
 game = game.GameColumns()
 stock = draw_pile.Stock_pile()
@@ -145,5 +145,5 @@ def test_take_img():
     print(ai_answer.user_text)
 
 
-# test_load_img()
-test_take_img()
+test_load_img()
+# test_take_img()

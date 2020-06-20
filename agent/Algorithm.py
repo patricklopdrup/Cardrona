@@ -1,7 +1,6 @@
-import Agent
-import game_columns
 
 
+# Object to return
 class algorithm_action:
     def __init__(self, user_text: str, pc_action: str, from_card=None, to_card=None):
         self.user_text = user_text

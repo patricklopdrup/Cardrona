@@ -1,6 +1,6 @@
-import card
-import game_columns as game
-import draw_pile
+import game.card as card
+import game.game_columns as game
+import game.draw_pile as draw_pile
 
 game = game.GameColumns()
 m_draw_pile = draw_pile.Stock_pile()

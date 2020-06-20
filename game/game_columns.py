@@ -1,6 +1,6 @@
 import numpy as np
-import card
-import suit_pile
+import game.card as card
+import game.suit_pile as suit_pile
 
 
 class GameColumns:

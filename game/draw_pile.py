@@ -1,7 +1,7 @@
 import numpy as np
-import card
-import game_columns
-import suit_pile
+import game.card as card
+import game.game_columns as game_columns
+import game.suit_pile as suit_pile
 
 
 game = game_columns.GameColumns()

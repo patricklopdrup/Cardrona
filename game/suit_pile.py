@@ -1,4 +1,4 @@
-import card
+import game.card as card
 import numpy as np
 
 
