@@ -88,51 +88,6 @@ def get_cards_from_image(img_path):
     return card_middles
 
 
-def get_column_cards(show=False):
-    game_data = []
-    for filename in os.listdir('extract'):
-        file = cur_path + '/extract/' + filename
-        col_data = detect_cards(file)
-        if not col_data:
-            game_data.append([])
-            continue
-
-        col_data = sorted(col_data, key=lambda i: i['name'])
-        cur_card = ""
-        card_corners = []
-        middles = []
-        for c in col_data:
-            if not cur_card:
-                cur_card = c['name']
-                card_corners = [c['middle']]
-                continue
-            elif cur_card == c['name']:
-                card_corners.append(c['middle'])
-                continue
-            else:
-                middle = tuple(np.average(card_corners, axis=0))
-                middles.append((cur_card, middle))
-                cur_card = c['name']
-                card_corners = [c['middle']]
-
-        middle = tuple(np.average(card_corners, axis=0))
-        middles.append((cur_card, middle))
-
-        middles = sorted(middles, key=lambda t: t[1][1], reverse=True)
-
-        game_data.append(middles)
-
-        if DEBUG:
-            print("\n\nget_column_cards - Card middles")
-            for m in middles:
-                print(f"Card: {m[0]}, middle: {m[1]}")
-
-    if DEBUG:
-        print("\nget_column_cards - Return value")
-        pprint(game_data)
-    return game_data
-
-
 if __name__ == '__main__':
     while True:
         inp = input("Enter command : ")
@@ -147,8 +102,6 @@ if __name__ == '__main__':
 
             img = cv2.imread(inp)
             card_rows = imgp.get_game_state(inp)
-
-            get_column_cards()
 
         elif inp == "detect":
             inp = input("Enter row number : ")
