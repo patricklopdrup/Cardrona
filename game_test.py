@@ -1,9 +1,9 @@
-import card
+import game.card as card
 import rules
 import from_img
-import game_columns as game
-import Agent
-import Algorithm
+import game.game_columns as game
+import agent.Agent as Agent
+import agent.Algorithm as Algorithm
 
 deck = card.Deck()
 game = game.GameColumns()

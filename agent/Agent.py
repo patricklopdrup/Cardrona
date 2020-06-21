@@ -1,8 +1,8 @@
 import numpy as np
-import card
+import game.card as card
 import itertools
-import game_columns
-import draw_pile
+import game.game_columns as game_columns
+import game.draw_pile as draw_pile
 
 # list of cards to move from where
 
@@ -19,7 +19,7 @@ def all_possible(game_columns1: game_columns.GameColumns):
     column = 0
     for i in range(7):
         while game_columns1.solitaire[column, i] != listoffaceupcards[column]:
-            # print(listoffaceupcards[column])
+            print(listoffaceupcards[column])
             column += 1
         card_location.append([listoffaceupcards[column], i, column])
 
@@ -54,6 +54,7 @@ def all_possible(game_columns1: game_columns.GameColumns):
     # checking in that wastepile
     primedrawpile = draw_pile.Stock_pile()
     cardfrompile = primedrawpile.get_top_waste()
+    print(f"er her {cardfrompile}")
 
     if cardfrompile is not None:
         waste_to_leaf = where_canthis_be_moved(game_columns1, cardfrompile)
@@ -89,8 +90,10 @@ def all_possible(game_columns1: game_columns.GameColumns):
                 if card_location[currentcard][0].can_be_moved_to(card_location_leafcards[othercards1][0]):
                     sequences.append(
                         [card_location_leafcards[currentcard], card_location_leafcards[othercards1]])
-
-    allmoves = sequences+combinations+waste_to_leaf
+    if cardfrompile is not None:
+        allmoves = sequences + combinations + waste_to_leaf
+    else:
+        allmoves = sequences + combinations
     return allmoves
 
 

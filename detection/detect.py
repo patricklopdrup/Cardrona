@@ -15,6 +15,7 @@ class detect:
         img_path = path.dirname(path.abspath(__file__)) + \
             f'/captures/picture_{self.cur_image_num}.jpg'
         self.load_state(img_path)
+        return True
 
     def load_state(self, img):
         if not path.exists(img):

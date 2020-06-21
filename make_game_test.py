@@ -1,13 +1,16 @@
-import card
-import game_columns as game
+import game.card as card
+import game.game_columns as game
 import from_img
-import draw_pile
+import game.draw_pile as draw_pile
+import game.suit_pile as suit_pile
 import detection.detect as detect
-import Agent
-import Algorithm
+import agent.Agent as Agent
+import agent.Algorithm as Algorithm
+import agent.action_moves as action_moves
 
 game = game.GameColumns()
 stock = draw_pile.Stock_pile()
+suit_pile = suit_pile.Suit_pile()
 
 stock_pile_list = [('5C')]
 
@@ -66,13 +69,13 @@ def show_test():
                 else:
                     print(game.solitaire[row, col], end=" ")
             else:
-                print(" "*4, end="")
+                print(" " * 4, end="")
     print()
 
 
 def test_load_img():
     m_detect = detect.detect()
-    if m_detect.load_state("detection/img/hej.jpg"):
+    if m_detect.load_state("detection/img/test3.jpg"):
         from_img.make_stock_pile(m_detect.get_talon())
         from_img.make_suit_pile(m_detect.get_foundations())
         from_img.make_seven_column(m_detect.get_tableaus())
@@ -145,5 +148,69 @@ def test_take_img():
     print(ai_answer.user_text)
 
 
+def __load_from_detected_img(m_detect):
+    from_img.make_stock_pile(m_detect.get_talon())
+    from_img.make_suit_pile(m_detect.get_foundations())
+    from_img.make_seven_column(m_detect.get_tableaus())
+
+
+def __take_picture(m_detect, load_img=False):
+    if load_img:
+        while not m_detect.load_state("detection/img/test3.jpg"):
+            print("Virkede ikke")
+    else:
+        while not m_detect.take_picture():
+            print("Tag nyt billede.")
+
+
+def game_loop(load_img=False, debug=False):
+    m_detect = detect.detect()
+
+    while not suit_pile.is_game_won():
+        while True:
+            try:
+                __take_picture(m_detect)
+                # Create the game
+                __load_from_detected_img(m_detect)
+            except TypeError:
+                print("Prøv igen")
+            # if we reach this point we detected the img correctly
+            else:
+                break
+
+        moves = Agent.all_possible(game)
+        if debug:
+            # Show the game in console
+            show_game(m_detect)
+            # Print moves if debug is on
+            print(f"moves: {moves}")
+
+        # Print the answer from the AI
+        ai_answer = Algorithm.decision(moves)
+        print(ai_answer.user_text)
+
+        action = ai_answer.pc_action
+        to_card = ai_answer.to_card
+        from_card = ai_answer.from_card
+        # Check for action
+        if action == action_moves.waste_to_col:
+            stock.move_to_column(to_card.x_pos)
+        elif action == action_moves.waste_to_suit:
+            stock.move_to_suit_pile()
+        elif action == action_moves.col_to_suit:
+            game.move_to_suit_pile(
+                from_card.x_pos, from_card.y_pos)
+        elif action == action_moves.col_to_col:
+            game.move_in_game(from_card.x_pos, from_card.y_pos, to_card.y_pos)
+        # elif action == action_moves.suit_to_col:
+        else:
+            print("Ingen action")
+
+        input("Klik for næste træk!")
+
+    print("Du har vundet!")
+
+
 # test_load_img()
-test_take_img()
+# test_take_img()
+game_loop(debug=True)
