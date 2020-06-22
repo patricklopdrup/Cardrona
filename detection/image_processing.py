@@ -81,7 +81,7 @@ def get_game_state(img):
         morph = cv2.morphologyEx(morph, cv2.MORPH_CLOSE, kernel)
 
     # Get the grayscale of the image
-    blur = cv2.GaussianBlur(morph, (10, 10), 0)
+    blur = cv2.blur(morph, (10, 10))
     gray = cv2.cvtColor(blur, cv2.COLOR_BGR2GRAY)
     gray = cv2.bilateralFilter(gray, 11, 17, 17)
 
