@@ -70,12 +70,23 @@ def get_game_state(img):
     i.e. sorting the Foundations by their x-position in the image.
     """
     img = cv2.imread(img)
-    # Get the grayscale of the image and reduce noise
-    blur = cv2.GaussianBlur(img, (5, 5), 0)
+
+    # Apply morphological transformation to the images, this removes a lot
+    # of detail from the image, making the edge detection less prone to error.
+    morph = img.copy()
+    for n in range(1, 4):
+        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2*n+1, 2*n+1))
+        morph = cv2.dilate(morph, kernel, iterations=1)
+        morph = cv2.morphologyEx(morph, cv2.MORPH_OPEN, kernel)
+        morph = cv2.morphologyEx(morph, cv2.MORPH_CLOSE, kernel)
+
+    # Get the grayscale of the image
+    blur = cv2.GaussianBlur(morph, (10, 10), 0)
     gray = cv2.cvtColor(blur, cv2.COLOR_BGR2GRAY)
     gray = cv2.bilateralFilter(gray, 11, 17, 17)
 
-    tres = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 555, 0)
+    # Apply adaptive treshold to the image
+    tres = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 255, 0)
 
     # Extract the edges
     edge = cv2.Canny(tres, 30, 200)
