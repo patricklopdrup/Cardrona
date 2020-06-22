@@ -71,11 +71,14 @@ def get_game_state(img):
     """
     img = cv2.imread(img)
     # Get the grayscale of the image and reduce noise
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    blur = cv2.GaussianBlur(img, (5, 5), 0)
+    gray = cv2.cvtColor(blur, cv2.COLOR_BGR2GRAY)
     gray = cv2.bilateralFilter(gray, 11, 17, 17)
 
+    tres = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 555, 0)
+
     # Extract the edges
-    edge = cv2.Canny(gray, 30, 200)
+    edge = cv2.Canny(tres, 30, 200)
 
     # Find the contours from the edged image
     contours, _ = cv2.findContours(edge.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
