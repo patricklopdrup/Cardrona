@@ -56,28 +56,36 @@ def make_game(self):
                 self.solitaire[col, row] = card
 
 
-def show_test():
+def show_test(game_object=None):
     """ Print the game """
+    if game_object:
+        local_game = game_object
+    else:
+        local_game = game
     print("Waste pile:", stock.waste)
 
-    suit_piles = game.m_suit_pile.suit_piles
+    suit_piles = local_game.m_suit_pile.suit_piles
     print("H:", *suit_piles['H'])
     print("S:", *suit_piles['S'])
     print("D:", *suit_piles['D'])
     print("C:", *suit_piles['C'])
 
     print()
-    for col in range(13):
+    for col in range(19):
         print()
+        value = None
         for row in range(7):
-            if game.solitaire[row, col]:
+            if local_game.solitaire[row, col] != 0:
+                value = 1
                 # Print back-side of card if it's flipped - else print the card
-                if game.solitaire[row, col].is_facedown:
+                if local_game.solitaire[row, col] is None or local_game.solitaire[row, col].is_facedown:
                     print("[ ]", end=" ")
                 else:
-                    print(game.solitaire[row, col], end=" ")
+                    print(local_game.solitaire[row, col], end=" ")
             else:
                 print(" " * 4, end="")
+        if not value:
+            break
     print()
 
 
@@ -231,4 +239,5 @@ def game_loop(load_img=False):
 
 # test_load_img()
 # test_take_img()
-game_loop()
+if __name__ == '__main__':
+    game_loop()

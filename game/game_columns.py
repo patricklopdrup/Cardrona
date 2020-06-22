@@ -11,7 +11,7 @@ class GameColumns:
     deck = card.Deck()
     m_suit_pile = suit_pile.Suit_pile()
 
-    solitaire = np.zeros((7, 13), dtype=object)
+    solitaire = np.zeros((7, 19), dtype=object)
     leaf_cards = np.zeros(7, dtype=object)
     # Keep track of the facedown cards in each of the 7 piles
     col_facedown: list = [0, 1, 2, 3, 4, 5, 6]
@@ -118,7 +118,7 @@ class GameColumns:
         print("cards to move:", *cards_to_move)
 
     def __update_col_facedown(self, col):
-        """ 
+        """
         Checks if a column consist only of facedown cards,
         this means that we must update col_facedown array to keep track of facedown cards in a column
         """
@@ -185,7 +185,7 @@ class GameColumns:
                                   self.get_pile_size_in_col(col)-1]
 
     def get_all_leaf_cards(self) -> list:
-        """ 
+        """
         Returns a list of all the leaf cards aka. the last card in each column.
         This is used to get the distinations for  in a move.
         """
@@ -214,7 +214,7 @@ class GameColumns:
         return faceup_cards
 
     def get_pile_size_in_col(self, col, only_faceup=False) -> int:
-        """ 
+        """
         Returns the amount of cards in a column.
         By default it counts all the cards in the column,
         but only_faceup can be set so it only returns playable cards
