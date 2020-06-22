@@ -8,41 +8,42 @@ suit_pile = suit_pile.Suit_pile()
 
 
 class Stock_pile:
-    stock = 24
-    waste = []
+    waste = None
 
-    def draw_from_stock(self, card: card.Card) -> bool:
-        if self.stock == 0 and len(self.waste) == 0:
-            print("Der er ikke flere kort at trække")
-            return False
-
-        # If stock is empty, move the waste pile to the stock pile
-        if self.stock == 0:
-            self.stock = len(self.waste)
-            self.waste.clear()
-
-        # Moves card from stock to waste
-        self.waste.append(card)
-        self.stock -= 1
+    def draw_from_stock(self, m_card) -> bool:
+        self.waste = m_card
         return True
+
+    # def draw_from_stock(self, card: card.Card) -> bool:
+    #     if self.stock == 0 and len(self.waste) == 0:
+    #         print("Der er ikke flere kort at trække")
+    #         return False
+
+    #     # If stock is empty, move the waste pile to the stock pile
+    #     if self.stock == 0:
+    #         self.stock = len(self.waste)
+    #         self.waste.clear()
+
+    #     # Moves card from stock to waste
+    #     self.waste.append(card)
+    #     self.stock -= 1
+    #     return True
 
     def get_top_waste(self):
         """
         Returns the top card of the waste pile
         """
-        if len(self.waste) <= 0:
-            return None
-        else:
-            return self.waste[-1]
+        if self.waste:
+            return self.waste
 
     def remove_from_waste(self):
-        if len(self.waste) <= 0:
+        if not self.waste:
             return "Der er ingen kort"
         else:
-            return self.waste.pop()
+            self.waste = None
 
     def is_empty(self) -> bool:
-        return len(self.waste) == 0
+        return not self.waste
 
     def move_to_column(self, col) -> bool:
         """ 

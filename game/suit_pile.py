@@ -7,33 +7,33 @@ class Suit_pile:
     # Dict with lists for each suit
     suit_piles = {'H': [], 'S': [], 'D': [], 'C': []}
 
-    def add_card(self, card) -> bool:
+    def add_card(self, m_card) -> bool:
         """ Add cards to the corresponding pile """
         # Gets the correct pile for the card
-        pile = self.suit_piles[card.suit]
+        pile = self.suit_piles[m_card.suit]
         # If card is an ace and the pile is empty
-        if (card.number == 1 and not pile):
-            pile.append(card)
+        if (m_card.number == 1 and not pile):
+            pile.append(m_card)
             return True
         # If some card already in the pile
         elif pile:
             # If top card of pile is below the appending card
-            if pile[-1].is_below(card):
-                pile.append(card)
+            if pile[-1].is_below(m_card):
+                pile.append(m_card)
                 return True
             return False
         return False
 
-    def can_move_to_pile(self, card):
+    def can_move_to_pile(self, m_card):
         # Gets the correct pile for the card
-        pile = self.suit_piles[card.suit]
+        pile = self.suit_piles[m_card.suit]
         # If card is an ace and the pile is empty
-        if (card.number == 1 and not pile):
+        if (m_card.number == 1 and not pile):
             return True
         # If some card already in the pile
         elif pile:
             # If top card of pile is below the appending card
-            if pile[-1].is_below(card):
+            if pile[-1].is_below(m_card):
                 return True
             return False
         return False

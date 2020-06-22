@@ -10,6 +10,9 @@ class algorithm_action:
         self.from_card = from_card
         self.to_card = to_card
 
+    def __str__(self):
+        return f"text: {self.user_text}, action: {self.pc_action}, from_card: {self.from_card}, to_card: {self.to_card}"
+
 
 def decision(moves, current_card=None, card_destination=None):
     # Draw card if no moves available.
@@ -60,26 +63,35 @@ def decision(moves, current_card=None, card_destination=None):
     2. Hvis man rykker en kolonne så skal der prioriteres dem med konger.
     """
     y_pos = 0
-    current_card
-    card_destination
     # Check regular moves.
     for i in range(len(moves)):
-        if moves[i][0][2] > y_pos:
-            y_pos = moves[i][0][2]
-            current_card = moves[i][0][0]
-            card_destination = moves[i][1][0]
+        current_card = moves[i][0][0]
+        card_destination = moves[i][1][0]
+        if current_card.y_pos > y_pos:
+            y_pos = current_card.y_pos
     # -1 for a card not placed in the columns
     # Goes here only if we look at the waste pile
-    if moves[i][0][2] == -1:
+    if current_card.y_pos == -1:
         # Move from waste pile
         for i in range(len(moves)):
             if moves[i][0][1] == 11:
                 current_card = moves[i][0][0]
                 card_destination = moves[i][1][0]
-                user_text = "Ryk " + str(current_card) + \
-                    " til " + str(card_destination)
-                action = action_moves.waste_to_suit
+                if card_destination:
+                    user_text = "Ryk " + str(current_card) + \
+                        " til " + str(card_destination)
+                else:
+                    user_text = "Ryk " + \
+                        str(current_card) + " til en tom plads"
+                action = action_moves.waste_to_col
                 return algorithm_action(user_text, action, current_card, card_destination)
+
+    # Don't go into loop. Check for card above
+    if current_card.above and card_destination:
+        if current_card.above.number == card_destination.number:
+            user_text = "Træk et kort"
+            action = None
+            return algorithm_action(user_text, action)
 
     user_text = "Ryk " + str(current_card) + " til " + str(card_destination)
     action = action_moves.col_to_col

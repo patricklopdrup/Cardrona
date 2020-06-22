@@ -3,7 +3,6 @@ import game.game_columns as game
 import game.draw_pile as draw_pile
 
 game = game.GameColumns()
-m_draw_pile = draw_pile.Stock_pile()
 
 
 def parse_value(input: str) -> int:
@@ -30,16 +29,15 @@ def parse_suit(input: str) -> str:
     return input[-1]
 
 
-def make_stock_pile(input_list: list):
+def make_stock_pile(input_list: list, stock_pile):
     """ Parse the card that is turned from the stock pile and call draw_from_stock() """
-    print(f"list her: {input_list}")
     # Blank paper is seen as None
-    if input_list is not None:
+    if input_list:
         top_card = input_list[0][0]
         m_card = card.Card(parse_value(top_card),
                            parse_suit(top_card), None, -1, -1)
         # Update the number of cards left in the stock pile
-        m_draw_pile.draw_from_stock(m_card)
+        stock_pile.draw_from_stock(m_card)
     else:
         print("Ingen kort i waste")
 
@@ -48,9 +46,14 @@ def make_suit_pile(input_list: list):
     """ Parse the four suit piles from input_list """
     for card_index, card_i in enumerate(input_list):
         # Blank paper is seen as None
-        if card_i is not None:
+        if card_i:
+            print(f"list: {card_i}")
             m_card = card.Card(parse_value(
-                card_i[card_index][0]), parse_suit(card_i[card_index][0]), None, -1, -1)
+                card_i[0][0]),
+                parse_suit(card_i[0][0]),
+                None,
+                -1,
+                -1)
             # Add the card to the suit pile in-game
             game.m_suit_pile.add_card(m_card)
 
@@ -64,11 +67,10 @@ def make_seven_column(input_list: list):
     """
     # Loops the outer-list (columns)
     for index_col, col in enumerate(input_list):
-        print(f"list: {input_list}")
         # Default above_card as None
         above_card = None
         # If column in inner-list is not None or there exist facedown cards in the column
-        if col[0] is not None or game.col_facedown[index_col] > 0:
+        if col[0] or game.col_facedown[index_col] > 0:
             # Loops the col_facedown aka. the amount of cards facing down in each column
             for facedown in range(game.col_facedown[index_col]):
                 # Creates a default card facing down (value and suit does NOT matter)
@@ -90,3 +92,6 @@ def make_seven_column(input_list: list):
                 # Adds to game array after the facing down cards
                 game.solitaire[index_col, card_index +
                                game.col_facedown[index_col]] = m_card
+        elif not col[0]:
+            # If column is empty show empty col in-game
+            game.solitaire[index_col, 0] = 0

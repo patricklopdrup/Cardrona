@@ -29,7 +29,10 @@ class detect:
         tableaus = []
         for tableau in self.game_data['tableaus']:
             cards = detector.get_cards_from_image(tableau['path'])
-            tableaus.append(cards)
+            if cards:
+                tableaus.append(cards)
+            else:
+                tableaus.append([None])
 
         return tableaus
 

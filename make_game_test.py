@@ -7,6 +7,15 @@ import detection.detect as detect
 import agent.Agent as Agent
 import agent.Algorithm as Algorithm
 import agent.action_moves as action_moves
+from pprint import pprint
+import yaml
+from os import path
+
+# Global configuration for file
+cur_path = path.dirname(path.abspath(__file__))
+cfg_path = cur_path + "/detection/cfg/cfg.yml"
+config = yaml.safe_load(open(cfg_path))
+DEBUG = config["Debug"]
 
 game = game.GameColumns()
 stock = draw_pile.Stock_pile()
@@ -49,17 +58,16 @@ def make_game(self):
 
 def show_test():
     """ Print the game """
-    print("Waste pile:", *stock.waste)
+    print("Waste pile:", stock.waste)
 
     suit_piles = game.m_suit_pile.suit_piles
     print("H:", *suit_piles['H'])
     print("S:", *suit_piles['S'])
     print("D:", *suit_piles['D'])
     print("C:", *suit_piles['C'])
-    # print("H:", *cards[suit])
 
     print()
-    for col in range(7):
+    for col in range(13):
         print()
         for row in range(7):
             if game.solitaire[row, col]:
@@ -73,85 +81,92 @@ def show_test():
     print()
 
 
-def test_load_img():
-    m_detect = detect.detect()
-    if m_detect.load_state("detection/img/test3.jpg"):
-        from_img.make_stock_pile(m_detect.get_talon())
-        from_img.make_suit_pile(m_detect.get_foundations())
-        from_img.make_seven_column(m_detect.get_tableaus())
-        show_test()
+# def test_load_img():
+#     m_detect = detect.detect()
+#     if m_detect.load_state("detection/img/test3.jpg"):
+#         from_img.make_stock_pile(m_detect.get_talon(), stock)
+#         from_img.make_suit_pile(m_detect.get_foundations())
+#         from_img.make_seven_column(m_detect.get_tableaus())
+#         show_test()
 
-        # Get all the possible moves
-        moves = Agent.all_possible(game)
-        print(f"moves: {moves}")
-        # Print the answer from the AI
-        ai_answer = Algorithm.decision(moves)
-        print(ai_answer.user_text)
+#         # Get all the possible moves
+#         moves = Agent.all_possible(game, stock)
+#         print(f"moves: {moves}")
+#         # Print the answer from the AI
+#         ai_answer = Algorithm.decision(moves)
+#         print(ai_answer.user_text)
 
-        # Update the game
-        action = ai_answer.pc_action
-        if action == "to_suit":
-            card_to_move = ai_answer.from_card
-            game.move_to_suit_pile(card_to_move.x_col, card_to_move.y_col)
-        elif action == "to_col":
-            from_card = ai_answer.from_card
-            to_card = ai_answer.to_card
-            game.move_in_game(from_card.x_pos, from_card.y_pos, to_card.x_pos)
+#         # Update the game
+#         action = ai_answer.pc_action
+#         if action == "to_suit":
+#             card_to_move = ai_answer.from_card
+#             game.move_to_suit_pile(card_to_move.x_col, card_to_move.y_col)
+#         elif action == "to_col":
+#             from_card = ai_answer.from_card
+#             to_card = ai_answer.to_card
+#             game.move_in_game(from_card.x_pos, from_card.y_pos, to_card.x_pos)
 
-        # Run again
-        input("click")
-        m_detect.load_state("detection/img/hej.jpg")
-        from_img.make_stock_pile(m_detect.get_talon())
-        from_img.make_suit_pile(m_detect.get_foundations())
-        from_img.make_seven_column(m_detect.get_tableaus())
-        show_test()
-    else:
-        print("Something went wrong")
+#         # Run again
+#         input("click")
+#         m_detect.load_state("detection/img/hej.jpg")
+#         from_img.make_stock_pile(m_detect.get_talon(), stock)
+#         from_img.make_suit_pile(m_detect.get_foundations())
+#         from_img.make_seven_column(m_detect.get_tableaus())
+#         show_test()
+#     else:
+#         print("Something went wrong")
 
 
+# def test_take_img():
+#     m_detect = detect.detect()
+#     m_detect.take_picture()
+#     show_game(m_detect)
+
+#     moves = Agent.all_possible(game, stock)
+#     # Print the answer from the AI
+#     ai_answer = Algorithm.decision(moves)
+#     print(ai_answer.user_text)
+
+#     if DEBUG:
+#         # Get all the possible moves
+#         print(f"moves: {moves}")
+
+#     # Update the game
+#     action = ai_answer
+#     if action == "to_suit":
+#         card_to_move = ai_answer.from_card
+#         game.move_to_suit_pile(card_to_move.x_col, card_to_move.y_col)
+#     elif action == "to_col":
+#         from_card = ai_answer.from_card
+#         to_card = ai_answer.to_card
+#         game.move_in_game(from_card.x_pos, from_card.y_pos, to_card.x_pos)
+#     elif action == "from_waste_to_suit":
+#         stock.move_to_suit_pile()
+#     input("Next move")
+#     m_detect.take_picture()
+#     show_game(m_detect)
+
+#     # Print the answer from the AI
+#     ai_answer = Algorithm.decision(moves)
+#     print(ai_answer.user_text)
+
+#####################################
 def show_game(detection):
-    from_img.make_stock_pile(detection.get_talon())
-    from_img.make_suit_pile(detection.get_foundations())
-    from_img.make_seven_column(detection.get_tableaus())
     show_test()
 
 
-def test_take_img():
-    m_detect = detect.detect()
-    m_detect.take_picture()
-    show_game(m_detect)
-
-    # Get all the possible moves
-    moves = Agent.all_possible(game)
-    print(f"moves: {moves}")
-    # Print the answer from the AI
-    ai_answer = Algorithm.decision(moves)
-    print(ai_answer.user_text)
-
-    # Update the game
-    action = ai_answer
-    if action == "to_suit":
-        card_to_move = ai_answer.from_card
-        game.move_to_suit_pile(card_to_move.x_col, card_to_move.y_col)
-    elif action == "to_col":
-        from_card = ai_answer.from_card
-        to_card = ai_answer.to_card
-        game.move_in_game(from_card.x_pos, from_card.y_pos, to_card.x_pos)
-    elif action == "from_waste_to_suit":
-        stock.move_to_suit_pile()
-    input("Next move")
-    m_detect.take_picture()
-    show_game(m_detect)
-
-    # Print the answer from the AI
-    ai_answer = Algorithm.decision(moves)
-    print(ai_answer.user_text)
-
-
 def __load_from_detected_img(m_detect):
-    from_img.make_stock_pile(m_detect.get_talon())
-    from_img.make_suit_pile(m_detect.get_foundations())
-    from_img.make_seven_column(m_detect.get_tableaus())
+    talon = m_detect.get_talon()
+    pprint(talon)
+    suit = m_detect.get_foundations()
+    cols = m_detect.get_tableaus()
+    if DEBUG:
+        pprint(talon)
+        pprint(suit)
+        pprint(cols)
+    from_img.make_stock_pile(talon, stock)
+    from_img.make_suit_pile(suit)
+    from_img.make_seven_column(cols)
 
 
 def __take_picture(m_detect, load_img=False):
@@ -163,7 +178,7 @@ def __take_picture(m_detect, load_img=False):
             print("Tag nyt billede.")
 
 
-def game_loop(load_img=False, debug=False):
+def game_loop(load_img=False):
     m_detect = detect.detect()
 
     while not suit_pile.is_game_won():
@@ -174,14 +189,17 @@ def game_loop(load_img=False, debug=False):
                 __load_from_detected_img(m_detect)
             except TypeError:
                 print("Prøv igen")
+                input("Klik ENTER for nyt billede")
             # if we reach this point we detected the img correctly
             else:
                 break
 
-        moves = Agent.all_possible(game)
-        if debug:
-            # Show the game in console
-            show_game(m_detect)
+        # Show the game in console
+        show_game(m_detect)
+
+        moves = Agent.all_possible(game, stock)
+        if DEBUG:
+            print(f"col_facedown: {game.col_facedown}")
             # Print moves if debug is on
             print(f"moves: {moves}")
 
@@ -192,6 +210,8 @@ def game_loop(load_img=False, debug=False):
         action = ai_answer.pc_action
         to_card = ai_answer.to_card
         from_card = ai_answer.from_card
+        if DEBUG:
+            print("ai_answer:", ai_answer)
         # Check for action
         if action == action_moves.waste_to_col:
             stock.move_to_column(to_card.x_pos)
@@ -201,16 +221,14 @@ def game_loop(load_img=False, debug=False):
             game.move_to_suit_pile(
                 from_card.x_pos, from_card.y_pos)
         elif action == action_moves.col_to_col:
-            game.move_in_game(from_card.x_pos, from_card.y_pos, to_card.y_pos)
+            game.move_in_game(from_card.x_pos, from_card.y_pos, to_card.x_pos)
         # elif action == action_moves.suit_to_col:
-        else:
-            print("Ingen action")
 
-        input("Klik for næste træk!")
+        input("Klik ENTER for næste træk!")
 
     print("Du har vundet!")
 
 
 # test_load_img()
 # test_take_img()
-game_loop(debug=True)
+game_loop()
