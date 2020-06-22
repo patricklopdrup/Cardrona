@@ -1,0 +1,7 @@
+card_positions:
+  suits:
+    - "Clubs"
+    - "Diamonds"
+    - "Hearts"
+    - "Spades"
+  path: ./automated_test/images/
