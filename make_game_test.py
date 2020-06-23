@@ -169,7 +169,6 @@ def show_game(detection):
 
 
 def __load_from_detected_img(m_detect):
-    detect.print_stuff(m_detect)
     talon = m_detect.get_talon()
     suit = m_detect.get_foundations()
     cols = m_detect.get_tableaus()
@@ -205,6 +204,8 @@ def __take_picture(m_detect, load_img=False):
 def game_loop(load_img=False):
     m_detect = detect.detect()
 
+    ai_waste_count = 0
+
     while not suit_pile.is_game_won():
         while True:
             try:
@@ -234,6 +235,14 @@ def game_loop(load_img=False):
         print(ai_answer.user_text)
 
         action = ai_answer.pc_action
+        if action is None:
+            ai_waste_count += 1
+        else:
+            ai_waste_count = 0
+
+        if ai_waste_count >= 25:
+            break
+
         to_card = ai_answer.to_card
         from_card = ai_answer.from_card
         if DEBUG:
@@ -254,8 +263,12 @@ def game_loop(load_img=False):
         # elif action == action_moves.suit_to_col:
 
         input("Klik ENTER for næste træk!")
+        print("\n" * 10)
 
-    print("Du har vundet!")
+    if suit_pile.is_game_won():
+        print("Du har vundet!")
+    else:
+        print("Du har tabt!")
 
 
 # test_load_img()
