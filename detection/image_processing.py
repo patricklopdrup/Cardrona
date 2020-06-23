@@ -28,6 +28,11 @@ def resize_image(img):
     # Get the size of the image and define what the new size will be (max 800x800)
     h, w = img.shape[:2]
     size = 960
+    aspect = w / h
+    if h > size:
+        h = size
+        w = np.round(size * aspect).astype(int)
+        img = cv2.resize(img, (w, h), interpolation=cv2.INTER_CUBIC)
 
     padding_hor = size - w
 
@@ -36,7 +41,6 @@ def resize_image(img):
     bg_color = config["ML_Data"]["bgcolor"]
 
     # scale the image and add padding
-    # scaled_img = cv2.resize(img, (new_w, new_h), interpolation=cv2.INTER_CUBIC)
     scaled_img = cv2.copyMakeBorder(img,
                                     0, padding_vert, 0, padding_hor,
                                     borderType=cv2.BORDER_CONSTANT,
