@@ -3,11 +3,12 @@ import game.card as card
 import game.game_columns as game_columns
 import game.suit_pile as suit_pile
 
-game = game_columns.GameColumns()
-suit_pile = suit_pile.Suit_pile()
-
 
 class Stock_pile:
+    def __init__(self, game, suit_pile):
+        self.game = game
+        self.suit_pile = suit_pile
+
     waste = None
 
     def draw_from_stock(self, m_card) -> bool:
@@ -46,7 +47,7 @@ class Stock_pile:
         return not self.waste
 
     def move_to_column(self, col) -> bool:
-        """ 
+        """
         Move card from waste pile to game columns.
         Return True if the move is completed. False otherwise.
         """
@@ -56,17 +57,17 @@ class Stock_pile:
         else:
             # Get the top card in the waste pile
             waste_card = self.get_top_waste()
-            if not game.solitaire[col].any():
-                game.solitaire[col, 0] = waste_card
+            if not self.game.solitaire[col].any():
+                self.game.solitaire[col, 0] = waste_card
                 self.remove_from_waste()
                 return True
 
             # Get the card we want to move to
-            card_in_game = game.get_leaf_card(col)
+            card_in_game = self.game.get_leaf_card(col)
             # If it is legal to move the card to the game
             if waste_card.can_be_moved_to(card_in_game):
                 # Set card on top of card_in_game
-                game.solitaire[col, game.get_pile_size_in_col(
+                self.game.solitaire[col, self.game.get_pile_size_in_col(
                     col)] = waste_card
                 # Remove from the waste pile
                 self.remove_from_waste()
@@ -74,7 +75,7 @@ class Stock_pile:
             return False
 
     def move_to_suit_pile(self) -> bool:
-        """ 
+        """
         Move card from waste pile to suit pile.
         Return True if the move is completed. False otherwise.
         """
@@ -83,7 +84,7 @@ class Stock_pile:
         else:
             # Get the top card in the waste pile
             waste_card = self.get_top_waste()
-            if suit_pile.add_card(waste_card):
+            if self.suit_pile.add_card(waste_card):
                 # Remove from the waste pile
                 self.remove_from_waste()
                 return True

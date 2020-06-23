@@ -114,7 +114,7 @@ class GameColumns:
         self.__update_col_facedown(from_col)
 
     def __update_col_facedown(self, col):
-        """ 
+        """
         Checks if a column consist only of facedown cards,
         this means that we must update col_facedown array to keep track of facedown cards in a column
         """
@@ -145,7 +145,7 @@ class GameColumns:
             return False
         # If card is the last in a column: return True
         if self.is_leaf_card(from_col, from_row):
-            self.leaf_cards[from_col] = self.solitaire[from_col, from_row]
+            # self.leaf_cards[from_col] = self.solitaire[from_col, from_row]
             return True
         # Loop through the column starting at "from_row"
         for i, card in enumerate(self.solitaire[from_col]):
@@ -180,7 +180,7 @@ class GameColumns:
                                   self.get_pile_size_in_col(col)-1]
 
     def get_all_leaf_cards(self) -> list:
-        """ 
+        """
         Returns a list of all the leaf cards aka. the last card in each column.
         This is used to get the distinations for  in a move.
         """
@@ -209,7 +209,7 @@ class GameColumns:
         return faceup_cards
 
     def get_pile_size_in_col(self, col, only_faceup=False) -> int:
-        """ 
+        """
         Returns the amount of cards in a column.
         By default it counts all the cards in the column,
         but only_faceup can be set so it only returns playable cards
