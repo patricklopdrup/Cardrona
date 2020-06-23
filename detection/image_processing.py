@@ -26,33 +26,19 @@ def resize_image(img):
     """
 
     # Get the size of the image and define what the new size will be (max 800x800)
-    max_size = config["ML_Data"]["max_size"]
     h, w = img.shape[:2]
-    size = max(h, w)
-    size = int(math.ceil(size / 32) * 32) if size <= max_size else max_size
-    new_h = new_w = size
-    pad_left = pad_right = pad_top = pad_bot = 0
-    aspect = w / h
+    size = 960
 
-    # Check what the aspect ratio of the image is and resize the image accordingly
-    # Adding padding on the left/right if Aspect < 1 and top/bottom if Aspect > 1
-    if aspect > 1:
-        new_h = np.round(size / aspect).astype(int)
-        pad_vert = (size - new_h) / 2
-        pad_top = np.floor(pad_vert).astype(int)
-        pad_bot = np.ceil(pad_vert).astype(int)
-    elif aspect < 1:
-        new_w = np.round(size * aspect).astype(int)
-        pad_horz = (size - new_w) / 2
-        pad_left = np.floor(pad_horz).astype(int)
-        pad_right = np.ceil(pad_horz).astype(int)
+    padding_hor = size - w
+
+    padding_vert = size - h
 
     bg_color = config["ML_Data"]["bgcolor"]
 
     # scale the image and add padding
-    scaled_img = cv2.resize(img, (new_w, new_h), interpolation=cv2.INTER_CUBIC)
-    scaled_img = cv2.copyMakeBorder(scaled_img,
-                                    pad_top, pad_bot, pad_left, pad_right,
+    # scaled_img = cv2.resize(img, (new_w, new_h), interpolation=cv2.INTER_CUBIC)
+    scaled_img = cv2.copyMakeBorder(img,
+                                    0, padding_vert, 0, padding_hor,
                                     borderType=cv2.BORDER_CONSTANT,
                                     value=bg_color)
 
@@ -118,7 +104,7 @@ def get_game_state(img):
 
     # Define the minimum size of the detected card areas
     h, w, _ = img.shape
-    minArea = w / 10 * w / 10
+    minArea = w / 15 * w / 15
 
     # Variables needed in the loop
     top, tableaus = [], []

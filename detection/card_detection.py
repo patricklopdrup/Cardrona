@@ -1,4 +1,5 @@
 from .Darknet.darknet import performDetect as scan
+from .Darknet.darknet import performDetect as scan2
 from pprint import pprint
 from . import image_processing as imgp
 import numpy as np
@@ -36,21 +37,14 @@ def detect_cards(str):
     A function to gather all cards from an image and return them as a list
     """
 
-    # Configuration
-    img = cv2.imread(str)
-    size = max(img.shape[:2])
-    sizes = list(config['ML_Data']['size_cfg'])
-
-    closest = take_closest(sizes, size)
-
     picture = str
-    cfg = f'{cur_path}{config["ML_Data"]["cfg"]}_{closest}.cfg'
+    cfg = f'{cur_path}{config["ML_Data"]["cfg"]}_960.cfg'
     data = cur_path + config["ML_Data"]["data"]
     weights = cur_path + config["ML_Data"]["weights"]
 
     # Use the scan method from the darknet wrapper to detect all card corners
     scan_data = scan(imagePath=picture, thresh=0.5,
-                     configPath=cfg, weightPath=weights,
+                     configPath="detection/cfg/card_detection_960.cfg", weightPath=weights,
                      metaPath=data, showImage=False,
                      makeImageOnly=False, initOnly=False)
 
