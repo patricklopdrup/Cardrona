@@ -18,8 +18,9 @@ config = yaml.safe_load(open(cfg_path))
 DEBUG = config["Debug"]
 
 game = game.GameColumns()
-stock = draw_pile.Stock_pile()
 suit_pile = suit_pile.Suit_pile()
+stock = draw_pile.Stock_pile(game, suit_pile)
+
 
 stock_pile_list = [('5C')]
 
@@ -34,6 +35,10 @@ turned_card_list = [
     [('7S'), ('6S')],
     [('1S'), ('12D')]
 ]
+
+
+class ColumnNotLegal(Exception):
+    pass
 
 
 def make_game(self):
@@ -164,8 +169,8 @@ def show_game(detection):
 
 
 def __load_from_detected_img(m_detect):
+    detect.print_stuff(m_detect)
     talon = m_detect.get_talon()
-    pprint(talon)
     suit = m_detect.get_foundations()
     cols = m_detect.get_tableaus()
     if DEBUG:
@@ -173,8 +178,19 @@ def __load_from_detected_img(m_detect):
         pprint(suit)
         pprint(cols)
     from_img.make_stock_pile(talon, stock)
-    from_img.make_suit_pile(suit)
-    from_img.make_seven_column(cols)
+    game.m_suit_pile = from_img.make_suit_pile(suit, game)
+    game.solitaire = from_img.make_seven_column(cols, game)
+
+    any_illegal = False
+    for col in range(len(game.solitaire)):
+        for m_card in game.solitaire[col]:
+            if m_card != 0 and not m_card.is_facedown:
+                any_illegal = not game.is_col_legal(m_card.x_pos, m_card.y_pos)
+                break
+
+        if any_illegal:
+            raise ColumnNotLegal
+    # show_test(game)
 
 
 def __take_picture(m_detect, load_img=False):
@@ -199,10 +215,11 @@ def game_loop(load_img=False):
                 print("Prøv igen")
                 input("Klik ENTER for nyt billede")
             # if we reach this point we detected the img correctly
+            except ColumnNotLegal:
+                print("En kolonne var ikke legal, prøv igen")
+                input("Klik ENTER for nyt billede")
             else:
                 break
-
-        detect.print_stuff(m_detect)
         # Show the game in console
         show_game(m_detect)
 
