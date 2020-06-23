@@ -70,34 +70,34 @@ def decision(moves, current_card=None, card_destination=None):
         card_destination = moves[i][1][0]
         if current_card.y_pos > y_pos:
             y_pos = current_card.y_pos
-    # -1 for a card not placed in the columns
-    # Goes here only if we look at the waste pile
-    if current_card.y_pos == -1:
-        # Move from waste pile
-        for i in range(len(moves)):
-            if moves[i][0][1] == 11:
-                current_card = moves[i][0][0]
-                card_destination = moves[i][1][0]
-                # If the destination column is empty
-                if card_destination:
-                    user_text = "Ryk " + str(current_card) + \
-                        " til " + str(card_destination)
-                else:
-                    user_text = "Ryk " + \
-                        str(current_card) + " til en tom plads"
-                    # Create a placeholder card (we only use x and y pos NOT number or suit)
-                    card_destination = card.Card(
-                        1, 'H', x=moves[i][1][1], y=moves[i][1][2])
-                action = action_moves.waste_to_col
-                return algorithm_action(user_text, action, current_card, card_destination)
+        # -1 for a card not placed in the columns
+        # Goes here only if we look at the waste pile
+        if current_card.y_pos == -1:
+            # Move from waste pile
+            for i in range(len(moves)):
+                if moves[i][0][1] == 11:
+                    current_card = moves[i][0][0]
+                    card_destination = moves[i][1][0]
+                    # If the destination column is empty
+                    if card_destination:
+                        user_text = "Ryk " + str(current_card) + \
+                            " til " + str(card_destination)
+                    else:
+                        user_text = "Ryk " + \
+                            str(current_card) + " til en tom plads"
+                        # Create a placeholder card (we only use x and y pos NOT number or suit)
+                        card_destination = card.Card(
+                            1, 'H', x=moves[i][1][1], y=moves[i][1][2])
+                    action = action_moves.waste_to_col
+                    return algorithm_action(user_text, action, current_card, card_destination)
 
-    if current_card.number == 13 and not card_destination:
-        user_text = "Ryk " + \
-            str(current_card) + " til en tom plads"
-        card_destination = card.Card(
-            1, 'H', x=moves[i][1][1], y=moves[i][1][2])
-        action = action_moves.col_to_col
-        return algorithm_action(user_text, action, current_card, card_destination)
+        if current_card.number == 13 and not card_destination:
+            user_text = "Ryk " + \
+                str(current_card) + " til en tom plads"
+            card_destination = card.Card(
+                1, 'H', x=moves[i][1][1], y=moves[i][1][2])
+            action = action_moves.col_to_col
+            return algorithm_action(user_text, action, current_card, card_destination)
 
     # Don't go into loop. Check for card above
     possible_count = 0
