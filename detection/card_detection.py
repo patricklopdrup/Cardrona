@@ -3,6 +3,7 @@ from pprint import pprint
 from . import image_processing as imgp
 import numpy as np
 from os import path
+from bisect import bisect_left
 import yaml
 import os
 import cv2
@@ -14,19 +15,41 @@ config = yaml.safe_load(open(cfg_path))
 DEBUG = config["Debug"]
 
 
+def take_closest(myList, myNumber):
+    """
+    Assumes myList is sorted. Returns closest value to myNumber.
+
+    If two numbers are equally close, return the smallest number.
+    """
+    pos = bisect_left(myList, myNumber)
+    if pos == 0:
+        return myList[0]
+    if pos == len(myList):
+        return myList[-1]
+    before = myList[pos - 1]
+    after = myList[pos]
+    return after
+
+
 def detect_cards(str):
     """
     A function to gather all cards from an image and return them as a list
     """
 
     # Configuration
+    img = cv2.imread(str)
+    size = max(img.shape[:2])
+    sizes = list(config['ML_Data']['size_cfg'])
+
+    closest = take_closest(sizes, size)
+
     picture = str
-    cfg = cur_path + config["ML_Data"]["cfg"]
+    cfg = f'{cur_path}{config["ML_Data"]["cfg"]}_{closest}.cfg'
     data = cur_path + config["ML_Data"]["data"]
     weights = cur_path + config["ML_Data"]["weights"]
 
     # Use the scan method from the darknet wrapper to detect all card corners
-    scan_data = scan(imagePath=picture, thresh=0.25,
+    scan_data = scan(imagePath=picture, thresh=0.5,
                      configPath=cfg, weightPath=weights,
                      metaPath=data, showImage=False,
                      makeImageOnly=False, initOnly=False)
@@ -69,7 +92,8 @@ def detect_cards(str):
     if DEBUG:
         print("\n\ndetect_cards - Confidence levels")
         for card in image_data:
-            print(f"Card name: {card['name']}, confidence: {card['confidence']}")
+            print(
+                f"Card name: {card['name']}, confidence: {card['confidence']}")
 
     # Return all card corners as a list of dictionaries
     return image_data
@@ -154,7 +178,8 @@ if __name__ == '__main__':
             image_data = detect_cards(img)
             image = cv2.imread(img)
             for rect in image_data:
-                cv2.rectangle(image, rect['start'], rect['end'], (255, 0, 0), 2)
+                cv2.rectangle(image, rect['start'],
+                              rect['end'], (255, 0, 0), 2)
             cv2.imshow("Detected cards", image)
             cv2.waitKey()
             cv2.destroyAllWindows()
