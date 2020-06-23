@@ -105,11 +105,8 @@ def decision(moves, current_card=None, card_destination=None):
         current_card = moves[i][0][0]
         card_destination = moves[i][1][0]
         if current_card.above and card_destination:
-            print(
-                f'card above cur: {current_card.above} and card dest: {card_destination}')
             if current_card.above.number == card_destination.number:
-                print("HEJ")
-                user_text = "Træk et kort (loop prevention)"
+                user_text = "Træk et kort"
                 action = None
                 continue
         possible_count += 1

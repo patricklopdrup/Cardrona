@@ -117,7 +117,6 @@ def all_possible(game_columns1: game_columns.GameColumns, stock_pile):
     else:
         allmoves = sequences + combinations
 
-    pprint(allmoves)
     return allmoves
 
 
