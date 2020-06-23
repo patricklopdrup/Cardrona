@@ -34,7 +34,6 @@ def all_possible(game_columns1: game_columns.GameColumns, stock_pile):
     for m_card in listoffaceupcards:
         if m_card:
             card_location.append([m_card, m_card.x_pos, m_card.y_pos])
-    pprint(card_location)
     # locate the leaf cards
     for m_card in listofleafcards:
         if m_card:
@@ -67,10 +66,8 @@ def all_possible(game_columns1: game_columns.GameColumns, stock_pile):
 
     if cardfrompile is not None:
         waste_to_leaf = where_canthis_be_moved(game_columns1, cardfrompile)
-        print("hvad med her?")
         # this card part of a  suit move
         if game_columns1.m_suit_pile.can_move_to_pile(cardfrompile):
-            print("kommer herrr")
 
             if cardfrompile.suit == "H":
                 waste_to_leaf.append([[cardfrompile, 11, 0], [
@@ -88,9 +85,7 @@ def all_possible(game_columns1: game_columns.GameColumns, stock_pile):
                 waste_to_leaf.append([[cardfrompile, 11, 0], [
                     "C", 10, game_columns1.pilelength(cardfrompile.suit)]])
         else:
-            print("er i else:)")
             if cardfrompile.number == 13:
-                print("er det en konge?")
                 for col_index, col in enumerate(game_columns1.solitaire):
                     if game_columns1.get_pile_size_in_col(col_index) == 0:
                         # x_pos is -1 by default. This is checked in Algorithm
@@ -103,22 +98,26 @@ def all_possible(game_columns1: game_columns.GameColumns, stock_pile):
     sequences = []
     for currentcard in range(len(listoffaceupcards)):
         if game_columns1.is_col_legal(card_location[currentcard][1], card_location[currentcard][2]):
-            for othercards1 in range(len(listofleafcards)):
-                if card_location[currentcard][0].can_be_moved_to(card_location_leafcards[othercards1][0]):
-                    if DEBUG:
-                        print(
-                            f"her {card_location[currentcard][0]} eller her {card_location[currentcard]}")
-
-                    sequences.append(
-                        [card_location[currentcard], card_location_leafcards[othercards1]])
-    print("seq:", *sequences)
-    print("combi:", *combinations)
-    print("waste to leaf:", *waste_to_leaf)
+            if card_location[currentcard][0].number is not 13:
+                for othercards1 in range(len(listofleafcards)):
+                    if card_location[currentcard][0].can_be_moved_to(card_location_leafcards[othercards1][0]):
+                        if DEBUG:
+                            print(
+                                f"her {card_location[currentcard][0]} eller her {card_location[currentcard]}")
+                        sequences.append(
+                            [card_location[currentcard], card_location_leafcards[othercards1]])
+            else:
+                for col in range(7):
+                    if game_columns1.get_pile_size_in_col(col) == 0:
+                        sequences.append(
+                            [card_location[currentcard], [None, col, 0]])
 
     if cardfrompile is not None:
         allmoves = sequences + combinations + waste_to_leaf
     else:
         allmoves = sequences + combinations
+
+    pprint(allmoves)
     return allmoves
 
 
@@ -134,10 +133,8 @@ def where_canthis_be_moved(game_columns1: game_columns.GameColumns, card1: card)
 
     for to_card in listofleafcards:
         if card1.can_be_moved_to(to_card):
-            print(f"card1: {card1} to_card: {to_card}")
             wheretomove.append(
                 [[card1, 11, card1.y_pos], [to_card, to_card.x_pos, to_card.y_pos]])
-    print(f"returner: {wheretomove}")
     return wheretomove
 
 #  [ [card, x, y] , [] ]
