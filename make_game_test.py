@@ -56,28 +56,36 @@ def make_game(self):
                 self.solitaire[col, row] = card
 
 
-def show_test():
+def show_test(game_object=None):
     """ Print the game """
+    if game_object:
+        local_game = game_object
+    else:
+        local_game = game
     print("Waste pile:", stock.waste)
 
-    suit_piles = game.m_suit_pile.suit_piles
+    suit_piles = local_game.m_suit_pile.suit_piles
     print("H:", *suit_piles['H'])
     print("S:", *suit_piles['S'])
     print("D:", *suit_piles['D'])
     print("C:", *suit_piles['C'])
 
     print()
-    for col in range(13):
+    for row in range(19):
         print()
-        for row in range(7):
-            if game.solitaire[row, col]:
+        value = None
+        for col in range(7):
+            if local_game.solitaire[col, row] != 0:
+                value = 1
                 # Print back-side of card if it's flipped - else print the card
-                if game.solitaire[row, col].is_facedown:
+                if local_game.solitaire[col, row] is None or local_game.solitaire[col, row].is_facedown:
                     print("[ ]", end=" ")
                 else:
-                    print(game.solitaire[row, col], end=" ")
+                    print(local_game.solitaire[col, row], end=" ")
             else:
                 print(" " * 4, end="")
+        if not value:
+            break
     print()
 
 
@@ -194,6 +202,7 @@ def game_loop(load_img=False):
             else:
                 break
 
+        detect.print_stuff(m_detect)
         # Show the game in console
         show_game(m_detect)
 
@@ -214,7 +223,10 @@ def game_loop(load_img=False):
             print("ai_answer:", ai_answer)
         # Check for action
         if action == action_moves.waste_to_col:
-            stock.move_to_column(to_card.x_pos)
+            if to_card:
+                stock.move_to_column(to_card.x_pos)
+            else:
+                stock.move_to_column()
         elif action == action_moves.waste_to_suit:
             stock.move_to_suit_pile()
         elif action == action_moves.col_to_suit:

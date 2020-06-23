@@ -54,10 +54,15 @@ class Stock_pile:
         if self.is_empty():
             return False
         else:
-            # Get the card we want to move to
-            card_in_game = game.get_leaf_card(col)
             # Get the top card in the waste pile
             waste_card = self.get_top_waste()
+            if not game.solitaire[col].any():
+                game.solitaire[col, 0] = waste_card
+                self.remove_from_waste()
+                return True
+
+            # Get the card we want to move to
+            card_in_game = game.get_leaf_card(col)
             # If it is legal to move the card to the game
             if waste_card.can_be_moved_to(card_in_game):
                 # Set card on top of card_in_game

@@ -38,8 +38,6 @@ def make_stock_pile(input_list: list, stock_pile):
                            parse_suit(top_card), None, -1, -1)
         # Update the number of cards left in the stock pile
         stock_pile.draw_from_stock(m_card)
-    else:
-        print("Ingen kort i waste")
 
 
 def make_suit_pile(input_list: list):
