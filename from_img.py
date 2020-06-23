@@ -1,6 +1,7 @@
 import game.card as card
 import game.game_columns as game
 import game.draw_pile as draw_pile
+import game.suit_pile as suit_pile
 import numpy as np
 from pprint import pprint
 
@@ -43,21 +44,24 @@ def make_stock_pile(input_list: list, stock_pile):
     return stock_pile
 
 
-def make_suit_pile(input_list: list, game_cols):
+def make_suit_pile(input_list: list):
     """ Parse the four suit piles from input_list """
+    suit_thing = suit_pile.Suit_pile()
     for card_index, card_i in enumerate(input_list):
         # Blank paper is seen as None
         if card_i:
-            m_card = card.Card(parse_value(
-                card_i[0][0]),
-                parse_suit(card_i[0][0]),
-                None,
-                -1,
-                -1)
-            # Add the card to the suit pile in-game
-            game_cols.m_suit_pile.add_card(m_card)
+            suit = parse_suit(card_i[0][0])
+            num = parse_value(card_i[0][0])
+            for val in range(1, num + 1):
+                m_card = card.Card(val,
+                                   suit,
+                                   None,
+                                   -1,
+                                   -1)
+                # Add the card to the suit pile in-game
+                suit_thing.add_card(m_card)
 
-    return game_cols.m_suit_pile
+    return suit_thing
 
 
 def make_seven_column(input_list: list, game_cols):

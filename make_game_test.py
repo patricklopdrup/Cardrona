@@ -177,7 +177,7 @@ def __load_from_detected_img(m_detect):
         pprint(suit)
         pprint(cols)
     from_img.make_stock_pile(talon, stock)
-    game.m_suit_pile = from_img.make_suit_pile(suit, game)
+    game.m_suit_pile = from_img.make_suit_pile(suit)
     game.solitaire = from_img.make_seven_column(cols, game)
 
     any_illegal = False
@@ -206,7 +206,7 @@ def game_loop(load_img=False):
 
     ai_waste_count = 0
 
-    while not suit_pile.is_game_won():
+    while not game.m_suit_pile.is_game_won():
         while True:
             try:
                 __take_picture(m_detect)
@@ -223,6 +223,8 @@ def game_loop(load_img=False):
                 break
         # Show the game in console
         show_game(m_detect)
+        if game.m_suit_pile.is_game_won():
+            break
 
         moves = Agent.all_possible(game, stock)
         if DEBUG:
@@ -265,7 +267,7 @@ def game_loop(load_img=False):
         input("Klik ENTER for næste træk!")
         print("\n" * 10)
 
-    if suit_pile.is_game_won():
+    if game.m_suit_pile.is_game_won():
         print("Du har vundet!")
     else:
         print("Du har tabt!")
