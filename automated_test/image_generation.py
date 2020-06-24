@@ -19,12 +19,16 @@ class image_generation():
             'Diamonds': [Image.open(f'{card_path}Diamonds/{i}.png') for i in range(1, 14)],
             'Hearts': [Image.open(f'{card_path}Hearts/{i}.png') for i in range(1, 14)],
             'Spades': [Image.open(f'{card_path}Spades/{i}.png') for i in range(1, 14)],
-            'Back': Image.open(f'{card_path}0.png')
+            'Back': Image.open(f'{card_path}0.png'),
+            'Blank': Image.open(f'{card_path}blank.png')
         }
 
     def generate_card(self, card, card_img_size):
         # Check if the card is face-down or face-up
-        if card is None or card.is_facedown:  # Card is face-down
+        print(card)
+        if card == 'Blank':
+            card_img = self.card_images['Blank']
+        elif card is None or card.is_facedown:  # Card is face-down
             card_img = self.card_images['Back']
         else:  # Card is face-up
             suit = gf.get_full_suit_name(card.suit)
@@ -68,7 +72,7 @@ class image_generation():
         generated_img.paste(card_img, card_pos, mask=card_img)
 
         # Make talon
-        cur_card = talon
+        cur_card = talon.waste
         card_img = self.generate_card(cur_card, card_img_size)
         x_pos = border_margin + card_img_size[0] + x_margin
         y_pos = border_margin
@@ -78,6 +82,8 @@ class image_generation():
         # Make foundations
         for n, suit in enumerate(['C', 'D', 'H', 'S']):
             cur_card = game_data.m_suit_pile.get_card(suit)
+            if cur_card is None:
+                cur_card = 'Blank'
             card_img = self.generate_card(cur_card, card_img_size)
 
             x_pos = n * (card_img_size[0] + x_margin) + foundation_x_start
