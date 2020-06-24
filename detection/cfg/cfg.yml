@@ -29,7 +29,7 @@ ML_Data:
   cfg: "/cfg/card_detection"
   data: "/cfg/card_detection.data"
   weights: "/cfg/card_detection.weights"
-  min_confidence: 0.8
+  min_confidence: 0.9
   max_size: 960
   bgcolor:
     - 255

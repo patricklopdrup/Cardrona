@@ -64,6 +64,8 @@ class game:
         self.game_data.m_suit_pile = from_img.make_suit_pile(suit)
         self.game_data.solitaire = from_img.make_seven_column(cols, self.game_data)
 
+        detector.print_stuff(self.detector)
+
         any_illegal = False
         for col in range(len(self.game_data.solitaire)):
             for m_card in self.game_data.solitaire[col]:
@@ -76,16 +78,17 @@ class game:
         # show_test(game)
 
     def game_loop(self):
+        ai_waste_count = 0
         while True:
-            # Current stage - What stage number this is
-            img_path = f'{save_folder}/{self.current_stage}.jpg'
             while True:
+                # Current stage - What stage number this is
+                img_path = f'{save_folder}/{self.current_stage}.jpg'
                 try:
                     self.detector.load_state(img_path)
-                    print(self.detector.get_tableau(1))
                     self.__load_from_detected_img()
                     break
                 except gf.ColumnNotLegal:
+                    self.current_stage += 1
                     print("En kolonne var ikke legal, prøv igen")
                     self.generator.generate_image(game_data=self.game_data,
                                                   stage=self.current_stage, talon=self.talon)
@@ -99,8 +102,21 @@ class game:
             action = ai_answer.pc_action
 
             if action is None:
-                self.talon_cards.append(self.deck.pop(0))
-                self.talon.waste = self.talon_cards[-1]
+                ai_waste_count += 1
+                if len(self.deck) > 0:
+                    self.talon_cards.append(self.deck.pop(0))
+                    self.talon.waste = self.talon_cards[-1]
+                else:
+                    print("Vender bunke og trækker kort")
+                    self.deck.extend(self.talon_cards)
+                    self.talon_cards = []
+                    self.talon_cards.append(self.deck.pop(0))
+                    self.talon.waste = self.talon_cards[-1]
+            else:
+                ai_waste_count = 0
+
+            if ai_waste_count >= len(self.deck) + len(self.talon_cards) + 1:
+                break
 
             elif action == action_moves.waste_to_col:
                 if to_card:
@@ -114,7 +130,13 @@ class game:
                     except IndexError:
                         self.talon.waste = None
             elif action == action_moves.waste_to_suit:
-                self.talon.move_to_suit_pile()
+                success = self.talon.move_to_suit_pile()
+                if success:
+                    try:
+                        self.talon_cards.pop()
+                        self.talon.waste = self.talon_cards[-1]
+                    except IndexError:
+                        self.talon.waste = None
             elif action == action_moves.col_to_suit:
                 self.game_data.move_to_suit_pile(
                     from_card.x_pos, from_card.y_pos)
@@ -124,13 +146,18 @@ class game:
             if action and from_card.y_pos > 0:
                 x_pos = from_card.x_pos
                 y_pos = from_card.y_pos - 1
-                self.game_data.solitaire[x_pos][y_pos] = self.face_down.pop(0)
+                if self.game_data.solitaire[x_pos][y_pos].is_facedown:
+                    self.game_data.solitaire[x_pos][y_pos] = self.face_down.pop(0)
 
+            print("EFTER AI LOGIK")
             show_test(self.game_data, self.talon)
 
             self.current_stage += 1
             self.generator.generate_image(game_data=self.game_data,
                                           stage=self.current_stage, talon=self.talon)
+
+        if ai_waste_count >= len(self.deck) + len(self.talon_cards) + 1:
+            print("Spillet er tabt!")
 
     def test(self):
         self.generator = ig.image_generation()
@@ -146,10 +173,7 @@ class game:
 
 def show_test(game_object=None, talon=None):
     """ Print the game """
-    if game_object:
-        local_game = game_object
-    else:
-        local_game = game
+    local_game = game_object
     print("Waste pile:", talon.waste)
 
     suit_piles = local_game.m_suit_pile.suit_piles

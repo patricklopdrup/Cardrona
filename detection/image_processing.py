@@ -108,7 +108,7 @@ def get_game_state(img):
 
     # Define the minimum size of the detected card areas
     h, w, _ = img.shape
-    minArea = w / 15 * w / 15
+    minArea = w / 30 * w / 30
 
     # Variables needed in the loop
     top, tableaus = [], []

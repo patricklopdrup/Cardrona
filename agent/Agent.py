@@ -42,7 +42,6 @@ def all_possible(game_columns1: game_columns.GameColumns, stock_pile):
 
     # checking suitpile
     for thiscard3 in range(len(listofleafcards)):
-
         if game_columns1.checkif_suitpile(card_location_leafcards[thiscard3][1], card_location_leafcards[thiscard3][2]):
             if card_location_leafcards[thiscard3][0].suit == "H":
                 combinations.append([card_location_leafcards[thiscard3], [
@@ -104,13 +103,19 @@ def all_possible(game_columns1: game_columns.GameColumns, stock_pile):
                         if DEBUG:
                             print(
                                 f"her {card_location[currentcard][0]} eller her {card_location[currentcard]}")
-                        sequences.append(
-                            [card_location[currentcard], card_location_leafcards[othercards1]])
+                        if card_location[currentcard][0].above and card_location_leafcards[othercards1][0]:
+                            if card_location[currentcard][0].above.number != card_location_leafcards[othercards1][0].number:
+                                sequences.append(
+                                    [card_location[currentcard], card_location_leafcards[othercards1]])
+                        else:
+                            sequences.append(
+                                [card_location[currentcard], card_location_leafcards[othercards1]])
             else:
                 for col in range(7):
                     if game_columns1.get_pile_size_in_col(col) == 0:
-                        sequences.append(
-                            [card_location[currentcard], [None, col, 0]])
+                        if card_location[currentcard][0].y_pos != 0:
+                            sequences.append(
+                                [card_location[currentcard], [None, col, 0]])
 
     if cardfrompile is not None:
         allmoves = sequences + combinations + waste_to_leaf

@@ -18,6 +18,9 @@ class detect:
         return True
 
     def load_state(self, img):
+        self.tableaus = []
+        self.foundations = []
+        self.talon_cards = None
         if not path.exists(img):
             print("The specified image does not exist!")
             return
@@ -26,15 +29,16 @@ class detect:
         return True
 
     def get_tableaus(self):
-        tableaus = []
+        if len(self.tableaus) > 0:
+            return self.tableaus
         for tableau in self.game_data['tableaus']:
             cards = detector.get_cards_from_image(tableau['path'])
             if cards:
-                tableaus.append(cards)
+                self.tableaus.append(cards)
             else:
-                tableaus.append([None])
+                self.tableaus.append([None])
 
-        return tableaus
+        return self.tableaus
 
     def get_tableau(self, tableau_num):
         tableau = self.game_data['tableaus'][tableau_num-1]
@@ -42,12 +46,13 @@ class detect:
         return cards
 
     def get_foundations(self):
-        foundations = []
+        if len(self.foundations) > 0:
+            return self.foundations
         for foundation in self.game_data['foundations']:
             cards = detector.get_cards_from_image(foundation['path'])
-            foundations.append(cards)
+            self.foundations.append(cards)
 
-        return foundations
+        return self.foundations
 
     def get_foundation(self, foundation_num):
         foundation = self.game_data['foundations'][foundation_num-1]
@@ -55,9 +60,11 @@ class detect:
         return cards
 
     def get_talon(self):
+        if self.talon_cards:
+            return self.talon_cards
         talon = self.game_data['talon'][0]
-        cards = detector.get_cards_from_image(talon['path'])
-        return cards
+        self.talon_cards = detector.get_cards_from_image(talon['path'])
+        return self.talon_cards
 
 
 def print_stuff(detection):
