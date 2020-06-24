@@ -1,8 +1,8 @@
-import card_detection as detector
-import image_processing as imgp
+from . import card_detection as detector
+from . import image_processing as imgp
 from pprint import pprint
 from os import path
-import camera
+from . import camera
 
 
 class detect:
@@ -12,22 +12,33 @@ class detect:
     def take_picture(self):
         self.cur_image_num += 1
         camera.take_picture(self.cur_image_num)
-        self.load_state(f'captures/picture_{self.cur_image_num}.jpg')
+        img_path = path.dirname(path.abspath(__file__)) + \
+            f'/captures/picture_{self.cur_image_num}.jpg'
+        self.load_state(img_path)
+        return True
 
     def load_state(self, img):
+        self.tableaus = []
+        self.foundations = []
+        self.talon_cards = None
         if not path.exists(img):
             print("The specified image does not exist!")
             return
 
         self.game_data = imgp.get_game_state(img)
+        return True
 
     def get_tableaus(self):
-        tableaus = []
+        if len(self.tableaus) > 0:
+            return self.tableaus
         for tableau in self.game_data['tableaus']:
             cards = detector.get_cards_from_image(tableau['path'])
-            tableaus.append(cards)
+            if cards:
+                self.tableaus.append(cards)
+            else:
+                self.tableaus.append([None])
 
-        return tableaus
+        return self.tableaus
 
     def get_tableau(self, tableau_num):
         tableau = self.game_data['tableaus'][tableau_num-1]
@@ -35,12 +46,13 @@ class detect:
         return cards
 
     def get_foundations(self):
-        foundations = []
+        if len(self.foundations) > 0:
+            return self.foundations
         for foundation in self.game_data['foundations']:
             cards = detector.get_cards_from_image(foundation['path'])
-            foundations.append(cards)
+            self.foundations.append(cards)
 
-        return foundations
+        return self.foundations
 
     def get_foundation(self, foundation_num):
         foundation = self.game_data['foundations'][foundation_num-1]
@@ -48,9 +60,11 @@ class detect:
         return cards
 
     def get_talon(self):
+        if self.talon_cards:
+            return self.talon_cards
         talon = self.game_data['talon'][0]
-        cards = detector.get_cards_from_image(talon['path'])
-        return cards
+        self.talon_cards = detector.get_cards_from_image(talon['path'])
+        return self.talon_cards
 
 
 def print_stuff(detection):
@@ -64,6 +78,7 @@ def print_stuff(detection):
 
 if __name__ == '__main__':
     detection = detect()
+    # detection.load_state('img/test3.jpg')
     detection.take_picture()
     print_stuff(detection)
     # detection.load_state(f'captures/picture_1.jpg')

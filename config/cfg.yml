@@ -1,0 +1,9 @@
+auto_test:
+  card_positions:
+    suits:
+      - "Clubs"
+      - "Diamonds"
+      - "Hearts"
+      - "Spades"
+    path: ./automated_test/images/Cards/
+  save_folder: ./automated_test/images/game_states/

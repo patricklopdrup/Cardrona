@@ -1,41 +1,72 @@
-from Darknet.darknet import performDetect as scan
+from .Darknet.darknet import performDetect as scan
+from .Darknet.darknet import performDetect as scan2
 from pprint import pprint
-import image_processing as imgp
+from . import image_processing as imgp
 import numpy as np
 from os import path
+from bisect import bisect_left
 import yaml
 import os
 import cv2
 
-config = yaml.safe_load(open("cfg/cfg.yml"))
+# Global configuration for file
+cur_path = path.dirname(path.abspath(__file__))
+cfg_path = cur_path + "/cfg/cfg.yml"
+config = yaml.safe_load(open(cfg_path))
 DEBUG = config["Debug"]
 
 
-def detect_cards(str):
-    picture = str
-    cfg = config["ML_Data"]["cfg"]
-    data = config["ML_Data"]["data"]
-    weights = config["ML_Data"]["weights"]
+def take_closest(myList, myNumber):
+    """
+    Assumes myList is sorted. Returns closest value to myNumber.
 
-    scan_data = scan(imagePath=picture, thresh=0.25,
-                     configPath=cfg, weightPath=weights,
+    If two numbers are equally close, return the smallest number.
+    """
+    pos = bisect_left(myList, myNumber)
+    if pos == 0:
+        return myList[0]
+    if pos == len(myList):
+        return myList[-1]
+    before = myList[pos - 1]
+    after = myList[pos]
+    return after
+
+
+def detect_cards(str):
+    """
+    A function to gather all cards from an image and return them as a list
+    """
+
+    picture = str
+    cfg = f'{cur_path}{config["ML_Data"]["cfg"]}_960.cfg'
+    data = cur_path + config["ML_Data"]["data"]
+    weights = cur_path + config["ML_Data"]["weights"]
+
+    # Use the scan method from the darknet wrapper to detect all card corners
+    scan_data = scan(imagePath=picture, thresh=0.5,
+                     configPath="detection/cfg/card_detection_960.cfg", weightPath=weights,
                      metaPath=data, showImage=False,
                      makeImageOnly=False, initOnly=False)
 
+    # Check if we have at least 1 card corner in the image
     if len(scan_data) < 1:
         return False
 
     image_data = []
 
+    # Loop through all the card corners in the image and save
+    # information about the corners
     for corner in scan_data:
+        # Gather data about the detected card corner and calculate
+        # the poistion of it
         card_name, confidence, corner_data = corner
         x, y, w, h = corner_data
-
         x_start = round(x - (w / 2))
         y_start = round(y - (h / 2))
         x_end = round(x_start + w)
         y_end = round(y_start + h)
 
+        # Save all the data about the corner in a dictionary
         formatted_data = {'name': card_name,
                           'start': (x_start, y_start),
                           'end': (x_end, y_end),
@@ -44,91 +75,76 @@ def detect_cards(str):
                           'height': h,
                           'middle': tuple(np.add((x_start, y_start), (w / 2, h / 2)))}
 
+        # Check if the confidence of the detected corner is higher
+        # than the defined confidence level in the configuration file
         if confidence > config["ML_Data"]["min_confidence"]:
+            # Add it to the list if it is
             image_data.append(formatted_data)
 
+    # If debugging is on, print all the detected card corners
+    # and their confidence level
     if DEBUG:
         print("\n\ndetect_cards - Confidence levels")
         for card in image_data:
-            print(f"Card name: {card['name']}, confidence: {card['confidence']}")
+            print(
+                f"Card name: {card['name']}, confidence: {card['confidence']}")
 
+    # Return all card corners as a list of dictionaries
     return image_data
 
 
 def get_cards_from_image(img_path):
+    """
+    A function to get all the cards in an image, it will return
+    a list of cards ordered by their Y position
+    """
+
+    # Retrieve all the card corners in the image
     col_data = detect_cards(img_path)
     if not col_data:
         return
+
+    # Sort the corners by their name (card suit + number)
     col_data = sorted(col_data, key=lambda i: i['name'])
 
+    # Define variables needed for the loop
     cur_card = ""
     card_corners = []
     card_middles = []
+
+    # Loop through all the card corners and group the corners into
+    # a single card where we save the card middle
     for c in col_data:
-        if not cur_card:
+        # Check if the corner is the same suit and value as the corner
+        # from the previous iteration
+        if not cur_card:  # If no card has been assigned
             cur_card = c['name']
             card_corners = [c['middle']]
             continue
-        elif cur_card == c['name']:
+
+        elif cur_card == c['name']:  # If the corner is the same as the card
             card_corners.append(c['middle'])
             continue
-        else:
+
+        else:  # If the corner is not the same as the card
+            # Calculate the middle of the card and add it to the card_middles
+            # array
             card_middle = tuple(np.average(card_corners, axis=0))
             card_middles.append((cur_card, card_middle))
+
+            # Assign the current corner as the new current card
             cur_card = c['name']
             card_corners = [c['middle']]
 
+    # Calculat the middle of the last card in the dataset
     card_middle = tuple(np.average(card_corners, axis=0))
     card_middles.append((cur_card, card_middle))
 
+    # Sort the cards by their Y position in the image
     card_middles = sorted(card_middles, key=lambda t: t[1][1], reverse=False)
 
+    # Return the sorted list of cards
     return card_middles
-
-
-def get_column_cards(show=False):
-    game_data = []
-    for filename in os.listdir('extract'):
-        file = 'extract/' + filename
-        col_data = detect_cards(file)
-        if not col_data:
-            game_data.append([])
-            continue
-
-        col_data = sorted(col_data, key=lambda i: i['name'])
-        cur_card = ""
-        card_corners = []
-        middles = []
-        for c in col_data:
-            if not cur_card:
-                cur_card = c['name']
-                card_corners = [c['middle']]
-                continue
-            elif cur_card == c['name']:
-                card_corners.append(c['middle'])
-                continue
-            else:
-                middle = tuple(np.average(card_corners, axis=0))
-                middles.append((cur_card, middle))
-                cur_card = c['name']
-                card_corners = [c['middle']]
-
-        middle = tuple(np.average(card_corners, axis=0))
-        middles.append((cur_card, middle))
-
-        middles = sorted(middles, key=lambda t: t[1][1], reverse=True)
-
-        game_data.append(middles)
-
-        if DEBUG:
-            print("\n\nget_column_cards - Card middles")
-            for m in middles:
-                print(f"Card: {m[0]}, middle: {m[1]}")
-
-    if DEBUG:
-        print("\nget_column_cards - Return value")
-        pprint(game_data)
-    return game_data
 
 
 if __name__ == '__main__':
@@ -144,9 +160,7 @@ if __name__ == '__main__':
                 continue
 
             img = cv2.imread(inp)
-            card_rows = imgp.get_game_state(img, save=True)
-
-            get_column_cards()
+            card_rows = imgp.get_game_state(inp)
 
         elif inp == "detect":
             inp = input("Enter row number : ")
@@ -158,7 +172,8 @@ if __name__ == '__main__':
             image_data = detect_cards(img)
             image = cv2.imread(img)
             for rect in image_data:
-                cv2.rectangle(image, rect['start'], rect['end'], (255, 0, 0), 2)
+                cv2.rectangle(image, rect['start'],
+                              rect['end'], (255, 0, 0), 2)
             cv2.imshow("Detected cards", image)
             cv2.waitKey()
             cv2.destroyAllWindows()

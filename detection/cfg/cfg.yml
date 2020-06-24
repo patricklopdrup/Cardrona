@@ -1,14 +1,36 @@
-Debug: True
-Debug_Images: True
+Debug: False
+Debug_Images: False
 
-camera_url: 'http://192.168.1.151:8080/photo.jpg'
+camera_url: 'http://192.168.0.151:8080/photo.jpg'
 
 ML_Data:
-  cfg: "cfg/yolo_card_detection.cfg"
-  data: "cfg/card_detection.data"
-  weights: "cfg/card_detection.weights"
-  min_confidence: 0.5
-  max_size: 800
+  size_cfg:
+    - 320
+    - 352
+    - 384
+    - 416
+    - 448
+    - 480
+    - 512
+    - 544
+    - 576
+    - 608
+    - 640
+    - 672
+    - 704
+    - 736
+    - 768
+    - 800
+    - 832
+    - 864
+    - 896
+    - 928
+    - 960
+  cfg: "/cfg/card_detection"
+  data: "/cfg/card_detection.data"
+  weights: "/cfg/card_detection.weights"
+  min_confidence: 0.9
+  max_size: 960
   bgcolor:
     - 255
     - 255

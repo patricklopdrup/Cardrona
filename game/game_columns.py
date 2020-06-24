@@ -1,6 +1,6 @@
 import numpy as np
-import card
-import suit_pile
+import game.card as card
+import game.suit_pile as suit_pile
 
 
 class GameColumns:
@@ -11,7 +11,7 @@ class GameColumns:
     deck = card.Deck()
     m_suit_pile = suit_pile.Suit_pile()
 
-    solitaire = np.zeros((7, 13), dtype=object)
+    solitaire = np.zeros((7, 19), dtype=object)
     leaf_cards = np.zeros(7, dtype=object)
     # Keep track of the facedown cards in each of the 7 piles
     col_facedown: list = [0, 1, 2, 3, 4, 5, 6]
@@ -36,6 +36,9 @@ class GameColumns:
 
         # Move either one or more cards to another column if possible
         if self.is_col_legal(from_col, from_row):
+            if card_to_move.number == 13 and not destination_card:
+                self.__move_cards(from_col, from_row, to_col)
+                return True
             if card_to_move.can_be_moved_to(destination_card):
                 self.__move_cards(from_col, from_row, to_col)
                 return True
@@ -47,14 +50,15 @@ class GameColumns:
         # Adds the card to the suit pile and removes from the game if possible
         if self.m_suit_pile.add_card(card_to_move):
             self.__remove_card(from_col, from_row)
+            self.__update_col_facedown(from_col)
         else:
             return False
 
     def checkif_suitpile(self, from_col, from_row) -> bool:
         """ Returns whether or not the card can be moved to its pile """
         card_to_move = self.solitaire[from_col, from_row]
-        # Adds the card to the suit pile and removes from the game if possible
-        if self.m_suit_pile.add_card(card_to_move):
+
+        if self.m_suit_pile.can_move_to_pile(card_to_move):
             return True
         else:
             return False
@@ -95,22 +99,22 @@ class GameColumns:
         Moves them to the distination taken from "to_col"
         """
         cards_to_move = []
-        for index, card in enumerate(self.solitaire[from_col]):
-            if index >= from_row and card != 0:
+        for index, m_card in enumerate(self.solitaire[from_col]):
+            if index >= from_row and m_card != 0:
                 # Add card to array
-                cards_to_move.append(card)
+                cards_to_move.append(m_card)
                 # Remove from the game
                 self.__remove_card(from_col, index)
         # Gets the first empty space in the column we want to add to
         end_row = self.get_pile_size_in_col(to_col)
         # Loops through all the cards we want to move and insert them at the distination
-        for i, card in enumerate(cards_to_move):
-            self.solitaire[to_col, end_row + i] = card
+        for i, m_card in enumerate(cards_to_move):
+            self.solitaire[to_col, end_row + i] = m_card
         # After card(s) is moved we update the column where we moved from (if necessary)
         self.__update_col_facedown(from_col)
 
     def __update_col_facedown(self, col):
-        """ 
+        """
         Checks if a column consist only of facedown cards,
         this means that we must update col_facedown array to keep track of facedown cards in a column
         """
@@ -128,9 +132,8 @@ class GameColumns:
         # so we have one less card facing down in that column
         if all_is_facedown:
             if self.col_facedown[col] > 0:
-                print(f"Flip card in column {col}")
+                print(f"Vend kort i kolonne {col}")
                 self.col_facedown[col] -= 1
-                print("Hej", *self.col_facedown)
 
     def is_col_legal(self, from_col, from_row) -> bool:
         """
@@ -142,7 +145,7 @@ class GameColumns:
             return False
         # If card is the last in a column: return True
         if self.is_leaf_card(from_col, from_row):
-            self.leaf_cards[from_col] = self.solitaire[from_col, from_row]
+            # self.leaf_cards[from_col] = self.solitaire[from_col, from_row]
             return True
         # Loop through the column starting at "from_row"
         for i, card in enumerate(self.solitaire[from_col]):
@@ -177,7 +180,7 @@ class GameColumns:
                                   self.get_pile_size_in_col(col)-1]
 
     def get_all_leaf_cards(self) -> list:
-        """ 
+        """
         Returns a list of all the leaf cards aka. the last card in each column.
         This is used to get the distinations for  in a move.
         """
@@ -188,11 +191,8 @@ class GameColumns:
                 # Get the last card in column
                 leaf_card = self.solitaire[col,
                                            self.get_pile_size_in_col(col)-1]
-            # If no card in column append 0
-            else:
-                leaf_card = 0
-            # Add the card to the list
-            leaf_cards.append(leaf_card)
+                # Add the card to the list
+                leaf_cards.append(leaf_card)
         return leaf_cards
 
     def get_all_faceup_cards(self) -> list:
@@ -209,7 +209,7 @@ class GameColumns:
         return faceup_cards
 
     def get_pile_size_in_col(self, col, only_faceup=False) -> int:
-        """ 
+        """
         Returns the amount of cards in a column.
         By default it counts all the cards in the column,
         but only_faceup can be set so it only returns playable cards
@@ -217,7 +217,7 @@ class GameColumns:
         cards = 0
         # return -1 if col does not exist
         if col < 0 or col >= 7:
-            return -1
+            return 0
         # count the cards. 0 = not a card
         if only_faceup:
             for card in self.solitaire[col]:
