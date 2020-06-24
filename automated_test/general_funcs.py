@@ -1,3 +1,7 @@
+class ColumnNotLegal(Exception):
+    pass
+
+
 def get_full_suit_name(suit):
     if suit == "C":
         return "Clubs"

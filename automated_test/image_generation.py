@@ -48,7 +48,8 @@ class image_generation():
         img_path = f'{save_folder}/{stage}.jpg'
 
         # Define a numpy array with all 0's
-        background_img = np.zeros([1000, 2000, 3], dtype=np.uint8)
+        width = border_margin * 2 + 7 * card_img_size[0] + 6 * x_margin
+        background_img = np.zeros([1000, width, 3], dtype=np.uint8)
 
         # Fill the image with a defined color
         background_img.fill(background_color)
