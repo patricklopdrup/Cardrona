@@ -91,13 +91,18 @@ def decision(moves, current_card=None, card_destination=None):
                     action = action_moves.waste_to_col
                     return algorithm_action(user_text, action, current_card, card_destination)
 
-        if current_card.number == 13 and not card_destination:
+        if current_card.number == 13 and not card_destination and current_card.y_pos != 0:
             user_text = "Ryk " + \
                 str(current_card) + " til en tom plads"
             card_destination = card.Card(
                 1, 'H', x=moves[i][1][1], y=moves[i][1][2])
             action = action_moves.col_to_col
             return algorithm_action(user_text, action, current_card, card_destination)
+
+        if current_card.number == 13 and current_card.y_pos == 0:
+            user_text = "Træk et kort"
+            action = None
+            return algorithm_action(user_text, action)
 
     # Don't go into loop. Check for card above
     possible_count = 0
