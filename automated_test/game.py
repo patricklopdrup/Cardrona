@@ -40,6 +40,7 @@ class game:
         self.deck = self.deck_class.shuffle(self.deck)
 
         self.face_down = []
+        self.talon_cards = []
 
         self.talon = draw_pile.Stock_pile(self.game_data, self.game_data.m_suit_pile)
 
@@ -75,50 +76,71 @@ class game:
         # show_test(game)
 
     def game_loop(self):
-        # while True:
-        # Current stage - What stage number this is
-        self.current_stage += 1
-        img_path = f'{save_folder}/{self.current_stage}.jpg'
-        try:
-            self.detector.load_state(img_path)
-            self.__load_from_detected_img()
-        except gf.ColumnNotLegal:
-            print("En kolonne var ikke legal, prøv igen")
-            input("Klik ENTER for nyt billede")
+        while True:
+            # Current stage - What stage number this is
+            img_path = f'{save_folder}/{self.current_stage}.jpg'
+            while True:
+                try:
+                    self.detector.load_state(img_path)
+                    print(self.detector.get_tableau(1))
+                    self.__load_from_detected_img()
+                    break
+                except gf.ColumnNotLegal:
+                    print("En kolonne var ikke legal, prøv igen")
+                    self.generator.generate_image(game_data=self.game_data,
+                                                  stage=self.current_stage, talon=self.talon)
 
-        moves = Agent.all_possible(self.game_data, self.talon)
-        ai_answer = Algorithm.decision(moves)
-        print(ai_answer.user_text)
+            moves = Agent.all_possible(self.game_data, self.talon)
+            ai_answer = Algorithm.decision(moves)
+            print(ai_answer.user_text)
 
-        to_card = ai_answer.to_card
-        from_card = ai_answer.from_card
-        action = ai_answer.pc_action
+            to_card = ai_answer.to_card
+            from_card = ai_answer.from_card
+            action = ai_answer.pc_action
 
-        if action == action_moves.waste_to_col:
-            if to_card:
-                self.talon.move_to_column(to_card.x_pos)
-            else:
-                self.talon.move_to_column()
-        elif action == action_moves.waste_to_suit:
-            self.talon.move_to_suit_pile()
-        elif action == action_moves.col_to_suit:
-            self.game_data.move_to_suit_pile(
-                from_card.x_pos, from_card.y_pos)
-        elif action == action_moves.col_to_col:
-            self.game_data.move_in_game(from_card.x_pos, from_card.y_pos, to_card.x_pos)
+            if action is None:
+                self.talon_cards.append(self.deck.pop(0))
+                self.talon.waste = self.talon_cards[-1]
 
-        show_test(self.game_data, self.talon)
+            elif action == action_moves.waste_to_col:
+                if to_card:
+                    success = self.talon.move_to_column(to_card.x_pos)
+                else:
+                    success = self.talon.move_to_column()
+                if success:
+                    try:
+                        self.talon_cards.pop()
+                        self.talon.waste = self.talon_cards[-1]
+                    except IndexError:
+                        self.talon.waste = None
+            elif action == action_moves.waste_to_suit:
+                self.talon.move_to_suit_pile()
+            elif action == action_moves.col_to_suit:
+                self.game_data.move_to_suit_pile(
+                    from_card.x_pos, from_card.y_pos)
+            elif action == action_moves.col_to_col:
+                self.game_data.move_in_game(from_card.x_pos, from_card.y_pos, to_card.x_pos)
 
-        self.generator.generate_image(game_data=self.game_data,
-                                      stage=self.current_stage, talon=self.talon)
+            if action and from_card.y_pos > 0:
+                x_pos = from_card.x_pos
+                y_pos = from_card.y_pos - 1
+                self.game_data.solitaire[x_pos][y_pos] = self.face_down.pop(0)
+
+            show_test(self.game_data, self.talon)
+
+            self.current_stage += 1
+            self.generator.generate_image(game_data=self.game_data,
+                                          stage=self.current_stage, talon=self.talon)
 
     def test(self):
         self.generator = ig.image_generation()
         # temp_card = self.deck.pop(0)
         # self.game_data.solitaire[0, self.game_data.get_pile_size_in_col(
         #     0)] = temp_card
+        # self.game_data.solitaire[0][0] = card.Card(12, 'S')
+        # self.game_data.solitaire[1][1] = card.Card(13, 'H')
         self.generator.generate_image(game_data=self.game_data,
-                                      stage=1, talon=self.talon)
+                                      stage=self.current_stage, talon=self.talon)
         self.game_loop()
 
 
@@ -144,7 +166,7 @@ def show_test(game_object=None, talon=None):
             if local_game.solitaire[col, row] != 0:
                 value = 1
                 # Print back-side of card if it's flipped - else print the card
-                if local_game.solitaire[col, row] is None or local_game.solitaire[col, row].is_facedown:
+                if local_game.solitaire[col, row] is None or (local_game.solitaire[col, row] != 'Blank' and local_game.solitaire[col, row].is_facedown):
                     print("[ ]", end=" ")
                 else:
                     print(local_game.solitaire[col, row], end=" ")
