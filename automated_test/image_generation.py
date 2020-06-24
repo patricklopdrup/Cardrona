@@ -25,7 +25,6 @@ class image_generation():
 
     def generate_card(self, card, card_img_size):
         # Check if the card is face-down or face-up
-        print(card)
         if card == 'Blank':
             card_img = self.card_images['Blank']
         elif card is None or card.is_facedown:  # Card is face-down
@@ -111,6 +110,17 @@ class image_generation():
 
                     # Paste the card on the image
                     generated_img.paste(card_img, card_pos, mask=card_img)
+                elif cur_card == 0 and row == 0:
+                    # Resize the image using the aspect ratio further up
+                    card_img = self.generate_card('Blank', card_img_size)
+
+                    # Get the position of the card using x and y coordinates
+                    x_pos = col * (card_img_size[0] + x_margin) + border_margin
+                    y_pos = row * y_margin + card_img_size[1] + border_margin * 2
+                    card_pos = (x_pos, y_pos)
+
+                    # Paste the card on the image
+                    generated_img.paste(card_img, card_pos, mask=card_img)
 
             # If no card was found, break the loop
             if not value:
@@ -120,7 +130,7 @@ class image_generation():
         generated_img.save(img_path, quality=100)
         temp_img = cv2.imread(img_path)
         cv2.imshow("hej", temp_img)
-        cv2.waitKey()
+        cv2.waitKey(1)
 
         # card = self.card_images['Back']
         # card = card.resize(card_img_size, Image.ANTIALIAS)
