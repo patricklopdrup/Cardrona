@@ -18,8 +18,9 @@ config = yaml.safe_load(open(cfg_path))
 DEBUG = config["Debug"]
 
 game = game.GameColumns()
-stock = draw_pile.Stock_pile()
 suit_pile = suit_pile.Suit_pile()
+stock = draw_pile.Stock_pile(game, suit_pile)
+
 
 stock_pile_list = [('5C')]
 
@@ -34,6 +35,10 @@ turned_card_list = [
     [('7S'), ('6S')],
     [('1S'), ('12D')]
 ]
+
+
+class ColumnNotLegal(Exception):
+    pass
 
 
 def make_game(self):
@@ -71,17 +76,17 @@ def show_test(game_object=None):
     print("C:", *suit_piles['C'])
 
     print()
-    for col in range(19):
+    for row in range(19):
         print()
         value = None
-        for row in range(7):
-            if local_game.solitaire[row, col] != 0:
+        for col in range(7):
+            if local_game.solitaire[col, row] != 0:
                 value = 1
                 # Print back-side of card if it's flipped - else print the card
-                if local_game.solitaire[row, col] is None or local_game.solitaire[row, col].is_facedown:
+                if local_game.solitaire[col, row] is None or local_game.solitaire[col, row].is_facedown:
                     print("[ ]", end=" ")
                 else:
-                    print(local_game.solitaire[row, col], end=" ")
+                    print(local_game.solitaire[col, row], end=" ")
             else:
                 print(" " * 4, end="")
         if not value:
@@ -165,7 +170,6 @@ def show_game(detection):
 
 def __load_from_detected_img(m_detect):
     talon = m_detect.get_talon()
-    pprint(talon)
     suit = m_detect.get_foundations()
     cols = m_detect.get_tableaus()
     if DEBUG:
@@ -173,8 +177,19 @@ def __load_from_detected_img(m_detect):
         pprint(suit)
         pprint(cols)
     from_img.make_stock_pile(talon, stock)
-    from_img.make_suit_pile(suit)
-    from_img.make_seven_column(cols)
+    game.m_suit_pile = from_img.make_suit_pile(suit)
+    game.solitaire = from_img.make_seven_column(cols, game)
+
+    any_illegal = False
+    for col in range(len(game.solitaire)):
+        for m_card in game.solitaire[col]:
+            if m_card != 0 and not m_card.is_facedown:
+                any_illegal = not game.is_col_legal(m_card.x_pos, m_card.y_pos)
+                break
+
+        if any_illegal:
+            raise ColumnNotLegal
+    # show_test(game)
 
 
 def __take_picture(m_detect, load_img=False):
@@ -189,7 +204,9 @@ def __take_picture(m_detect, load_img=False):
 def game_loop(load_img=False):
     m_detect = detect.detect()
 
-    while not suit_pile.is_game_won():
+    ai_waste_count = 0
+
+    while not game.m_suit_pile.is_game_won():
         while True:
             try:
                 __take_picture(m_detect)
@@ -199,11 +216,15 @@ def game_loop(load_img=False):
                 print("Prøv igen")
                 input("Klik ENTER for nyt billede")
             # if we reach this point we detected the img correctly
+            except ColumnNotLegal:
+                print("En kolonne var ikke legal, prøv igen")
+                input("Klik ENTER for nyt billede")
             else:
                 break
-
         # Show the game in console
         show_game(m_detect)
+        if game.m_suit_pile.is_game_won():
+            break
 
         moves = Agent.all_possible(game, stock)
         if DEBUG:
@@ -216,13 +237,24 @@ def game_loop(load_img=False):
         print(ai_answer.user_text)
 
         action = ai_answer.pc_action
+        if action is None:
+            ai_waste_count += 1
+        else:
+            ai_waste_count = 0
+
+        if ai_waste_count >= 25:
+            break
+
         to_card = ai_answer.to_card
         from_card = ai_answer.from_card
         if DEBUG:
             print("ai_answer:", ai_answer)
         # Check for action
         if action == action_moves.waste_to_col:
-            stock.move_to_column(to_card.x_pos)
+            if to_card:
+                stock.move_to_column(to_card.x_pos)
+            else:
+                stock.move_to_column()
         elif action == action_moves.waste_to_suit:
             stock.move_to_suit_pile()
         elif action == action_moves.col_to_suit:
@@ -233,8 +265,12 @@ def game_loop(load_img=False):
         # elif action == action_moves.suit_to_col:
 
         input("Klik ENTER for næste træk!")
+        print("\n" * 10)
 
-    print("Du har vundet!")
+    if game.m_suit_pile.is_game_won():
+        print("Du har vundet!")
+    else:
+        print("Du har tabt!")
 
 
 # test_load_img()

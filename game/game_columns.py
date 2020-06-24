@@ -29,7 +29,6 @@ class GameColumns:
         To move one or more card(s) from a column to another.
         This is for moving within the game - not from the deck or suit-piles.
         """
-        print("er i move in game")
         card_to_move = self.solitaire[from_col, from_row]
         # Cards can only be placed on "leaf" cards. The card in the very end of a column
         destination_card = self.solitaire[to_col,
@@ -37,11 +36,10 @@ class GameColumns:
 
         # Move either one or more cards to another column if possible
         if self.is_col_legal(from_col, from_row):
-            print("col legal")
-            print(
-                f"card to move: {card_to_move} og dist card: {destination_card}")
+            if card_to_move.number == 13 and not destination_card:
+                self.__move_cards(from_col, from_row, to_col)
+                return True
             if card_to_move.can_be_moved_to(destination_card):
-                print("can be moved")
                 self.__move_cards(from_col, from_row, to_col)
                 return True
         return False
@@ -93,7 +91,6 @@ class GameColumns:
 
     def __remove_card(self, from_col, from_row) -> None:
         """ Adds a 0 (zero) where the card was """
-        print(f"sletter: {self.solitaire[from_col, from_row]}")
         self.solitaire[from_col, from_row] = 0
 
     def __move_cards(self, from_col, from_row, to_col):
@@ -115,7 +112,6 @@ class GameColumns:
             self.solitaire[to_col, end_row + i] = m_card
         # After card(s) is moved we update the column where we moved from (if necessary)
         self.__update_col_facedown(from_col)
-        print("cards to move:", *cards_to_move)
 
     def __update_col_facedown(self, col):
         """
@@ -136,9 +132,8 @@ class GameColumns:
         # so we have one less card facing down in that column
         if all_is_facedown:
             if self.col_facedown[col] > 0:
-                print(f"Flip card in column {col}")
+                print(f"Vend kort i kolonne {col}")
                 self.col_facedown[col] -= 1
-                print("Hej", *self.col_facedown)
 
     def is_col_legal(self, from_col, from_row) -> bool:
         """
@@ -150,7 +145,7 @@ class GameColumns:
             return False
         # If card is the last in a column: return True
         if self.is_leaf_card(from_col, from_row):
-            self.leaf_cards[from_col] = self.solitaire[from_col, from_row]
+            # self.leaf_cards[from_col] = self.solitaire[from_col, from_row]
             return True
         # Loop through the column starting at "from_row"
         for i, card in enumerate(self.solitaire[from_col]):
@@ -222,7 +217,7 @@ class GameColumns:
         cards = 0
         # return -1 if col does not exist
         if col < 0 or col >= 7:
-            return -1
+            return 0
         # count the cards. 0 = not a card
         if only_faceup:
             for card in self.solitaire[col]:
