@@ -275,4 +275,5 @@ def game_loop(load_img=False):
 
 # test_load_img()
 # test_take_img()
-game_loop()
+if __name__ == '__main__':
+    game_loop()

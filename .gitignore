@@ -131,3 +131,5 @@ dmypy.json
 tempCodeRunnerFile.py
 
 .vscode/
+
+automated_test/images/game_states/
