@@ -18,7 +18,7 @@ DEBUG_IMG = config["Debug_Images"]
 # list of cards to move from where
 
 
-def all_possible(game_columns1: game_columns.GameColumns, stock_pile=None, top_talon=None):
+def all_possible(game_columns1: game_columns.GameColumns, stock_pile):
     card_location = []
     card_location_leafcards = []
     combinations = []
@@ -61,11 +61,8 @@ def all_possible(game_columns1: game_columns.GameColumns, stock_pile=None, top_t
                     "C", 10, game_columns1.pilelength(card_location_leafcards[thiscard3][0].suit)]])
 
     # checking in that wastepile
-    if top_talon is None:
-        primedrawpile = stock_pile
-        cardfrompile = primedrawpile.get_top_waste()
-    else:
-        cardfrompile = top_talon
+    primedrawpile = stock_pile
+    cardfrompile = primedrawpile.get_top_waste()
 
     if cardfrompile is not None:
         waste_to_leaf = where_canthis_be_moved(game_columns1, cardfrompile)
