@@ -46,7 +46,10 @@ class Suit_pile:
 
     def get_card(self, suit):
         """ Gets the top card of a suit pile without removing it """
-        return self.suit_piles[suit][-1]
+        if len(self.suit_piles[suit]) >= 1:
+            return self.suit_piles[suit][-1]
+        else:
+            return None
 
     def remove_card(self, suit) -> bool:
         """ Removes the top card of the pile. Returns True if it succeeded """
