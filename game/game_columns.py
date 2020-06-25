@@ -31,8 +31,9 @@ class GameColumns:
         """
         card_to_move = self.solitaire[from_col, from_row]
         # Cards can only be placed on "leaf" cards. The card in the very end of a column
-        destination_card = self.solitaire[to_col,
-                                          self.get_pile_size_in_col(to_col)-1]
+        if to_col is not None:
+            destination_card = self.solitaire[to_col,
+                                              self.get_pile_size_in_col(to_col)-1]
 
         # Move either one or more cards to another column if possible
         if self.is_col_legal(from_col, from_row):
@@ -141,6 +142,8 @@ class GameColumns:
         It returns True instantly if the card is a leaf card (last in the column)
         """
         # If card is not playable - return False
+        if from_col is None and from_row == -1:
+            return False
         if self.solitaire[from_col, from_row].is_facedown:
             return False
         # If card is the last in a column: return True
@@ -221,7 +224,7 @@ class GameColumns:
         # count the cards. 0 = not a card
         if only_faceup:
             for card in self.solitaire[col]:
-                if card != 0 and not card.is_facedown:
+                if card != 0 and not None and not card.is_facedown:
                     cards += 1
             return cards
         else:

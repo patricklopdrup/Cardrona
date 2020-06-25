@@ -64,7 +64,7 @@ class game:
         self.game_data.m_suit_pile = from_img.make_suit_pile(suit)
         self.game_data.solitaire = from_img.make_seven_column(cols, self.game_data)
 
-        detector.print_stuff(self.detector)
+        # detector.print_stuff(self.detector)
 
         any_illegal = False
         for col in range(len(self.game_data.solitaire)):
@@ -79,7 +79,7 @@ class game:
 
     def game_loop(self):
         ai_waste_count = 0
-        while True:
+        while not self.game_data.m_suit_pile.is_game_won():
             while True:
                 # Current stage - What stage number this is
                 img_path = f'{save_folder}/{self.current_stage}.jpg'
@@ -95,8 +95,6 @@ class game:
 
             moves = Agent.all_possible(self.game_data, self.talon)
             ai_answer = Algorithm.decision(moves)
-            print(ai_answer.user_text)
-
             to_card = ai_answer.to_card
             from_card = ai_answer.from_card
             action = ai_answer.pc_action
@@ -110,8 +108,13 @@ class game:
                     print("Vender bunke og trækker kort")
                     self.deck.extend(self.talon_cards)
                     self.talon_cards = []
-                    self.talon_cards.append(self.deck.pop(0))
-                    self.talon.waste = self.talon_cards[-1]
+                    if len(self.deck) > 0:
+                        self.talon_cards.append(self.deck.pop(0))
+                        self.talon.waste = self.talon_cards[-1]
+                        to_card = None
+                        from_card = None
+                    else:
+                        break
             else:
                 ai_waste_count = 0
 
@@ -138,24 +141,23 @@ class game:
                     except IndexError:
                         self.talon.waste = None
             elif action == action_moves.col_to_suit:
-                self.game_data.move_to_suit_pile(
-                    from_card.x_pos, from_card.y_pos)
+                self.game_data.move_to_suit_pile(from_card.x_pos, from_card.y_pos)
             elif action == action_moves.col_to_col:
                 self.game_data.move_in_game(from_card.x_pos, from_card.y_pos, to_card.x_pos)
-
             if action and from_card.y_pos > 0:
                 x_pos = from_card.x_pos
                 y_pos = from_card.y_pos - 1
                 if self.game_data.solitaire[x_pos][y_pos].is_facedown:
                     self.game_data.solitaire[x_pos][y_pos] = self.face_down.pop(0)
-
-            print("EFTER AI LOGIK")
             show_test(self.game_data, self.talon)
 
             self.current_stage += 1
             self.generator.generate_image(game_data=self.game_data,
                                           stage=self.current_stage, talon=self.talon)
 
+        if self.game_data.m_suit_pile.is_game_won():
+            print("Spillet er vundet!")
+            return
         if ai_waste_count >= len(self.deck) + len(self.talon_cards) + 1:
             print("Spillet er tabt!")
 

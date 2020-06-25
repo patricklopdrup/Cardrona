@@ -103,8 +103,8 @@ class image_generation():
             # Loop through all columns
             for col in range(7):
                 cur_card = game_data.solitaire[col, row]
-                if cur_card != 0 and cur_card and not (cur_card.number == 2 and cur_card.suit == "S"):
-                    print(f"Kortet er: {cur_card}")
+                # if cur_card != 0 and cur_card and not (cur_card.number == 2 and cur_card.suit == "S"):
+                #     print(f"Kortet er: {cur_card}")
                 if row == 0:
                     # Resize the image using the aspect ratio further up
                     card_img = self.generate_card('Blank', card_img_size)

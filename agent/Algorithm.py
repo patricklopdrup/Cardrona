@@ -62,20 +62,21 @@ def decision(moves, current_card=None, card_destination=None):
     possible_count = 0
     y_pos = 0
     for i in range(len(moves)):
-        current_card = moves[i][0][0]
-        card_destination = moves[i][1][0]
+        tmp_current_card = moves[i][0][0]
+        tmp_card_destination = moves[i][1][0]
 
-        if current_card.above and card_destination:
-            if current_card.above.number == card_destination.number:
+        if tmp_current_card.above and tmp_card_destination:
+            if tmp_current_card.above.number == tmp_card_destination.number:
                 continue
 
-        if current_card.y_pos >= y_pos and current_card.number != 13:
+        if tmp_current_card.y_pos >= y_pos and tmp_current_card.number != 13:
             possible_count += 1
+            current_card = tmp_current_card
+            card_destination = tmp_card_destination
             y_pos = current_card.y_pos
             action = action_moves.col_to_col
             user_text = "Ryk " + str(current_card) + \
                 " til " + str(card_destination)
-
     if possible_count >= 1:
         return algorithm_action(user_text, action, current_card, card_destination)
 
@@ -89,7 +90,7 @@ def decision(moves, current_card=None, card_destination=None):
     for i in range(len(moves)):
         current_card = moves[i][0][0]
         card_destination = moves[i][1][0]
-        if current_card.y_pos > y_pos:
+        if current_card.y_pos >= y_pos:
             y_pos = current_card.y_pos
 
         # -1 for a card not placed in the columns
@@ -112,8 +113,7 @@ def decision(moves, current_card=None, card_destination=None):
                         1, 'H', x=moves[i][1][1], y=moves[i][1][2])
                 action = action_moves.waste_to_col
                 return algorithm_action(user_text, action, current_card, card_destination)
-
-        if current_card.number == 13 and not card_destination and current_card.y_pos != 0:
+        elif current_card.number == 13 and not card_destination and current_card.y_pos != 0:
             user_text = "Ryk " + \
                 str(current_card) + " til en tom plads"
             card_destination = card.Card(
